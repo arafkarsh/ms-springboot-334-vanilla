@@ -3,23 +3,23 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.fusion.air</groupId>
-	<artifactId>ms-cache-service</artifactId>
+	<artifactId>ms-vanilla-service</artifactId>
 	<version>0.6.1</version>
 	<packaging>jar</packaging>
-	<name>msCacheService</name>
-	<description>Microservice Cache Kafka Template</description>
+	<name>msVanillaService</name>
+	<description>Microservice Vanilla Template</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.4</version>
+		<version>3.3.4</version>
 	</parent>
 	<!-- =================================================================== -->
 	<!-- Properties / Versions -->
 	<!-- =================================================================== -->
 	<properties>
 		<!-- Java Version ================================================== -->
-		<java.version>22</java.version>
+		<java.version>23</java.version>
 
 		<!-- Maven ========================================================= -->
 		<maven.compiler.target>${java.version}</maven.compiler.target>
@@ -55,7 +55,7 @@
 
 
 		<!-- Spring Libraries ============================================== -->
-		<spring.boot.version>3.2.4</spring.boot.version>
+		<spring.boot.version>3.3.4</spring.boot.version>
 		<spring.cloud.version>2023.0.1</spring.cloud.version>
 		<spring.security.version>6.2.3</spring.security.version>
 
@@ -72,24 +72,9 @@
 	<!-- ================================================================= -->
 	<repositories>
 		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
 		</repository>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-
-		</repository>
-		<repository>
-			<id>public</id>
-			<url>http://maven.nuxeo.org/nexus/content/repositories/public/</url>
-		</repository>
-
 	</repositories>
 
 	<dependencies>
