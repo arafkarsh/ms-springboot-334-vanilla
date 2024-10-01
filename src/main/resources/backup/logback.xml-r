@@ -12,7 +12,7 @@
 		<file>/tmp/ms-service-server.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- Combines time-based rolling and size-based rolling -->
-			<fileNamePattern>/tmp/MS-Vanilla-server.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<fileNamePattern>/tmp/MS-Cache-server.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 			<!-- Specify max size of a single log file -->
 			<maxFileSize>10MB</maxFileSize>
 			<!-- Retain log history for a specific number of days -->
@@ -22,7 +22,6 @@
 			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} |Service=%X{Service} |%-5level| %logger{36}:%L |IP=%X{IP}:%X{Port}| Proto=%X{Protocol}| URI=%X{URI}| User=%X{user}| ReqID=%X{ReqId}| %msg%n</pattern>
 		</encoder>
 	</appender>
-
 	<!-- Set the Debug Level -->
 	<root level="info">
 		<appender-ref ref="APPLOGFILE" />

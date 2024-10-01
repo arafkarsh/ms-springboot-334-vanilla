@@ -1,28 +1,28 @@
 # =======================================================================
-# MS-Cache Service Properties
+# MS-Vanilla Service Properties
 # =======================================================================
-build.number=107
-build.date=Sun Sep 4 07:06:16 IST 2022
+build.number=2
+build.date=Tue Oct 1 12:49:18 IST 2024
 # =======================================================================
 # Service Name & API Details -  Version, Path
 # =======================================================================
 service.org=orgname
-service.name=MS-Cache
-service.api.name=ms-cache
+service.name=MS-Vanilla
+service.api.name=ms-vanilla
 service.api.prefix=api
 service.api.version=v1
 service.api.error.prefix=13
-service.container=ms-cache-service
-#service.api.repository=https://github.com/MetaArivu/${service.container}
-service.api.repository=https://github.com/MetaArivu/ms-cache-kafka-quickstart
+service.container=ms-vanilla-service
+#service.api.repository=https://github.com/arafkarsh/${service.container}
+service.api.repository=https://github.com/arafkarsh/ms-springboot-334-vanilla
 service.api.path=/${service.api.name}/${service.api.prefix}/${service.api.version}
-service.url=http://www.metarivu.com/
+service.url=http://www.arafkarsh.com/
 service.license=Apache 2 License
 # =======================================================================
 # Microservice Server Properties
 # =======================================================================
-server.port=9090
-server.version=0.5.0
+server.port=9334
+server.version=0.3.1
 server.restart=false
 server.resources.url=${service.url}${service.api.path}
 # ------------------------------------------------------------------------
@@ -48,12 +48,24 @@ server.host.uat.desc=UAT Server
 server.host.prod=https://prod.${service.org}.com
 server.host.prod.desc=Production Server
 server.error.whitelabel.enabled=true
-#logging.level=INFO
 # Service Properties Details
 # ------------------------------------------------------------------------
 spring.codec.max-in-memory-size=3MB
 app.property.list=element1, element2, element3
 app.property.map={key1:'val1', key2 : 'val2', key3 : 'val3'}
+# ------------------------------------------------------------------------
+# Log Details
+# ------------------------------------------------------------------------
+server.dev.mode=true
+logging.level.root=INFO
+logging.config=classpath:logback-spring.xml
+logging.path=/tmp/logs/${service.api.name}
+logging.file.name=${service.api.name}.log
+logging.pattern.rolling-file-name=${service.api.name}.%d{yyyy-MM-dd}.%i.log
+logging.file.max-size=30MB
+# Keep Log Files for 100 Days with Max Cap at 3 GB
+logging.file.max-history=100
+logging.file.total-size-cap=3GB
 # =======================================================================
 # H2 DB Properties
 # =======================================================================

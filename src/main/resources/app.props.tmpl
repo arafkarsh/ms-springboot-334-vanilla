@@ -2,22 +2,22 @@
 # Service Name & API Details -  Version, Path
 # =======================================================================
 service.org=orgname
-service.name=MS-Cache
-service.api.name=ms-cache
+service.name=MS-Vanilla
+service.api.name=ms-vanilla
 service.api.prefix=api
 service.api.version=v1
 service.api.error.prefix=13
-service.container=ms-cache-service
+service.container=ms-vanilla-service
 #service.api.repository=https://github.com/arafkarsh/${service.container}
-service.api.repository=https://github.com/arafkarsh/ms-cache-kafka-quickstart
+service.api.repository=https://github.com/arafkarsh/ms-springboot-334-vanilla
 service.api.path=/${service.api.name}/${service.api.prefix}/${service.api.version}
-service.url=http://www.metarivu.com/
+service.url=http://www.arafkarsh.com/
 service.license=Apache 2 License
 # =======================================================================
 # Microservice Server Properties
 # =======================================================================
-server.port=9091
-server.version=0.6.1
+server.port=9334
+server.version=0.3.1
 server.restart=false
 server.resources.url=${service.url}${service.api.path}
 # ------------------------------------------------------------------------

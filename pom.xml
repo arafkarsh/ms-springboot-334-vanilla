@@ -35,9 +35,9 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Utilities ===================================================== -->
-		<slf4j.version>2.0.7</slf4j.version>
-		<logback.version>1.4.7</logback.version>
-		<google.guava.version>31.1-jre</google.guava.version>
+		<slf4j.version>2.0.16</slf4j.version>
+		<logback.version>1.5.8</logback.version>
+		<google.guava.version>33.3.1-jre</google.guava.version>
 		<apache.httpcore>4.5.13</apache.httpcore>
 		<apache.httpclient>5.2.1</apache.httpclient>
 		<apache.commons.version>3.12.0</apache.commons.version>
@@ -57,10 +57,10 @@
 		<!-- Spring Libraries ============================================== -->
 		<spring.boot.version>3.3.4</spring.boot.version>
 		<spring.cloud.version>2023.0.1</spring.cloud.version>
-		<spring.security.version>6.2.3</spring.security.version>
+		<spring.security.version>6.3.3</spring.security.version>
 
 		<!-- Spring Kafka ================================================= -->
-		<spring.kafka.version>3.0.7</spring.kafka.version>
+		<spring.kafka.version>3.2.4</spring.kafka.version>
 
 		<!-- Open API v3 - Swagger UI ===================================== -->
 		<openapi.version>1.7.0</openapi.version>
