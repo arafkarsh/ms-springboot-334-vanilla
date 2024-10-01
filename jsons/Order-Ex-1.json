@@ -1,0 +1,185 @@
+{
+      "version": 39,
+      "uuid": "7a8bc3d8-911f-4aee-bc71-5dfa25a4a3ae",
+      "customerId": "123",
+      "currency": "INR",
+      "totalOrderValue": 85000,
+      "orderItems": [
+        {
+          "version": 1,
+          "uuid": "fb19e155-144c-493d-895d-ff7614e7f53f",
+          "productId": "5dcb87dd-0480-4e45-be83-ddcba3313c4f",
+          "productName": "Apple Watch 5",
+          "quantity": 1,
+          "price": 40000,
+          "time": "2023-07-07T12:44:27.556828",
+          "active": true
+        },
+        {
+          "version": 1,
+          "uuid": "34510d2c-663b-40da-9154-55aa3ee75118",
+          "productId": "25886064-2a6d-417a-9040-111166f250f3",
+          "productName": "Apple Watch 6",
+          "quantity": 1,
+          "price": 45000,
+          "time": "2023-07-07T12:44:27.556975",
+          "active": true
+        }
+      ],
+      "shippingAddress": {
+        "street": "321 Cobblestone Lane",
+        "city": "Edison",
+        "state": "NJ",
+        "country": "USA",
+        "zipCode": "08110",
+        "landmark": "Near Walmart",
+        "phone": "7321002010"
+      },
+      "payment": {
+        "version": 0,
+        "uuid": "999bda45-b1ad-4af3-a2fa-4564cca52ed6",
+        "transactionId": "string",
+        "status": "string",
+        "time": "2023-07-07T12:44:27.541352",
+        "active": true
+      },
+      "orderState": "ORDER_COMPLETED",
+      "result": "DELIVERED",
+      "orderHistory": [
+        {
+          "version": 0,
+          "uuid": "3083b156-773d-41b2-a060-f21b8e5b8d0b",
+          "sourceState": "ORDER_INITIALIZED",
+          "targetState": "PAYMENT_PROCESSING",
+          "transitionEvent": "CREDIT_CHECKING_EVENT",
+          "orderVersion": 28,
+          "notes": null,
+          "time": "2023-07-11T11:24:56.564852",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "0c856103-6cbb-4362-b4af-1f6a7061832c",
+          "sourceState": "PAYMENT_PROCESSING",
+          "targetState": "PAYMENT_CONFIRMED",
+          "transitionEvent": "PAYMENT_APPROVED_EVENT",
+          "orderVersion": 29,
+          "notes": null,
+          "time": "2023-07-11T11:24:56.723915",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "f2864962-8bb0-4f7f-acc1-f453f49ccee2",
+          "sourceState": "PAYMENT_CONFIRMED",
+          "targetState": "PACKING_FORK",
+          "transitionEvent": "PACKAGE_FORK_EVENT",
+          "orderVersion": 30,
+          "notes": null,
+          "time": "2023-07-11T11:24:56.776864",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "996b441d-4c60-4d4a-9c87-eff3efa681bc",
+          "sourceState": "PACKING_FORK",
+          "targetState": "ORDER_PACKAGING_START",
+          "transitionEvent": "PACKAGE_FORK_EVENT",
+          "orderVersion": 31,
+          "notes": null,
+          "time": "2023-07-11T11:24:56.790908",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "a7e7e348-845d-4082-8b88-44e34f5bc628",
+          "sourceState": "ORDER_PACKAGING_START",
+          "targetState": "SEND_BILL_START",
+          "transitionEvent": "PACKAGE_FORK_EVENT",
+          "orderVersion": 32,
+          "notes": null,
+          "time": "2023-07-11T11:24:56.803171",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "331c039b-1043-4d65-9d36-b05e34281987",
+          "sourceState": "SEND_BILL_START",
+          "targetState": "ORDER_PACKAGING_DONE",
+          "transitionEvent": "PACKAGE_EVENT",
+          "orderVersion": 33,
+          "notes": null,
+          "time": "2023-07-11T11:24:56.810474",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "9aa7218c-48bc-4ad1-ac50-e5300236bc12",
+          "sourceState": "ORDER_PACKAGING_DONE",
+          "targetState": "SEND_BILL_DONE",
+          "transitionEvent": "ORDER_SEND_BILL_EVENT",
+          "orderVersion": 34,
+          "notes": null,
+          "time": "2023-07-11T11:24:56.818206",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "ffa425c6-7964-42eb-bbf0-cfb3424304d4",
+          "sourceState": "PACKING_FORK",
+          "targetState": "SHIPPED",
+          "transitionEvent": "ORDER_SEND_BILL_EVENT",
+          "orderVersion": 35,
+          "notes": null,
+          "time": "2023-07-11T11:24:56.821592",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "9be36045-ab14-4add-b1d6-5ceab9aadbb8",
+          "sourceState": "SHIPPED",
+          "targetState": "IN_TRANSIT",
+          "transitionEvent": "ORDER_IN_TRANSIT_EVENT",
+          "orderVersion": 36,
+          "notes": null,
+          "time": "2023-07-11T11:24:56.857692",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "286a3ff2-c902-429e-8cb9-13a6691a211f",
+          "sourceState": "IN_TRANSIT",
+          "targetState": "REACHED_DESTINATION",
+          "transitionEvent": "SEND_FOR_DELIVERY_EVENT",
+          "orderVersion": 37,
+          "notes": null,
+          "time": "2023-07-11T11:24:56.896683",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "feb0d5f8-88cb-44e9-a32e-ac26664783d3",
+          "sourceState": "REACHED_DESTINATION",
+          "targetState": "DELIVERED",
+          "transitionEvent": "ORDER_DELIVERED_EVENT",
+          "orderVersion": 38,
+          "notes": null,
+          "time": "2023-07-11T11:24:56.944643",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "603a5462-a06b-4fe7-9346-c87f790b5169",
+          "sourceState": "DELIVERED",
+          "targetState": "ORDER_COMPLETED",
+          "transitionEvent": "AUTO_TRANSITION_EVENT",
+          "orderVersion": 39,
+          "notes": null,
+          "time": "2023-07-11T11:24:56.952951",
+          "active": true
+        }
+      ],
+      "orderId": "7a8bc3d8-911f-4aee-bc71-5dfa25a4a3ae",
+      "time": "2023-07-11T11:24:56.953634",
+      "active": true
+    }

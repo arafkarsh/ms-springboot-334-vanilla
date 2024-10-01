@@ -1,0 +1,179 @@
+{
+      "version": 1,
+      "uuid": "b9176b11-d924-495e-a459-3b17687d773e",
+      "customerId": "123",
+      "currency": "INR",
+      "totalValue": 119500,
+      "hotelReservationList": [
+        {
+          "version": 0,
+          "uuid": "759d0604-c0cf-4e68-8d3d-e1db250c15d8",
+          "hotelId": "taj-kochi",
+          "hotelName": "Hotel Taj Palace, KOCHI, Kerala",
+          "days": 3,
+          "persons": 2,
+          "startDate": [
+            2023,
+            7,
+            28
+          ],
+          "endDate": [
+            2023,
+            7,
+            31
+          ],
+          "rate": 21500,
+          "reservationState": "RESERVATION_REQUEST_RECEIVED",
+          "hotelReservationNo": "123456",
+          "totalCost": 64500,
+          "time": "2023-07-12T23:17:41.932012",
+          "active": true
+        }
+      ],
+      "rentalReservationList": [
+        {
+          "version": 0,
+          "uuid": "81cf8f66-69ab-4b49-8dcc-8f6739e4b13b",
+          "primaryDriver": "Jane Doe",
+          "rentalId": "scorpio-2023",
+          "rentalName": "Top Cars Rental - Scorpio",
+          "rentalType": "SUV",
+          "days": 3,
+          "startDate": [
+            2023,
+            7,
+            28
+          ],
+          "endDate": [
+            2023,
+            7,
+            31
+          ],
+          "rentalVehicleLicense": "KL-05-Y-2023",
+          "rate": 15000,
+          "reservationState": "RESERVATION_REQUEST_RECEIVED",
+          "statusReasons": "",
+          "rentalReservationNo": "9876543",
+          "totalCost": 45000,
+          "time": "2023-07-12T23:17:41.936350",
+          "active": true
+        }
+      ],
+      "flightReservationList": [
+        {
+          "version": 0,
+          "uuid": "067514b4-20a6-4a66-bf88-54ea05afa02d",
+          "passengerName": "Jane Doe",
+          "gender": "F",
+          "flightId": "KOC-BAN",
+          "airlines": "Delta",
+          "fromCity": "KOC",
+          "toCity": "BAN",
+          "journeyDate": [
+            2023,
+            7,
+            31
+          ],
+          "rate": 5000,
+          "flightReservationNo": "string",
+          "pnr": "pnr65321",
+          "reservationState": "RESERVATION_REQUEST_RECEIVED",
+          "statusReasons": "string",
+          "totalCost": 5000,
+          "time": "2023-07-12T23:17:41.928060",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "85697f23-3b3f-461b-aea9-f31c06907917",
+          "passengerName": "Jane Doe",
+          "gender": "F",
+          "flightId": "BAN-KOC",
+          "airlines": "Delta",
+          "fromCity": "BAN",
+          "toCity": "KOC",
+          "journeyDate": [
+            2023,
+            7,
+            28
+          ],
+          "rate": 5000,
+          "flightReservationNo": "string",
+          "pnr": "pnr12356",
+          "reservationState": "RESERVATION_REQUEST_RECEIVED",
+          "statusReasons": "string",
+          "totalCost": 5000,
+          "time": "2023-07-12T23:17:41.927086",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "f64a1d45-8ec9-4022-8fc4-2180de771ead",
+          "passengerName": "John Doe",
+          "gender": "M",
+          "flightId": "BAN-KOC",
+          "airlines": "Delta",
+          "fromCity": "BAN",
+          "toCity": "KOC",
+          "journeyDate": [
+            2023,
+            7,
+            28
+          ],
+          "rate": 5000,
+          "flightReservationNo": "string",
+          "pnr": "pnr12356",
+          "reservationState": "RESERVATION_REQUEST_RECEIVED",
+          "statusReasons": "string",
+          "totalCost": 5000,
+          "time": "2023-07-12T23:17:41.927086",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "fb948edc-a0ec-4d46-a437-3322d08f3752",
+          "passengerName": "John Doe",
+          "gender": "M",
+          "flightId": "KOC-BAN",
+          "airlines": "Delta",
+          "fromCity": "KOC",
+          "toCity": "BAN",
+          "journeyDate": [
+            2023,
+            7,
+            31
+          ],
+          "rate": 5000,
+          "flightReservationNo": "string",
+          "pnr": "pnr65321",
+          "reservationState": "RESERVATION_REQUEST_RECEIVED",
+          "statusReasons": "string",
+          "totalCost": 5000,
+          "time": "2023-07-12T23:17:41.928060",
+          "active": true
+        }
+      ],
+      "customerAddress": {
+        "street": "321 Cobblestone Ln",
+        "city": "Edison",
+        "state": "NJ",
+        "country": "USA",
+        "zipCode": "08211",
+        "landmark": "Walmart",
+        "phone": "732-236-0000"
+      },
+      "payment": {
+        "version": 0,
+        "uuid": "ab4c885f-24cf-4f1d-8854-0e4a905f46e1",
+        "transactionId": "string",
+        "status": "string",
+        "time": "2023-07-12T23:17:41.917495",
+        "active": true
+      },
+      "reservationState": "RESERVATION_REQUEST_RECEIVED",
+      "result": "IN_PROGRESS",
+      "reservationHistory": [],
+      "reservationId": "b9176b11-d924-495e-a459-3b17687d773e",
+      "time": "2023-07-12T23:17:41.937900",
+      "active": true
+    }

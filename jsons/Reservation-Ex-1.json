@@ -1,0 +1,106 @@
+{
+  "version": 0,
+  "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "customerId": "123",
+  "currency": "INR",
+  "totalValue": 0,
+  "hotelReservationList": [
+    {
+      "version": 0,
+      "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "hotelId": "taj-kochi",
+      "hotelName": "Hotel Taj Palace, KOCHI, Kerala",
+      "days": 3,
+      "persons": 2,
+      "startDate": "2023-07-28",
+      "endDate": "2023-07-31",
+      "rate": 21500,
+      "reservationState": "RESERVATION_REQUEST_RECEIVED",
+      "hotelReservationNo": "123456",
+      "totalCost": 65000,
+      "time": "string",
+      "active": true
+    }
+  ],
+  "rentalReservationList": [
+    {
+      "version": 0,
+      "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "rentalId": "scorpio-2023",
+      "rentalName": "Top Cars Rental - Scorpio",
+      "rentalType": "SUV",
+      "days": 3,
+      "startDate": "2023-07-28",
+      "endDate": "2023-07-31",
+      "rentalVehicleLicense": "KL-05-Y-2023",
+      "rate": 15000,
+      "reservationState": "RESERVATION_REQUEST_RECEIVED",
+      "statusReasons": "string",
+      "rentalReservationNo": "9876543",
+      "totalCost": 45000,
+      "time": "string",
+      "active": true
+    }
+  ],
+  "flightReservationList": [
+    {
+      "version": 0,
+      "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "flightId": "BAN-KOC",
+      "airlines": "Delta",
+      "fromCity": "BAN",
+      "toCity": "KOC",
+      "journeyDate": "2023-07-28",
+      "rate": 5000,
+      "flightReservationNo": "string",
+      "pnr": "pnr12356",
+      "reservationState": "RESERVATION_REQUEST_RECEIVED",
+      "statusReasons": "string",
+      "totalCost": 10000,
+      "time": "string",
+      "active": true
+    },
+    {
+      "version": 0,
+      "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "flightId": "KOC-BAN",
+      "airlines": "Delta",
+      "fromCity": "KOC",
+      "toCity": "BAN",
+      "journeyDate": "2023-07-31",
+      "rate": 5000,
+      "flightReservationNo": "string",
+      "pnr": "pnr65321",
+      "reservationState": "RESERVATION_REQUEST_RECEIVED",
+      "statusReasons": "string",
+      "totalCost": 10000,
+      "time": "string",
+      "active": true
+    }
+  ],
+  "customerAddress": {
+    "street": "321 Cobblestone Ln",
+    "city": "Edison",
+    "state": "NJ",
+    "country": "USA",
+    "zipCode": "08211",
+    "landmark": "Walmart",
+    "phone": "732-236-0000"
+  },
+  "payment": {
+    "version": 0,
+    "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "transactionId": "string",
+    "status": "string",
+    "time": "string",
+    "active": true
+  },
+  "reservationState": "RESERVATION_REQUEST_RECEIVED",
+  "result": "IN_PROGRESS",
+  "reservationHistory": [],
+  "state": "RESERVATION_REQUEST_RECEIVED",
+  "reservationResult": "IN_PROGRESS",
+  "reservationId": "string",
+  "time": "string",
+  "active": true
+}

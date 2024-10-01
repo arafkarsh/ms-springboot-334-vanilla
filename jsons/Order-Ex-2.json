@@ -1,0 +1,77 @@
+{
+      "version": 1168,
+      "uuid": "e5a5bb0d-6282-4072-9926-a0653095fd07",
+      "customerId": "123",
+      "currency": "INR",
+      "totalOrderValue": 170000,
+      "orderItems": [
+        {
+          "version": 1,
+          "uuid": "33afea94-2cde-40e5-afee-0dd4de32546b",
+          "productId": "25886064-2a6d-417a-9040-111166f250f3",
+          "productName": "iPhone 15",
+          "quantity": 1,
+          "price": 90000,
+          "time": "2023-07-07T12:44:27.556975",
+          "active": true
+        },
+        {
+          "version": 1,
+          "uuid": "3bb8be4a-ca61-4d19-9a7d-5e43c134916a",
+          "productId": "25886064-2a6d-417a-9040-111166f250f3",
+          "productName": "iPhone 14",
+          "quantity": 1,
+          "price": 80000,
+          "time": "2023-07-07T12:44:27.556975",
+          "active": true
+        }
+      ],
+      "shippingAddress": {
+        "street": "321 Cobblestone Lan",
+        "city": "Edison",
+        "state": "NJ",
+        "country": "USA",
+        "zipCode": "08110",
+        "landmark": "Near Walmart",
+        "phone": "7321002010"
+      },
+      "payment": {
+        "version": 0,
+        "uuid": "63fd3531-ee6b-40d8-aed0-2faeebc41c87",
+        "transactionId": "string",
+        "status": "string",
+        "time": "2023-07-05T11:24:30.527592",
+        "active": true
+      },
+      "orderState": "ERROR",
+      "result": "CREDIT_DENIED",
+      "orderHistory": [
+        {
+          "version": 0,
+          "uuid": "d4eb7a6a-9940-4aea-a67d-7749e13c02d8",
+          "sourceState": "ORDER_INITIALIZED",
+          "targetState": "CREDIT_CHECKING",
+          "transitionEvent": "CREDIT_CHECKING_EVENT",
+          "orderVersion": 1167,
+          "notes": null,
+          "time": "2023-07-11T11:29:51.744179",
+          "active": true
+        },
+        {
+          "version": 0,
+          "uuid": "bc0a0509-827c-4afd-a725-4c49d68bfe3a",
+          "sourceState": "CREDIT_CHECKING",
+          "targetState": "ERROR",
+          "transitionEvent": "FAILURE_EVENT",
+          "orderVersion": 1168,
+          "notes": {
+            "sourceState": "CREDIT_CHECKING",
+            "targetState": "CREDIT_DENIED",
+            "transitionEvent": "CREDIT_DECLINED_EVENT",
+            "message": "",
+            "errorMessage": "Service Unavailable to check Credit: Target State = CREDIT_DENIED"
+          },
+          "time": "2023-07-11T11:29:51.822367",
+          "active": true
+        }
+      }
