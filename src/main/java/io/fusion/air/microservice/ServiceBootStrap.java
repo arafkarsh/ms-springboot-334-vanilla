@@ -36,7 +36,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -44,7 +43,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.util.unit.DataSize;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -108,17 +106,15 @@ public class ServiceBootStrap {
 	private String serviceName = "Unknown";
 
 	@Value("${spring.profiles.default:dev}")
-	private static String devMode;
+	private static String activeProfile;
 	
 	/**
 	 * Start the Microservice
-	 *
+	 * API URL : http://localhost:9334/ms-vanilla/api/v1/swagger-ui/index.html
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// Start the Server
-		start(args);
-		// API URL : http://localhost:9090/service/api/v1/swagger-ui.html
+		start(args);			// Start the Server
 	}
 
 	/**
@@ -126,16 +122,16 @@ public class ServiceBootStrap {
 	 * @param args
 	 */
 	public static void start(String[] args) {
-		log.info("Booting Service ..... ..");
+		log.info("Booting MicroService ..... ..");
 		try {
 			context = SpringApplication.run(ServiceBootStrap.class, args);
 			// Set a default profile if no other profile is specified
 			ConfigurableEnvironment environment = context.getEnvironment();
 			if (environment.getActiveProfiles().length == 0) {
-				log.info("Profile is missing, so defaulting to "+devMode+" Profile!");
-				environment.addActiveProfile(devMode);
+				log.info("Profile is missing, so defaulting to "+ activeProfile +" Profile!");
+				environment.addActiveProfile(activeProfile);
 			}
-			log.info("Booting Service ..... ...Startup completed!");
+			log.info("Booting MicroService ..... ... Startup completed!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

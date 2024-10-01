@@ -22,7 +22,6 @@ import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.config.ServiceHelp;
 import io.fusion.air.microservice.utils.CPU;
 
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +30,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
 //Logging System
 import org.slf4j.Logger;
 // Java
@@ -71,23 +69,23 @@ public class ServiceEventListener {
 	private long tokenRefreshExpiry;
 
 	@Value("${spring.profiles.default:dev}")
-	private String devMode;
+	private String activeProfile;
 
 	@Autowired
 	private ConfigurableEnvironment environment;
 
 	private boolean  getDevMode() {
 		// System.out.println("<><><><1> Profile = "+devMode);
-		devMode = getActiveProfile();
-		return (devMode == null || devMode.equalsIgnoreCase("dev")) ? true : false;
+		activeProfile = getActiveProfile();
+		return (activeProfile == null || activeProfile.equalsIgnoreCase("dev")) ? true : false;
 	}
 
 	private String getActiveProfile() {
 		// System.out.println("Total Profiles = "+environment.getActiveProfiles().length);
 		// System.out.println("Checking Active Profiles.... ");
 		if (environment.getActiveProfiles().length == 0) {
-			log.info("PROFILE is missing, so defaulting to "+devMode+" Profile!");
-			environment.addActiveProfile(devMode);
+			log.info("Spring Profile is missing, so defaulting to "+ activeProfile +" Profile!");
+			environment.addActiveProfile(activeProfile);
 		}
 		// System.out.println("Total Profiles = "+environment.getActiveProfiles().length);
 		StringBuilder sb = new StringBuilder();
@@ -95,7 +93,7 @@ public class ServiceEventListener {
 			sb.append(profile).append(" ");
 		}
 		String profile = sb.toString().trim().replaceAll(" ", ", ");
-		log.info("Profiles = "+profile);
+		log.debug("Profiles = "+profile);
 		return profile;
 	}
 
@@ -111,7 +109,7 @@ public class ServiceEventListener {
 		jsonWebToken.init(serviceConfig.getTokenType());
 		if(serverTokenTest && getDevMode() ) {
 			log.debug("Generate Test Tokens = {} ", serverTokenTest);
-			generateTestToken();
+			generateTestToken();		// ONLY FOR DEVELOPER TESTING
 		}
 	}
 
@@ -226,8 +224,6 @@ public class ServiceEventListener {
 		//}
 	}
 	private String geDeploymentMode() {
-		// System.out.println("<><><><2> Profile = "+getActiveProfile());
-		// System.out.println("<><><><3> Profile = "+devMode);
 		return switch (getActiveProfile()) {
             case "dev" -> "Development";
             case "staging" -> "Staging";
