@@ -1,0 +1,24 @@
+#!/bin/bash
+# -------------------------------------------------------------------------------------------
+# @author: Araf Karsh Hamid
+# -------------------------------------------------------------------------------------------
+# Build Container
+# -------------------------------------------------------------------------------------------
+ORG=$1
+SERVICE=$2
+if test "$#" -lt 1; then
+	echo "Extracting ORG and Service Names..."
+	# Get the Org Name and Container Name from Properties file
+	cd ../../
+	ORG=`getServiceName 1`
+	SERVICE=`getServiceName 4`
+	cd src/docker
+fi
+echo "Building Containr for $ORG/$SERVICE ......."
+# Replace Mock Service Container name with actual Container name
+cp Dockerfile-r Dockerfile
+sed -i -r "s/mock-service/$SERVICE/g" Dockerfile
+# Build Container
+echo "docker build --force-rm -f Dockerfile -t $ORG/$SERVICE . "
+docker build --force-rm -f Dockerfile -t $ORG/$SERVICE . 
+cd ../../

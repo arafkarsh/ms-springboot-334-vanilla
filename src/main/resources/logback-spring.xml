@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="120 seconds">
+	<springProperty scope="context" name="LOG_PATH" source="logging.path"/>
+	<springProperty scope="context" name="LOG_FILE" source="logging.file.name"/>
+	<springProperty scope="context" name="LOG_FILE_PATTERN" source="logging.pattern.rolling-file-name"/>
+	<springProperty scope="context" name="LOG_FILE_MAX_SIZE" source="logging.file.max-size"/>
+	<springProperty scope="context" name="LOG_FILE_MAX_HISTORY" source="logging.file.max-history"/>
+	<springProperty scope="context" name="LOG_FILE_SIZE_CAP" source="logging.file.total-size-cap"/>
+
+
+	<!-- Define the Standard Output - Console Loggin -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} |%-5level| %logger{36}:%L |IP=%X{IP}:%X{Port} |User=%X{user}| |ReqID=%X{ReqId} |%msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Define the File Logging -->
+	<appender name="APPLOGFILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/${LOG_FILE}</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+			<fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd, aux}/${LOG_FILE_PATTERN}</fileNamePattern>
+			<!-- keep X days' worth of history capped at 3GB total size -->
+			<maxHistory>${LOG_FILE_MAX_HISTORY}</maxHistory>
+			<totalSizeCap>${LOG_FILE_SIZE_CAP}</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} |%-5level| %logger{36}:%L |IP=%X{IP}:%X{Port} |User=%X{user}| |ReqID=%X{ReqId} |%msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Set the Debug Level -->
+	<root level="info">
+		<appender-ref ref="APPLOGFILE" />
+		<appender-ref ref="STDOUT" />
+	</root>
+	<!-- Define the Loggers -->
+	<logger name="org.springframework.boot.web.embedded.tomcat.TomcatWebServer" level="warn">
+		<appender-ref ref="APPLOGFILE" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+	<logger level="info" name="ms-service-info">
+		<appender-ref ref="APPLOGFILE" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+	<logger level="debug" name="ms-service-debug">
+		<appender-ref ref="APPLOGFILE" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+</configuration>

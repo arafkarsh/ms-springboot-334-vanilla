@@ -1,0 +1,3068 @@
+{
+	"info": {
+		"_postman_id": "2632be2a-d62c-42a3-86ac-931c20402702",
+		"name": "MS-Cache Service",
+		"description": "<b>MS-Cache Service </b><br>Build No:<b> 73</b>, Build Date:<b> Fri Aug 19 18:33:48 IST 2022</b> ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ms-cache/api/v1",
+			"item": [
+				{
+					"name": "product",
+					"item": [
+						{
+							"name": "Update Product",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "<Bearer Token>",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/product/update/:referenceNo",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"product",
+										"update",
+										":referenceNo"
+									],
+									"variable": [
+										{
+											"key": "referenceNo",
+											"value": "<string>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Update the Product",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/product/update/:referenceNo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"product",
+												"update",
+												":referenceNo"
+											],
+											"variable": [
+												{
+													"key": "referenceNo",
+													"value": "<string>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								},
+								{
+									"name": "Unable to Update the Product",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/product/update/:referenceNo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"product",
+												"update",
+												":referenceNo"
+											],
+											"variable": [
+												{
+													"key": "referenceNo",
+													"value": "<string>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "Process Product",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"transactionId\": \"<string>\",\n  \"transactionDate\": \"<dateTime>\",\n  \"orderValue\": \"<double>\",\n  \"paymentType\": \"<string>\",\n  \"cardDetails\": {\n    \"cardNumber\": \"<string>\",\n    \"holderName\": \"<string>\",\n    \"expiryMonth\": \"<integer>\",\n    \"expiryYear\": \"<integer>\",\n    \"cardCode\": \"<integer>\",\n    \"cardType\": \"<string>\"\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/product/processProducts",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"product",
+										"processProducts"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Unable to process the Product",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"transactionId\": \"<string>\",\n  \"transactionDate\": \"<dateTime>\",\n  \"orderValue\": \"<double>\",\n  \"paymentType\": \"<string>\",\n  \"cardDetails\": {\n    \"cardNumber\": \"<string>\",\n    \"holderName\": \"<string>\",\n    \"expiryMonth\": \"<integer>\",\n    \"expiryYear\": \"<integer>\",\n    \"cardCode\": \"<integer>\",\n    \"cardType\": \"<string>\"\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/product/processProducts",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"product",
+												"processProducts"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Process the payment",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"transactionId\": \"<string>\",\n  \"transactionDate\": \"<dateTime>\",\n  \"orderValue\": \"<double>\",\n  \"paymentType\": \"<string>\",\n  \"cardDetails\": {\n    \"cardNumber\": \"<string>\",\n    \"holderName\": \"<string>\",\n    \"expiryMonth\": \"<integer>\",\n    \"expiryYear\": \"<integer>\",\n    \"cardCode\": \"<integer>\",\n    \"cardType\": \"<string>\"\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/product/processProducts",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"product",
+												"processProducts"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								}
+							]
+						},
+						{
+							"name": "Create Product",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"productId\": \"<string>\",\n  \"productLocationZipCode\": \"<string>\",\n  \"productName\": \"<string>\",\n  \"productPrice\": \"<number>\",\n  \"productDetails\": \"<string>\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/product/create",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"product",
+										"create"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Unable to Create the Product",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"productId\": \"<string>\",\n  \"productLocationZipCode\": \"<string>\",\n  \"productName\": \"<string>\",\n  \"productPrice\": \"<number>\",\n  \"productDetails\": \"<string>\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/product/create",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"product",
+												"create"
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Create the Product",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"productId\": \"<string>\",\n  \"productLocationZipCode\": \"<string>\",\n  \"productName\": \"<string>\",\n  \"productPrice\": \"<number>\",\n  \"productDetails\": \"<string>\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/product/create",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"product",
+												"create"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								}
+							]
+						},
+						{
+							"name": "Get the Product status",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/product/status/:referenceNo",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"product",
+										"status",
+										":referenceNo"
+									],
+									"variable": [
+										{
+											"key": "referenceNo",
+											"value": "<string>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Invalid Product Reference No.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/product/status/:referenceNo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"product",
+												"status",
+												":referenceNo"
+											],
+											"variable": [
+												{
+													"key": "referenceNo",
+													"value": "<string>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Product Status Check",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/product/status/:referenceNo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"product",
+												"status",
+												":referenceNo"
+											],
+											"variable": [
+												{
+													"key": "referenceNo",
+													"value": "<string>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								}
+							]
+						},
+						{
+							"name": "Get All the Products",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/product/all/",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"product",
+										"all",
+										""
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Invalid Product Reference No.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/product/all/",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"product",
+												"all",
+												""
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "List All the Product",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/product/all/",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"product",
+												"all",
+												""
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								}
+							]
+						},
+						{
+							"name": "Cancel Product",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "<Bearer Token>",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/product/cancel/:referenceNo",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"product",
+										"cancel",
+										":referenceNo"
+									],
+									"variable": [
+										{
+											"key": "referenceNo",
+											"value": "<string>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Payment Cancelled",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/product/cancel/:referenceNo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"product",
+												"cancel",
+												":referenceNo"
+											],
+											"variable": [
+												{
+													"key": "referenceNo",
+													"value": "<string>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								},
+								{
+									"name": "Unable to Cancel the Payment",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/product/cancel/:referenceNo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"product",
+												"cancel",
+												":referenceNo"
+											],
+											"variable": [
+												{
+													"key": "referenceNo",
+													"value": "<string>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "payment",
+					"item": [
+						{
+							"name": "Update Payment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "<Bearer Token>",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/payment/update/:referenceNo",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"payment",
+										"update",
+										":referenceNo"
+									],
+									"variable": [
+										{
+											"key": "referenceNo",
+											"value": "<string>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Update the Payment",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/payment/update/:referenceNo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"payment",
+												"update",
+												":referenceNo"
+											],
+											"variable": [
+												{
+													"key": "referenceNo",
+													"value": "<string>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								},
+								{
+									"name": "Unable to Update the Payment",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/payment/update/:referenceNo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"payment",
+												"update",
+												":referenceNo"
+											],
+											"variable": [
+												{
+													"key": "referenceNo",
+													"value": "<string>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "Process Payments",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "<Bearer Token>",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"transactionId\": \"<string>\",\n  \"transactionDate\": \"<dateTime>\",\n  \"orderValue\": \"<double>\",\n  \"paymentType\": \"<string>\",\n  \"cardDetails\": {\n    \"cardNumber\": \"<string>\",\n    \"holderName\": \"<string>\",\n    \"expiryMonth\": \"<integer>\",\n    \"expiryYear\": \"<integer>\",\n    \"cardCode\": \"<integer>\",\n    \"cardType\": \"<string>\"\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/payment/processPayments",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"payment",
+										"processPayments"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Process the payment",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"transactionId\": \"<string>\",\n  \"transactionDate\": \"<dateTime>\",\n  \"orderValue\": \"<double>\",\n  \"paymentType\": \"<string>\",\n  \"cardDetails\": {\n    \"cardNumber\": \"<string>\",\n    \"holderName\": \"<string>\",\n    \"expiryMonth\": \"<integer>\",\n    \"expiryYear\": \"<integer>\",\n    \"cardCode\": \"<integer>\",\n    \"cardType\": \"<string>\"\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/payment/processPayments",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"payment",
+												"processPayments"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								},
+								{
+									"name": "Unable to process the payment",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"transactionId\": \"<string>\",\n  \"transactionDate\": \"<dateTime>\",\n  \"orderValue\": \"<double>\",\n  \"paymentType\": \"<string>\",\n  \"cardDetails\": {\n    \"cardNumber\": \"<string>\",\n    \"holderName\": \"<string>\",\n    \"expiryMonth\": \"<integer>\",\n    \"expiryYear\": \"<integer>\",\n    \"cardCode\": \"<integer>\",\n    \"cardType\": \"<string>\"\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/payment/processPayments",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"payment",
+												"processPayments"
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "Check the Payment status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "<Bearer Token>",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/payment/status/:referenceNo",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"payment",
+										"status",
+										":referenceNo"
+									],
+									"variable": [
+										{
+											"key": "referenceNo",
+											"value": "<string>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Payment Status Check",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/payment/status/:referenceNo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"payment",
+												"status",
+												":referenceNo"
+											],
+											"variable": [
+												{
+													"key": "referenceNo",
+													"value": "<string>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								},
+								{
+									"name": "Invalid Payment Reference No.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/payment/status/:referenceNo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"payment",
+												"status",
+												":referenceNo"
+											],
+											"variable": [
+												{
+													"key": "referenceNo",
+													"value": "<string>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "Cancel Payment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "<Bearer Token>",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/payment/cancel/:referenceNo",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"payment",
+										"cancel",
+										":referenceNo"
+									],
+									"variable": [
+										{
+											"key": "referenceNo",
+											"value": "<string>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Unable to Cancel the Payment",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/payment/cancel/:referenceNo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"payment",
+												"cancel",
+												":referenceNo"
+											],
+											"variable": [
+												{
+													"key": "referenceNo",
+													"value": "<string>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Payment Cancelled",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/payment/cancel/:referenceNo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"payment",
+												"cancel",
+												":referenceNo"
+											],
+											"variable": [
+												{
+													"key": "referenceNo",
+													"value": "<string>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "service",
+					"item": [
+						{
+							"name": "Service ReStart",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "<Bearer Token>",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/service/restart",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"service",
+										"restart"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Service ReStart",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/service/restart",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"service",
+												"restart"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								},
+								{
+									"name": "Service is not ready.",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/service/restart",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"service",
+												"restart"
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "Service Echo",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"word\": \"<string>\",\n  \"day\": \"<integer>\",\n  \"requestTime\": \"<dateTime>\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/service/echo",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"service",
+										"echo"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Service unable to deserialize!",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"word\": \"<string>\",\n  \"day\": \"<integer>\",\n  \"requestTime\": \"<dateTime>\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/service/echo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"service",
+												"echo"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Service Echo",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"word\": \"<string>\",\n  \"day\": \"<integer>\",\n  \"requestTime\": \"<dateTime>\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/service/echo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"service",
+												"echo"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								},
+								{
+									"name": "Service unable to do Echo!",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"word\": \"<string>\",\n  \"day\": \"<integer>\",\n  \"requestTime\": \"<dateTime>\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/service/echo",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"service",
+												"echo"
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "Service Readiness Check",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/service/ready",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"service",
+										"ready"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Service is not ready.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/service/ready",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"service",
+												"ready"
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Service Readiness Check",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/service/ready",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"service",
+												"ready"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								}
+							]
+						},
+						{
+							"name": "Health Check of the Service",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/service/live",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"service",
+										"live"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Service is in bad health.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/service/live",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"service",
+												"live"
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Health Check OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/service/live",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"service",
+												"live"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								}
+							]
+						},
+						{
+							"name": "Service Home",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "<Bearer Token>",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/service/home",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"service",
+										"home"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Service Home",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/service/home",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"service",
+												"home"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/text"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Service is not ready.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/service/home",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"service",
+												"home"
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "config",
+					"item": [
+						{
+							"name": "Show the ConfigMap Settings ",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/config/map",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"config",
+										"map"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Service ConfigMap is not ready.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/config/map",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"config",
+												"map"
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Show the ConfigMap Settings",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/config/map",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"config",
+												"map"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								}
+							]
+						},
+						{
+							"name": "Show Service Log Levels",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "<Bearer Token>",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/config/log",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"config",
+										"log"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Service is not ready.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/config/log",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"config",
+												"log"
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Service Log Level Check",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/config/log",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"config",
+												"log"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/text"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "Show the Environment Settings ",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "<Bearer Token>",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/config/env",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"config",
+										"env"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Show the environment Settings",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/config/env",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"config",
+												"env"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "\"\""
+								},
+								{
+									"name": "Service Env is not ready.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											},
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/ms-cache/api/v1/config/env",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"ms-cache",
+												"api",
+												"v1",
+												"config",
+												"env"
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Generate Tokens",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"description": "(Required) Authorization Refresh Token",
+								"key": "Refresh-Token",
+								"value": "<string>"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/ms-cache/api/v1/tokens/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ms-cache",
+								"api",
+								"v1",
+								"tokens",
+								"refresh"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Token Generation Failed!",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									},
+									{
+										"description": "(Required) Authorization Bearer Token",
+										"key": "Authorization",
+										"value": "non Excepteur Ut"
+									},
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/tokens/refresh",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"tokens",
+										"refresh"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Tokens Generated",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									},
+									{
+										"description": "(Required) Authorization Bearer Token",
+										"key": "Authorization",
+										"value": "non Excepteur Ut"
+									},
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/ms-cache/api/v1/tokens/refresh",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"ms-cache",
+										"api",
+										"v1",
+										"tokens",
+										"refresh"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "\"\""
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "actuator",
+			"item": [
+				{
+					"name": "health",
+					"item": [
+						{
+							"name": "Actuator web endpoint 'health'",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.spring-boot.actuator.v3+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/actuator/health",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"actuator",
+										"health"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/actuator/health",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"actuator",
+												"health"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/vnd.spring-boot.actuator.v3+json"
+										}
+									],
+									"cookie": [],
+									"body": "{}"
+								}
+							]
+						},
+						{
+							"name": "Actuator web endpoint 'health-path'",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.spring-boot.actuator.v3+json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/actuator/health/**",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"actuator",
+										"health",
+										"**"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) Authorization Bearer Token",
+												"key": "Authorization",
+												"value": "non Excepteur Ut"
+											},
+											{
+												"description": "(Required) Authorization Refresh Token",
+												"key": "Refresh-Token",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/actuator/health/**",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"actuator",
+												"health",
+												"**"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/vnd.spring-boot.actuator.v3+json"
+										}
+									],
+									"cookie": [],
+									"body": "{}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Actuator root web endpoint",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"description": "(Required) Authorization Refresh Token",
+								"key": "Refresh-Token",
+								"value": "<string>"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.spring-boot.actuator.v3+json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/actuator",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"actuator"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) Authorization Bearer Token",
+										"key": "Authorization",
+										"value": "non Excepteur Ut"
+									},
+									{
+										"description": "(Required) Authorization Refresh Token",
+										"key": "Refresh-Token",
+										"value": "<string>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/actuator",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"actuator"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/vnd.spring-boot.actuator.v3+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"sint_9d9\": {\n    \"ut_cb\": {\n      \"href\": \"sint incididunt\",\n      \"templated\": false\n    }\n  }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "home",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"description": "(Required) Authorization Refresh Token",
+						"key": "Refresh-Token",
+						"value": "<string>"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/root",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"root"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "OK",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"description": "(Required) Authorization Bearer Token",
+								"key": "Authorization",
+								"value": "non Excepteur Ut"
+							},
+							{
+								"description": "(Required) Authorization Refresh Token",
+								"key": "Refresh-Token",
+								"value": "<string>"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/root",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"root"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "*/*"
+						}
+					],
+					"cookie": [],
+					"body": "non Excepteur Ut"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:9090",
+			"type": "string"
+		}
+	]
+}

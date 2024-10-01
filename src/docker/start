@@ -1,0 +1,24 @@
+#!/bin/bash
+# -------------------------------------------------------------------------------------------
+# @author: Araf Karsh Hamid
+# -------------------------------------------------------------------------------------------
+# Start Container
+# -------------------------------------------------------------------------------------------
+PORT=9090
+ORG=$1
+SERVICE=$2
+API=$3
+if test "$#" -lt 1; then
+	echo "Extracting ORG and Service Names..."
+	# Get the Org Name and Container Name from Properties file
+	cd ../../
+	ORG=`getServiceName 1`
+	SERVICE=`getServiceName 4`
+    API=`getServiceName 3`
+	cd src/docker
+fi
+echo "docker container run --name $SERVICE -d --rm -p $PORT:9090 $ORG/$SERVICE"
+docker container run --name $SERVICE -d --rm -p $PORT:9090 $ORG/$SERVICE
+echo "Checkout API: http://localhost:$PORT/api/v1/$API/swagger-ui.html"
+echo "Container id for $SERVICE ="`docker container ls | grep $SERVICE | tr -s " " | cut -d " " -f 1`
+docker container ls | grep $SERVICE | tr -s " " | cut -d " " -f 1 > $SERVICE.cid

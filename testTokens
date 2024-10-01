@@ -1,0 +1,6 @@
+#!/bin/bash
+curl -X 'GET' \
+  'http://localhost:9090/ms-cache/api/v1/tokens/refresh' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJNUy1DYWNoZSIsImp0aSI6IjY1NTEwY2I0LTc3NDctNDFhOS1hN2MwLWRiZWI4MDdhOTkyMCIsInJvbCI6IlVzZXIiLCJkaWQiOiJEZXZpY2UgSUQiLCJzdWIiOiJqYW5lLmRvZSIsImlzcyI6Im1ldGFtYWdpYyIsImlhdCI6MTY2MDkxMjM2MSwiZXhwIjoxNjYwOTE0MTYxfQ.2nk4p7IBbJ07tLA_-WE_GLmooGYiBExNsCNoVD47A9rtUM82LOPnA-OzOzLqirTT5Wmjanle9DHQJa_Zh7gRRA' \
+  -H 'Refresh-Token: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJNUy1DYWNoZSIsImp0aSI6ImVjOWVkNTYzLTZjYTYtNDM5MS1hMWI3LTRjZDg3Y2EwY2NhNSIsInJvbCI6IlVzZXIiLCJkaWQiOiJEZXZpY2UgSUQiLCJzdWIiOiJqYW5lLmRvZSIsImlzcyI6Im1ldGFtYWdpYyIsImlhdCI6MTY2MDkxMzIyNiwiZXhwIjoxNjYwOTE1MDI2fQ.GA60_pKqsggQIt2FZzkt2NIIMs34re2Fkh6wkJ91Tk9m5tzSvnvwd_U0qTxMLOsVmFO1B3sJUqA1hy7040OkxQ'

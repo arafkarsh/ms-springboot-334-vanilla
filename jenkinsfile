@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Checkout the App'
+		checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/MetaArivu/microservice-template.git']]])
+                echo 'Build the App'
+		sh 'compile'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Test the App'
+            }
+        }   
+        stage('Staging') {
+            steps {
+                echo 'Deploy the App in Staging'
+            }
+        }
+    }
+}

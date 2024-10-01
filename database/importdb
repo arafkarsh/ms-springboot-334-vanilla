@@ -1,0 +1,1 @@
+psql -h localhost -p 5433 ms_cache_310 < ms-sb310.sql

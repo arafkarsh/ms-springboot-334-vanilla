@@ -1,0 +1,35 @@
+#!/bin/sh
+# -------------------------------------------------------------------------------------------
+# @author: Araf Karsh Hamid
+# -------------------------------------------------------------------------------------------
+#SRC_BASE=~/workspace/IntelliJ/ms-cache-kafka-quickstart
+SRC_BASE=${PWD}
+orgName=1
+serviceName=2
+apiName=3
+containerName=4
+param=$1
+if [ -z "$param" ]
+then
+	fgrep service.name= $SRC_BASE/src/main/resources/app.props.tmpl |  cut -d "=" -f 2
+	exit
+fi
+if [ $param == $orgName ] 
+then
+	fgrep service.org= $SRC_BASE/src/main/resources/app.props.tmpl |  cut -d "=" -f 2
+	exit
+elif [ $param == $serviceName ]
+then
+	fgrep service.name= $SRC_BASE/src/main/resources/app.props.tmpl |  cut -d "=" -f 2
+	exit
+elif [ $param == $apiName ] 
+then
+	fgrep service.api.name= $SRC_BASE/src/main/resources/app.props.tmpl |  cut -d "=" -f 2
+	exit
+elif [ $param == $containerName ] 
+then
+	fgrep service.container= $SRC_BASE/src/main/resources/app.props.tmpl |  cut -d "=" -f 2
+	exit
+fi
+fgrep service.api.name= $SRC_BASE/src/main/resources/app.props.tmpl |  cut -d "=" -f 2
+exit

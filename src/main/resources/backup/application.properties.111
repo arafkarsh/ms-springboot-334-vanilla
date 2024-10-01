@@ -1,0 +1,151 @@
+# =======================================================================
+# MS-Cache Service Properties
+# =======================================================================
+build.number=112
+build.date=Sun Sep 4 13:04:22 IST 2022
+# =======================================================================
+# Service Name & API Details -  Version, Path
+# =======================================================================
+service.org=orgname
+service.name=MS-Cache
+service.api.name=ms-cache
+service.api.prefix=api
+service.api.version=v1
+service.api.error.prefix=13
+service.container=ms-cache-service
+#service.api.repository=https://github.com/MetaArivu/${service.container}
+service.api.repository=https://github.com/MetaArivu/ms-cache-kafka-quickstart
+service.api.path=/${service.api.name}/${service.api.prefix}/${service.api.version}
+service.url=http://www.metarivu.com/
+service.license=Apache 2 License
+# =======================================================================
+# Microservice Server Properties
+# =======================================================================
+server.port=9090
+server.version=0.5.0
+server.restart=false
+server.resources.url=${service.url}${service.api.path}
+# ------------------------------------------------------------------------
+# Security & JWT Token  (Type 1 = secret key, 2 = public / private key)
+# ------------------------------------------------------------------------
+server.crypto.public.key=publicKey.pem
+server.crypto.private.key=privateKey.pem
+server.token.issuer=${service.org}
+server.token.type=1
+server.token.test=true
+server.token.auth.expiry=600000
+server.token.refresh.expiry=3600000
+server.token.key=<([1234567890SecretKey!!To??Encrypt##Data@12345%6790])>
+server.secure.data.key=<([1234567890SecretKEY!!TO??Encrypt##DATA@12345%6790])>
+# ------------------------------------------------------------------------
+# Host Details
+# ------------------------------------------------------------------------
+server.host=localhost
+server.host.dev=http://localhost:${server.port}
+server.host.dev.desc=Development Server
+server.host.uat=https://uat.${service.org}.com
+server.host.uat.desc=UAT Server
+server.host.prod=https://prod.${service.org}.com
+server.host.prod.desc=Production Server
+server.error.whitelabel.enabled=true
+#logging.level=INFO
+# Service Properties Details
+# ------------------------------------------------------------------------
+spring.codec.max-in-memory-size=3MB
+app.property.list=element1, element2, element3
+app.property.map={key1:'val1', key2 : 'val2', key3 : 'val3'}
+# =======================================================================
+# H2 DB Properties
+# =======================================================================
+db.server=mem
+db.port=5432
+db.name=ms_cache
+db.schema=ms_schema
+db.vendor=H2
+# To Store the Data in File
+#spring.datasource.url=jdbc:h2:file:/data/demo
+spring.datasource.url=jdbc:h2:${db.server}:${db.name};DB_CLOSE_ON_EXIT=FALSE
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=password
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+# =======================================================================
+# PostgreSQL DB Properties -
+# To USE THIS COMMENT OUT H2 DB Properties & Un Comment Below Properties
+# =======================================================================
+#db.server=localhost
+#db.port=5433
+#db.name=ms_cache
+#db.schema=ms_schema
+#db.vendor=PostgreSQL
+#spring.datasource.url=jdbc:postgresql://${db.server}:${db.port}/${db.name}
+#spring.datasource.driverClassName=org.postgresql.ds.PGSimpleDataSource
+#spring.datasource.username=postgres
+#spring.datasource.password=
+#spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+# =======================================================================
+# JPA / Hibernate Properties
+# ------------------------------------------------------------------------
+spring.jpa.show-sql=true
+spring.jpa.defer-datasource-initialization=true
+#spring.sql.init.data-locations=data-trans.sql
+# Hibernate ddl auto (create, create-drop, validate, update)
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.validator.apply_to_ddl=false
+#spring.jpa.properties.hibernate.check_nullability=true
+# =======================================================================
+# Enabling H2 Console
+# =======================================================================
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-ui
+spring.h2.console.settings.trace=false
+spring.h2.console.settings.web-allow-others=false
+# =======================================================================
+# External Remote Server Properties 
+# =======================================================================
+payment.gateway.host=127.0.0.1
+payment.gateway.port=8080
+remote.host=127.0.0.1
+remote.port=8080
+remote.protocol=http
+# =======================================================================
+# Open API Properties
+# For More Info: https://springdoc.org/#Introduction
+# springdoc.api-docs.path=/api-docs
+# =======================================================================
+springdoc.api-docs.path=${service.api.path}
+springdoc.swagger-ui.path=${service.api.path}/swagger-ui.html
+springdoc.swagger-ui.tryItOutEnabled=true
+springdoc.swagger-ui.filter=true
+springdoc.swagger-ui.use-root-path=true
+springdoc.swagger-ui.disable-swagger-default-url=true
+server.forward-headers-strategy=framework
+springdoc.cache.disabled=true
+springdoc.writer-with-default-pretty-printer=true
+#springdoc.swagger-ui.configUrl=${service.api.path}/swagger-config/swagger-config.json
+# Disabling the api-docs endpoint
+springdoc.api-docs.enabled=true
+# Disabling the swagger-ui
+#springdoc.swagger-ui.enabled=true
+springdoc.swagger-ui.operationsSorter=method
+#For sorting tags alphabetically
+springdoc.swagger-ui.tagsSorter=alpha
+springdoc.show-actuator=true
+# Packages to include
+# springdoc.packagesToScan=io.fusion.water, io.fusion.fire
+# Paths to include
+# springdoc.pathsToMatch=/v1, /api/health/**
+# To expose the swagger-ui, on the management port
+#springdoc.use-management-port=true
+# This property enables the openapi and swaggerui endpoints to be exposed 
+# beneath the actuator base path.
+# management.endpoints.web.exposure.include=openapi, swaggerui
+# =======================================================================
+# Mongo Properties 
+# =======================================================================
+spring.data.mongodb.uri=mongodb://localhost:27017/orderdb
+# =======================================================================
+# Mongock Properties 
+# =======================================================================
+mongock.change-logs-scan-package=io.fusion.water.order.adapters

@@ -1,0 +1,38 @@
+#!/bin/sh
+# -------------------------------------------------------------------------------------------
+# @author: Araf Karsh Hamid
+# -------------------------------------------------------------------------------------------
+
+PORT=9090
+API_VERSION=v1
+SERVICE=`getServiceName 3`
+
+echo "---------------------------------------------------------------------------------------"
+echo "Testing $SERVICE Microservice"
+echo "---------------------------------------------------------------------------------------"
+echo "---------------------------------------------------------------------------------------"
+echo "curl -X 'GET' localhost:$PORT/$SERVICE/api/$API_VERSION/service/home -H 'accept: application/json'"
+curl -X 'GET' localhost:$PORT/$SERVICE/api/$API_VERSION/service/home -H 'accept: application/json'
+echo ""
+echo "---------------------------------------------------------------------------------------"
+echo "curl -X 'GET' localhost:$PORT/$SERVICE/api/$API_VERSION/service/live -H 'accept: application/json'"
+curl -X 'GET' localhost:$PORT/$SERVICE/api/$API_VERSION/service/live -H 'accept: application/json'
+echo ""
+echo "---------------------------------------------------------------------------------------"
+echo "curl -X 'GET' localhost:$PORT/$SERVICE/api/$API_VERSION/service/ready -H 'accept: application/json'"
+curl -X 'GET' localhost:$PORT/$SERVICE/api/$API_VERSION/service/ready -H 'accept: application/json'
+echo ""
+echo "---------------------------------------------------------------------------------------"
+echo "curl -X 'POST' localhost:$PORT/$SERVICE/api/$API_VERSION/service/restart -H 'accept: application/json'"
+curl  -X 'POST' localhost:$PORT/$SERVICE/api/$API_VERSION/service/restart -H 'accept: application/json'
+echo ""
+echo "---------------------------------------------------------------------------------------"
+sleep 3
+echo "curl -X 'GET' localhost:$PORT/$SERVICE/api/$API_VERSION/service/home -H 'accept: application/json'"
+curl -X 'GET' localhost:$PORT/$SERVICE/api/$API_VERSION/service/home -H 'accept: application/json'
+echo ""
+echo "---------------------------------------------------------------------------------------"
+echo "curl -X 'GET' localhost:$PORT/$SERVICE/api/$API_VERSION/service/ready -H 'accept: application/json'"
+curl -X 'GET' localhost:$PORT/$SERVICE/api/$API_VERSION/service/ready -H 'accept: application/json'
+echo ""
+echo "---------------------------------------------------------------------------------------"

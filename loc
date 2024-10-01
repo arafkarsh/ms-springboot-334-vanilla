@@ -1,0 +1,4 @@
+#!/bin/bash
+# cloc is a Mac OS Utility
+echo 'cloc src'
+cloc src

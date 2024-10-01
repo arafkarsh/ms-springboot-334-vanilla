@@ -1,0 +1,71 @@
+#!/bin/sh
+# -------------------------------------------------------------------------------------------
+# @author: Araf Karsh Hamid
+# -------------------------------------------------------------------------------------------
+# Developer Local Compile Process
+# ===========================================================================================
+# 1. Clean up the target folder
+# 2. Generate the Build Number (from git commit count) and Build Date
+# 3. Build the Service
+# 4. Copy the jar file to the Lib Folder
+# 5. Start the Service using ./run script and then test it with ./test script
+#
+# After the Successful build and Startup of the Service, It should show the Build No. & Date
+# -------------------------------------------------------------------------------------------
+SERVICE=`getServiceName`
+CONTAINER=`getServiceName 4`
+ORG=`getServiceName 1`
+echo "---------------------------------------------------------------------------------------"
+echo "Compiling $ORG/$SERVICE Microservice"
+echo "---------------------------------------------------------------------------------------"
+echo "Changing Logback Log File Name: /tmp/$SERVICE-server.%d{yyyy-MM-dd}.%i.log"
+echo "---------------------------------------------------------------------------------------"
+sed -i -r "s/microservice/$SERVICE/g" src/main/resources/logback.xml
+sed -i -r "s/microservice/$SERVICE/g" src/main/resources/logback-test.xml
+echo "Clean up the target folder: mvn clean"
+echo "---------------------------------------------------------------------------------------"
+mvn clean
+# -------------------------------------------------------------------------------------------
+echo "Git Commit Count = "`git rev-list HEAD --count`
+echo "---------------------------------------------------------------------------------------"
+generateBuildNumber $SERVICE
+# -------------------------------------------------------------------------------------------
+echo "Build the $ORG/$SERVICE Microservice : mvn -e package"
+echo "---------------------------------------------------------------------------------------"
+mvn -e package
+mvnCompRV=$?
+# -------------------------------------------------------------------------------------------
+if [ $mvnCompRV == 0 ] 
+then
+	echo "---------------------------------------------------------------------------------------"
+	echo "Compiling Service > $ORG/$SERVICE :: SUCCESS"
+	echo "---------------------------------------------------------------------------------------"
+	echo "Copy the Fat and Thin jar files and the libs to the Docker Directory (src/docker)"
+	cp target/*service*-spring-boot.jar src/docker/$CONTAINER-spring-boot.jar
+	cp target/*service*?.?.?.jar src/docker/$CONTAINER-thin.jar
+	#cp target/libs/* src/docker/libs/
+	echo "Copy the application.properties File to the Docker Directory (src/docker)"
+	cp src/main/resources/application.properties src/docker/
+	cp src/main/resources/application.properties .
+	echo "---------------------------------------------------------------------------------------"
+	echo "Building the Cocntainer for $ORG/$SERVICE Service ..... "
+	echo "---------------------------------------------------------------------------------------"
+	cd src/docker
+	build
+	echo "---------------------------------------------------------------------------------------"
+	echo "$SERVICE Microservice Build Process Completed Successfully! ........... "
+	echo "---------------------------------------------------------------------------------------"
+	echo "Start the Service using "
+	echo "  run (Run the SpringBoot App)  OR"
+	echo "  cd src/docker"
+	echo "  start (Start the Container)"
+	echo "Then to test it with"
+	echo "  test (To Test the SpringBoot App)"
+	echo "---------------------------------------------------------------------------------------"
+	echo "After the Successful build and Startup of the Service, It should show the Build No. & Date"
+	echo "---------------------------------------------------------------------------------------"
+else
+	echo "---------------------------------------------------------------------------------------"
+	echo "Compiling Service > $ORG/$SERVICE :: FAILED!!!"
+	echo "---------------------------------------------------------------------------------------"
+fi

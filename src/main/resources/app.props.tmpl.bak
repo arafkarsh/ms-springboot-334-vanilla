@@ -1,0 +1,86 @@
+# =======================================================================
+# Service Name & API Details -  Version, Path
+# =======================================================================
+service.org=metamagic
+service.name=MS-Cache
+service.api.name=ms-cache
+service.api.prefix=api
+service.api.version=v1
+service.container=ms-cache-service
+#service.api.repository=https://github.com/MetaArivu/${service.container}
+service.api.repository=https://github.com/MetaArivu/ms-cache-kafka-quickstart
+service.api.path=/${service.api.name}/${service.api.prefix}/${service.api.version}
+service.url=http://www.metarivu.com/
+service.license=Apache 2 License
+# =======================================================================
+# Microservice Server Properties
+# =======================================================================
+server.port=9090
+server.version=0.1.0
+server.restart=true
+#logging.level=INFO
+spring.codec.max-in-memory-size=3MB
+token.key=<([1234567890SecretKey!!To??Encrypt##Data@12345%6790])>
+app.property.list=element1, element2, element3
+app.property.map={key1:'val1', key2 : 'val2', key3 : 'val3'}
+# =======================================================================
+# H2 DB Properties
+# =======================================================================
+spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
+# To Store the Data in File
+#spring.datasource.url=jdbc:h2:file:/data/demo
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=password
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.defer-datasource-initialization=true
+spring.sql.init.data-locations=data-trans.sql
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.validator.apply_to_ddl=false
+#spring.jpa.properties.hibernate.check_nullability=true
+# Enabling H2 Console
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2
+# =======================================================================
+# External Remote Server Properties 
+# =======================================================================
+payment.gateway.host=127.0.0.1
+payment.gateway.port=8080
+remote.host=127.0.0.1
+remote.port=8080
+remote.protocol=http
+# =======================================================================
+# Open API Properties
+# For More Info: https://springdoc.org/#Introduction
+# springdoc.api-docs.path=/api-docs
+# =======================================================================
+springdoc.api-docs.path=${service.api.path}
+springdoc.swagger-ui.path=${service.api.path}/swagger-ui.html
+# Disabling the /v3/api-docs enpoint
+springdoc.api-docs.enabled=true
+# Disabling the swagger-ui
+#springdoc.swagger-ui.enabled=true
+springdoc.swagger-ui.operationsSorter=method
+#For sorting tags alphabetically
+springdoc.swagger-ui.tagsSorter=alpha
+springdoc.show-actuator=true
+
+# Packages to include
+# springdoc.packagesToScan=io.fusion.water, io.fusion.fire
+# Paths to include
+# springdoc.pathsToMatch=/v1, /api/health/**
+# To expose the swagger-ui, on the management port
+#springdoc.use-management-port=true
+# This property enables the openapi and swaggerui endpoints to be exposed 
+# beneath the actuator base path.
+# management.endpoints.web.exposure.include=openapi, swaggerui
+# =======================================================================
+# Mongo Properties 
+# =======================================================================
+spring.data.mongodb.uri=mongodb://localhost:27017/orderdb
+# =======================================================================
+# Mongock Properties 
+# =======================================================================
+mongock.change-logs-scan-package=io.fusion.water.order.adapters

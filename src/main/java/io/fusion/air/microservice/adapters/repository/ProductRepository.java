@@ -1,0 +1,70 @@
+/**
+ * (C) Copyright 2021 Araf Karsh Hamid
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.fusion.air.microservice.adapters.repository;
+
+import io.fusion.air.microservice.domain.entities.example.ProductEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Example
+ * Product Repository Impl
+ *
+ * @author arafkarsh
+ */
+
+@Repository
+public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
+
+    /**
+     * Find By Product ID
+     * @param productId
+     * @return
+     */
+    public Optional<ProductEntity> findById(UUID productId);
+
+    /**
+     * Search for the Product By Price Greater Than or Equal To
+     * @param price
+     * @return
+     */
+    @Query("SELECT product FROM ProductEntity product WHERE product.productPrice >= :price ")
+    public List<ProductEntity> fetchProductsByPriceGreaterThan(@Param("price") BigDecimal price);
+
+    /**
+     * Returns Active Products Only
+     * @return
+     */
+    @Query("SELECT product FROM ProductEntity product WHERE product.isActive = true")
+    public List<ProductEntity> fetchActiveProducts();
+
+    /**
+     * Search for the Product By the Product Names Like 'name'
+     * @param name
+     * @return
+     */
+    public List<ProductEntity> findByProductNameContains(String name);
+
+    // Added remark
+
+}

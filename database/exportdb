@@ -1,0 +1,1 @@
+pg_dump -U postgres -h localhost -p 5433 -d ms_cache_310 -n ms_schema > ms-sb310.sql

@@ -1,0 +1,16 @@
+#!/bin/bash
+# -------------------------------------------------------------------------------------------
+# @author: Araf Karsh Hamid
+# -------------------------------------------------------------------------------------------
+ct=$(date +"%Y-%m-%d-%H-%M-%S")
+tc=ms-sb-272-j8.jmx
+rf=ms-sb-272-j8-$ct.jtl
+rd=jmoutput-$ct
+
+echo "Starting JMeter tests for Order Service"
+echo "JMeter Test Case = $tc"
+echo "Jmeter Test Log (jtl) = $rf"
+echo "Results Folder = $rd"
+echo "jmeter -n -t $tc -l $rf -e -o $rd"
+jmeter -n -t $tc -l $rf -e -o $rd
+

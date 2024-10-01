@@ -1,0 +1,18 @@
+#!/bin/bash
+# -------------------------------------------------------------------------------------------
+# @author: Araf Karsh Hamid
+# -------------------------------------------------------------------------------------------
+# Push Container
+# -------------------------------------------------------------------------------------------
+ORG=$1
+SERVICE=$2
+if test "$#" -lt 1; then
+	echo "Extracting ORG and Service Names..."
+	# Get the Org Name and Container Name from Properties file
+	cd ../../
+	ORG=`getServiceName 1`
+	SERVICE=`getServiceName 4`
+	cd src/docker
+fi
+echo "docker push $ORG/$SERVICE"
+docker push $ORG/$SERVICE
