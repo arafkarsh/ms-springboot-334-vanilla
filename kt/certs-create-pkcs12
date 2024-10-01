@@ -1,0 +1,9 @@
+#!/bin/sh
+# -------------------------------------------------------------------------------------------
+# @author: Araf Karsh Hamid
+# -------------------------------------------------------------------------------------------
+echo keytool -genkeypair -alias fusionAir -keyalg RSA -keysize 2048 -validity 365 -keystore fusionAir.pkcs12 -storetype pkcs12
+
+keytool -genkeypair -alias fusionAir -keyalg RSA -keysize 2048 -validity 365 -keystore fusionAir.pkcs12 -storetype pkcs12
+
+

@@ -1,0 +1,56 @@
+grant {
+
+    permission java.lang.RuntimePermission "shutdownHooks";
+    permission java.lang.RuntimePermission "getClassLoader";
+    permission java.lang.RuntimePermission "modifyThread";
+    permission java.lang.RuntimePermission "accessDeclaredMembers";
+    permission java.lang.RuntimePermission "getProtectionDomain";
+    permission java.lang.RuntimePermission "defineClass";
+    permission java.lang.RuntimePermission "getenv.*";
+    permission java.lang.RuntimePermission "canCreateModuleLoader";
+    permission java.lang.RuntimePermission "getBootModuleLoader";
+
+    permission java.security.AllPermission;
+
+    permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+
+    permission java.util.PropertyPermission "org.graalvm.nativeimage.imagecode", "read";
+    permission java.util.PropertyPermission "org.apache.catalina.connector.RECYCLE_FACADES", "read";
+    permission java.util.PropertyPermission "org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH", "read";
+    permission java.util.PropertyPermission "org.apache.catalina.startup.EXIT_ON_INIT_FAILURE", "read";
+    permission java.util.PropertyPermission "catalina.useNaming", "read,write";
+    permission java.util.PropertyPermission "catalina.home", "read";
+    permission java.util.PropertyPermission "catalina.base", "read";
+    permission java.util.PropertyPermission "java.io.tmpdir", "read";
+    permission java.util.PropertyPermission "java.util.logging.config.class", "read";
+    permission java.util.PropertyPermission "java.util.logging.config.file", "read";
+    permission java.util.PropertyPermission "java.util.logging.manager", "read";
+    permission java.util.PropertyPermission "java.home", "read";
+    permission java.util.PropertyPermission "java.naming.factory.initial", "read";
+    permission java.util.PropertyPermission "java.naming.factory.url.pkgs", "read";
+    permission java.util.PropertyPermission "java.naming.factory.state", "read";
+    permission java.util.PropertyPermission "java.specification.version", "read";
+    permission java.util.PropertyPermission "java.specification.vendor", "read";
+    permission java.util.PropertyPermission "java.specification.name", "read";
+
+
+    permission java.io.FilePermission "./application-dev.properties", "read";
+    permission java.io.FilePermission "./application-staging.properties", "read";
+    permission java.io.FilePermission "./application-prod.properties", "read";
+    
+    permission java.net.SocketPermission "localhost:9334", "listen";
+    permission java.net.SocketPermission "localhost:1024-", "accept,connect";
+    
+    permission java.net.SocketPermission "localhost:5433", "connect,resolve";
+
+    permission java.io.FilePermission "/logs/app.log", "read,write";
+    permission java.io.FilePermission "classpath:logback.xml", "read";
+    permission java.io.FilePermission "classpath:logback-spring.xml", "read";
+    permission java.io.FilePermission "classpath:logback-test.xml", "read";
+
+    permission java.io.FilePermission "<<ALL FILES>>", "write";
+    permission java.io.FilePermission "/var/folders/l_/wl9h2nmx4lx2djsymj24k2r40000gn/T/*", "delete";
+    permission java.io.FilePermission "/var/folders/l_/wl9h2nmx4lx2djsymj24k2r40000gn/T/*, "read";
+
+
+};

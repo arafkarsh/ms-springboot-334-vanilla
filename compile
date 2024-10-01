@@ -46,9 +46,15 @@ then
 	#cp target/libs/* src/docker/libs/
 	echo "Copy the application.properties File to the Docker Directory (src/docker)"
 	cp src/main/resources/application.properties src/docker/
+	cp src/main/resources/application-dev.properties src/docker/
+	cp src/main/resources/application-staging.properties src/docker/
+	cp src/main/resources/application-prod.properties src/docker/
 	cp src/main/resources/application.properties .
+	cp src/main/resources/application-dev.properties .
+	cp src/main/resources/application-staging.properties .
+	cp src/main/resources/application-prod.properties .
 	echo "---------------------------------------------------------------------------------------"
-	echo "Building the Cocntainer for $ORG/$SERVICE Service ..... "
+	echo "Building the Container for $ORG/$SERVICE Service ..... "
 	echo "---------------------------------------------------------------------------------------"
 	cd src/docker
 	build

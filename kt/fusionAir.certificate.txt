@@ -1,0 +1,74 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 26182478 (0x18f834e)
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=IN, ST=Karnataka, L=Bengaluru, O=fusion.com, OU=air.fusion.com, CN=Araf Karsh
+        Validity
+            Not Before: Aug 24 01:30:24 2023 GMT
+            Not After : Aug 23 01:30:24 2024 GMT
+        Subject: C=IN, ST=Karnataka, L=Bengaluru, O=fusion.com, OU=air.fusion.com, CN=Araf Karsh
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                RSA Public-Key: (2048 bit)
+                Modulus:
+                    00:8b:18:15:48:a5:6d:2e:d2:22:18:63:c9:35:8a:
+                    71:3d:d8:aa:b3:a3:4f:e6:ef:dd:5d:02:b3:a2:f4:
+                    eb:2b:0c:e7:bd:e1:94:30:f7:35:bd:1e:f9:99:2b:
+                    a6:3d:71:60:95:98:c7:0a:b0:62:f8:70:47:30:fc:
+                    bd:47:82:51:a6:db:f5:d0:bd:b4:c4:42:32:1d:0d:
+                    43:67:92:55:82:37:9b:e0:c3:b5:cb:00:69:4f:cd:
+                    1a:5b:52:1d:4e:ab:2e:a2:ab:b3:64:6d:0b:9d:61:
+                    fb:79:3e:f3:5b:5d:f7:9b:38:6d:d7:50:86:04:8b:
+                    79:b3:f6:f6:08:70:69:4c:c5:93:36:ef:1d:be:3a:
+                    9c:10:6a:60:60:10:56:ff:a8:6d:87:85:86:ba:fa:
+                    02:ef:18:0b:ad:7d:66:be:e1:0d:ef:eb:c8:75:fc:
+                    8c:f9:83:15:6a:e3:22:14:90:44:e0:0f:b9:ec:e7:
+                    4d:20:70:de:50:73:6c:77:d5:49:e7:68:39:b2:17:
+                    04:1b:94:60:82:3a:d8:a5:8d:1c:07:55:09:7e:a7:
+                    d0:03:93:57:30:ef:5c:0e:ec:fe:4c:b2:e5:6d:6a:
+                    84:f7:27:bf:61:be:ab:0a:20:a0:ef:f6:e1:5e:0c:
+                    e7:42:f7:b3:18:04:da:dc:7e:22:01:50:27:d1:f1:
+                    fc:9d
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Subject Key Identifier: 
+                F4:AF:5C:B1:C6:70:E2:33:72:73:95:9C:B6:54:28:3C:2B:B6:51:83
+    Signature Algorithm: sha256WithRSAEncryption
+         84:4c:e4:6c:97:07:80:66:1c:90:7a:cb:04:b1:9e:6f:4e:29:
+         92:11:99:5c:85:1a:95:69:8d:02:2a:2a:67:9c:56:e2:ce:c9:
+         e3:f9:78:bc:46:7f:3a:53:11:a4:dc:13:af:8e:80:78:f7:d8:
+         76:f1:08:d0:a5:51:6d:59:b5:2f:d1:3d:76:bf:b3:87:b6:97:
+         ed:50:d2:bb:d2:80:13:3d:1d:ce:da:e5:d7:a0:0d:bf:cd:56:
+         c9:ee:fb:82:68:41:94:a6:38:7f:d9:5b:2f:e9:e7:aa:7b:b6:
+         0f:73:a1:8b:ce:63:48:94:f4:6f:d8:c7:69:a6:fd:30:a1:74:
+         b9:ae:ee:92:5a:20:48:64:7e:ea:9c:dd:51:08:19:97:31:b8:
+         7c:0c:70:cc:be:8a:1b:ab:2f:e0:ee:a2:fc:25:9c:2d:c0:37:
+         c9:53:1d:5a:3c:21:49:ae:0a:42:fb:70:44:86:c5:12:53:d2:
+         09:b7:51:ab:60:23:4d:b9:18:b6:ba:a7:8a:48:89:a8:44:91:
+         64:0f:41:c2:e4:cb:bc:d6:eb:7c:a3:21:3f:d1:97:89:6c:5a:
+         55:5f:24:4d:d1:78:00:af:b9:c0:ae:a6:a1:38:89:49:8a:8f:
+         85:8b:00:28:9f:e9:8b:5b:bb:02:4d:73:e6:36:08:67:19:8e:
+         92:75:55:2c
+-----BEGIN CERTIFICATE-----
+MIIDjzCCAnegAwIBAgIEAY+DTjANBgkqhkiG9w0BAQsFADB4MQswCQYDVQQGEwJJ
+TjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCZW5nYWx1cnUxEzARBgNV
+BAoTCmZ1c2lvbi5jb20xFzAVBgNVBAsTDmFpci5mdXNpb24uY29tMRMwEQYDVQQD
+EwpBcmFmIEthcnNoMB4XDTIzMDgyNDAxMzAyNFoXDTI0MDgyMzAxMzAyNFoweDEL
+MAkGA1UEBhMCSU4xEjAQBgNVBAgTCUthcm5hdGFrYTESMBAGA1UEBxMJQmVuZ2Fs
+dXJ1MRMwEQYDVQQKEwpmdXNpb24uY29tMRcwFQYDVQQLEw5haXIuZnVzaW9uLmNv
+bTETMBEGA1UEAxMKQXJhZiBLYXJzaDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+AQoCggEBAIsYFUilbS7SIhhjyTWKcT3YqrOjT+bv3V0Cs6L06ysM573hlDD3Nb0e
++Zkrpj1xYJWYxwqwYvhwRzD8vUeCUabb9dC9tMRCMh0NQ2eSVYI3m+DDtcsAaU/N
+GltSHU6rLqKrs2RtC51h+3k+81td95s4bddQhgSLebP29ghwaUzFkzbvHb46nBBq
+YGAQVv+obYeFhrr6Au8YC619Zr7hDe/ryHX8jPmDFWrjIhSQROAPueznTSBw3lBz
+bHfVSedoObIXBBuUYII62KWNHAdVCX6n0AOTVzDvXA7s/kyy5W1qhPcnv2G+qwog
+oO/24V4M50L3sxgE2tx+IgFQJ9Hx/J0CAwEAAaMhMB8wHQYDVR0OBBYEFPSvXLHG
+cOIzcnOVnLZUKDwrtlGDMA0GCSqGSIb3DQEBCwUAA4IBAQCETORslweAZhyQessE
+sZ5vTimSEZlchRqVaY0CKipnnFbizsnj+Xi8Rn86UxGk3BOvjoB499h28QjQpVFt
+WbUv0T12v7OHtpftUNK70oATPR3O2uXXoA2/zVbJ7vuCaEGUpjh/2Vsv6eeqe7YP
+c6GLzmNIlPRv2Mdppv0woXS5ru6SWiBIZH7qnN1RCBmXMbh8DHDMvoobqy/g7qL8
+JZwtwDfJUx1aPCFJrgpC+3BEhsUSU9IJt1GrYCNNuRi2uqeKSImoRJFkD0HC5Mu8
+1ut8oyE/0ZeJbFpVXyRN0XgAr7nArqahOIlJio+FiwAon+mLW7sCTXPmNghnGY6S
+dVUs
+-----END CERTIFICATE-----

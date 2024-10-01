@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.fusion.air</groupId>
 	<artifactId>ms-vanilla-service</artifactId>
-	<version>0.3.1</version>
+	<version>0.1.1</version>
 	<packaging>jar</packaging>
 	<name>msVanillaService</name>
 	<description>Microservice Vanilla Template</description>
@@ -38,6 +38,7 @@
 		<slf4j.version>2.0.16</slf4j.version>
 		<logback.version>1.5.8</logback.version>
 		<google.guava.version>33.3.1-jre</google.guava.version>
+
 		<apache.httpcore>4.5.13</apache.httpcore>
 		<apache.httpclient>5.2.1</apache.httpclient>
 		<apache.commons.version>3.12.0</apache.commons.version>
@@ -453,9 +454,6 @@
 			<version>${openapi.version}</version>
 		</dependency>
 
-
-
-
 		<!-- End of Dependency Definitions -->
 	</dependencies>
 
@@ -501,7 +499,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Maven Jar Pluggin with dependencies in libs folder -->
+			<!-- Maven Jar Plugin with dependencies in libs folder -->
 			<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

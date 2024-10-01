@@ -15,12 +15,13 @@
  */
 package io.fusion.air.microservice.server.config;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+
+// Spring
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -29,9 +30,11 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
+// DB
 import jakarta.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * @author: Araf Karsh Hamid
@@ -42,40 +45,57 @@ import javax.sql.DataSource;
 @EntityScan("io.fusion.air.microservice.domain.*")
 @EnableJpaRepositories(basePackages = { "io.fusion.air.microservice.domain.ports", "io.fusion.air.microservice.adapters.repository" })
 @EnableTransactionManagement
-public class JpaConfig {
+public class DatabaseSetup {
 
     @Autowired
-    private ServiceConfiguration serviceConfig;
+    private DatabaseConfig dbConfig;
 
     /**
      * Create the DataSource for H2 Database
      * @return
      */
-    @Bean
     public DataSource dataSource() {
-        switch(serviceConfig.getDataSourceVendor()) {
-            case ServiceConfiguration.DB_H2:
-                // For H2 Database
-                EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-                return builder.setType(EmbeddedDatabaseType.H2).build();
-            case ServiceConfiguration.DB_POSTGRESQL:
-                // For PostgreSQL Database
-                HikariConfig config = new HikariConfig();
-
-                config.setDataSourceClassName(serviceConfig.getDataSourceDriverClassName());
-                config.addDataSourceProperty("serverName", serviceConfig.getDataSourceServer());
-                config.addDataSourceProperty("portNumber", ""+serviceConfig.getDataSourcePort());
-                config.addDataSourceProperty("databaseName", serviceConfig.getDataSourceName());
-                config.addDataSourceProperty("user", serviceConfig.getDataSourceUserName());
-                config.addDataSourceProperty("password", serviceConfig.getDataSourcePassword());
-                config.setSchema(serviceConfig.getDataSourceSchema());
-
-                // postgress configuration for Hikari
-                return new HikariDataSource(config);
+        switch(dbConfig.getDataSourceVendor()) {
+            case DatabaseConfig.DB_H2:
+                return h2DataSource();
+            case DatabaseConfig.DB_POSTGRESQL:
+                return postgreSQLDataSource();
         }
         // Returns H2 Database if Nothing Matches
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         return builder.setType(EmbeddedDatabaseType.H2).build();
+    }
+
+    /**
+     * Profile Will be active for Staging Only
+     * @return
+     */
+    @Bean
+    @Profile("dev")
+    public DataSource h2DataSource() {
+        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+        return builder.setType(EmbeddedDatabaseType.H2).build();
+    }
+
+    /**
+     * Profile will be active for Staging or Prod
+     * @return
+     */
+    @Bean
+    @Profile("staging | prod")
+    public DataSource postgreSQLDataSource() {
+        // For PostgreSQL Database
+        HikariConfig config = new HikariConfig();
+        config.setDataSourceClassName(dbConfig.getDataSourceDriverClassName());
+        config.addDataSourceProperty("serverName", dbConfig.getDataSourceServer());
+        config.addDataSourceProperty("portNumber", ""+ dbConfig.getDataSourcePort());
+        config.addDataSourceProperty("databaseName", dbConfig.getDataSourceName());
+        config.addDataSourceProperty("user", dbConfig.getDataSourceUserName());
+        config.addDataSourceProperty("password", dbConfig.getDataSourcePassword());
+        config.setSchema(dbConfig.getDataSourceSchema());
+
+        // postgress configuration for Hikari
+        return new HikariDataSource(config);
     }
 
     /**
@@ -86,8 +106,7 @@ public class JpaConfig {
     public EntityManagerFactory entityManagerFactory() {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
-        // vendorAdapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQLDialect");
-        vendorAdapter.setDatabasePlatform(serviceConfig.getDataSourceDialect());
+        vendorAdapter.setDatabasePlatform(dbConfig.getDataSourceDialect());
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);

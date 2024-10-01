@@ -1,6 +1,11 @@
 #!/bin/sh
 # ============================================================================
-# Export Database 
+# Database Builder
 # @author: Araf Karsh Hamid
 # ============================================================================
-pg_dump -U postgres -h localhost -p 5433 -d ms_vanilla_334 -n ms_schema > ms-sb334_new.sql
+user='postgres'
+port=5433
+
+echo "Connecting to the postgreSQL Server... "
+psql -h localhost -p $port -U $user < createdb.sql
+

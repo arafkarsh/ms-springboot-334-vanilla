@@ -17,20 +17,20 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: ms_schema; Type: SCHEMA; Schema: -; Owner: arafkarsh
+-- Name: ms_schema; Type: SCHEMA; Schema: -; Owner: msadm
 --
 
 CREATE SCHEMA ms_schema;
 
 
-ALTER SCHEMA ms_schema OWNER TO arafkarsh;
+ALTER SCHEMA ms_schema OWNER TO msadm;
 
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: carts_tx; Type: TABLE; Schema: ms_schema; Owner: postgres
+-- Name: carts_tx; Type: TABLE; Schema: ms_schema; Owner: msadm
 --
 
 CREATE TABLE ms_schema.carts_tx (
@@ -49,14 +49,14 @@ CREATE TABLE ms_schema.carts_tx (
 );
 
 
-ALTER TABLE ms_schema.carts_tx OWNER TO postgres;
+ALTER TABLE ms_schema.carts_tx OWNER TO msadm;
 
 --
--- Name: country_m; Type: TABLE; Schema: ms_schema; Owner: postgres
+-- Name: country_m; Type: TABLE; Schema: ms_schema; Owner: msadm
 --
 
 CREATE TABLE ms_schema.country_m (
-    countryuuid character(36) NOT NULL,
+    countryuuid uuid NOT NULL,
     countrycode character varying(255) NOT NULL,
     countryid integer NOT NULL,
     countryname character varying(255) NOT NULL,
@@ -64,10 +64,10 @@ CREATE TABLE ms_schema.country_m (
 );
 
 
-ALTER TABLE ms_schema.country_m OWNER TO postgres;
+ALTER TABLE ms_schema.country_m OWNER TO msadm;
 
 --
--- Name: country_t; Type: TABLE; Schema: ms_schema; Owner: arafkarsh
+-- Name: country_t; Type: TABLE; Schema: ms_schema; Owner: msadm
 --
 
 CREATE TABLE ms_schema.country_t (
@@ -79,14 +79,14 @@ CREATE TABLE ms_schema.country_t (
 );
 
 
-ALTER TABLE ms_schema.country_t OWNER TO arafkarsh;
+ALTER TABLE ms_schema.country_t OWNER TO msadm;
 
 --
--- Name: products_m; Type: TABLE; Schema: ms_schema; Owner: postgres
+-- Name: products_m; Type: TABLE; Schema: ms_schema; Owner: msadm
 --
 
 CREATE TABLE ms_schema.products_m (
-    uuid bpchar NOT NULL,
+    uuid uuid NOT NULL,
     createdby character varying(255) NOT NULL,
     createdtime timestamp(6) without time zone NOT NULL,
     updatedby character varying(255) NOT NULL,
@@ -100,10 +100,10 @@ CREATE TABLE ms_schema.products_m (
 );
 
 
-ALTER TABLE ms_schema.products_m OWNER TO postgres;
+ALTER TABLE ms_schema.products_m OWNER TO msadm;
 
 --
--- Data for Name: carts_tx; Type: TABLE DATA; Schema: ms_schema; Owner: postgres
+-- Data for Name: carts_tx; Type: TABLE DATA; Schema: ms_schema; Owner: msadm
 --
 
 COPY ms_schema.carts_tx (uuid, createdby, createdtime, updatedby, updatedtime, isactive, version, customerid, productid, productname, price, quantity) FROM stdin;
@@ -113,7 +113,7 @@ COPY ms_schema.carts_tx (uuid, createdby, createdtime, updatedby, updatedtime, i
 
 
 --
--- Data for Name: country_m; Type: TABLE DATA; Schema: ms_schema; Owner: postgres
+-- Data for Name: country_m; Type: TABLE DATA; Schema: ms_schema; Owner: msadm
 --
 
 COPY ms_schema.country_m (countryuuid, countrycode, countryid, countryname, countryofficialname) FROM stdin;
@@ -121,7 +121,7 @@ COPY ms_schema.country_m (countryuuid, countrycode, countryid, countryname, coun
 
 
 --
--- Data for Name: country_t; Type: TABLE DATA; Schema: ms_schema; Owner: arafkarsh
+-- Data for Name: country_t; Type: TABLE DATA; Schema: ms_schema; Owner: msadm
 --
 
 COPY ms_schema.country_t (cid, countryid, countrycode, countryname, countryofficialname) FROM stdin;
@@ -152,7 +152,7 @@ COPY ms_schema.country_t (cid, countryid, countrycode, countryname, countryoffic
 
 
 --
--- Data for Name: products_m; Type: TABLE DATA; Schema: ms_schema; Owner: postgres
+-- Data for Name: products_m; Type: TABLE DATA; Schema: ms_schema; Owner: msadm
 --
 
 COPY ms_schema.products_m (uuid, createdby, createdtime, updatedby, updatedtime, isactive, version, productdetails, productlocationzipcode, productname, price) FROM stdin;
@@ -176,7 +176,7 @@ f2cc6216-9d04-4f3f-882f-4f1567a1a449	john.doe	2023-06-25 23:09:04.734	john.doe	2
 
 
 --
--- Name: carts_tx carts_tx_pkey; Type: CONSTRAINT; Schema: ms_schema; Owner: postgres
+-- Name: carts_tx carts_tx_pkey; Type: CONSTRAINT; Schema: ms_schema; Owner: msadm
 --
 
 ALTER TABLE ONLY ms_schema.carts_tx
@@ -184,7 +184,7 @@ ALTER TABLE ONLY ms_schema.carts_tx
 
 
 --
--- Name: country_m country_m_pkey; Type: CONSTRAINT; Schema: ms_schema; Owner: postgres
+-- Name: country_m country_m_pkey; Type: CONSTRAINT; Schema: ms_schema; Owner: msadm
 --
 
 ALTER TABLE ONLY ms_schema.country_m
@@ -192,7 +192,7 @@ ALTER TABLE ONLY ms_schema.country_m
 
 
 --
--- Name: country_t country_t_pkey; Type: CONSTRAINT; Schema: ms_schema; Owner: arafkarsh
+-- Name: country_t country_t_pkey; Type: CONSTRAINT; Schema: ms_schema; Owner: msadm
 --
 
 ALTER TABLE ONLY ms_schema.country_t
@@ -200,7 +200,7 @@ ALTER TABLE ONLY ms_schema.country_t
 
 
 --
--- Name: products_m products_m_pkey1; Type: CONSTRAINT; Schema: ms_schema; Owner: postgres
+-- Name: products_m products_m_pkey1; Type: CONSTRAINT; Schema: ms_schema; Owner: msadm
 --
 
 ALTER TABLE ONLY ms_schema.products_m

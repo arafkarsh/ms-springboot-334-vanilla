@@ -1,0 +1,4 @@
+CREATE DATABASE ms_vanilla_334;
+CREATE USER msadm WITH PASSWORD '2024.?.Sigma';
+GRANT ALL PRIVILEGES ON DATABASE ms_vanilla_334 to msadm;
+ALTER DATABASE ms_vanilla_334 OWNER TO msadm;

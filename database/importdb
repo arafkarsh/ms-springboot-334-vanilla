@@ -1,1 +1,6 @@
-psql -h localhost -p 5433 ms_cache_310 < ms-sb310.sql
+#!/bin/sh
+# ============================================================================
+# Import Database 
+# @author: Araf Karsh Hamid
+# ============================================================================
+psql -h localhost -p 5433 ms_vanilla_334 < ms-sb334.sql

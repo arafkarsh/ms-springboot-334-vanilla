@@ -21,9 +21,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 
-import static org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
-
 import java.time.Duration;
+
+import static org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
 
 /**
  * Redis Cache Configuration for Product Microservice
@@ -32,7 +32,7 @@ import java.time.Duration;
  * @date:
  */
 @Configuration
-public class CacheConfig {
+public class CacheSetup {
 
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
