@@ -43,6 +43,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.util.unit.DataSize;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,9 +62,7 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -107,6 +106,9 @@ public class ServiceBootStrap {
 	// Get the Service Name from the properties file
 	@Value("${service.name:NameNotDefined}")
 	private String serviceName = "Unknown";
+
+	@Value("${spring.profiles.default:dev}")
+	private static String devMode;
 	
 	/**
 	 * Start the Microservice
@@ -127,6 +129,12 @@ public class ServiceBootStrap {
 		log.info("Booting Service ..... ..");
 		try {
 			context = SpringApplication.run(ServiceBootStrap.class, args);
+			// Set a default profile if no other profile is specified
+			ConfigurableEnvironment environment = context.getEnvironment();
+			if (environment.getActiveProfiles().length == 0) {
+				log.info("Profile is missing, so defaulting to "+devMode+" Profile!");
+				environment.addActiveProfile(devMode);
+			}
 			log.info("Booting Service ..... ...Startup completed!");
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.server.service;
- 
+
+// Custom
 import io.fusion.air.microservice.security.JsonWebToken;
 import io.fusion.air.microservice.security.TokenManager;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.config.ServiceHelp;
+import io.fusion.air.microservice.utils.CPU;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.MDC;
@@ -28,18 +30,16 @@ import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
-
-import io.fusion.air.microservice.utils.CPU;
-
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 //Logging System
 import org.slf4j.Logger;
-
+// Java
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import static org.slf4j.LoggerFactory.getLogger;
-
 import static java.lang.invoke.MethodHandles.lookup;
 
 /**
@@ -70,8 +70,33 @@ public class ServiceEventListener {
 	@Value("${server.token.refresh.expiry:1800000}")
 	private long tokenRefreshExpiry;
 
-	@Value("${server.dev.mode:true}")
-	private boolean devMode;
+	@Value("${spring.profiles.default:dev}")
+	private String devMode;
+
+	@Autowired
+	private ConfigurableEnvironment environment;
+
+	private boolean  getDevMode() {
+		// System.out.println("<><><><1> Profile = "+devMode);
+		return (devMode == null || devMode.equalsIgnoreCase("dev")) ? true : false;
+	}
+
+	private String getActiveProfile() {
+		// System.out.println("Total Profiles = "+environment.getActiveProfiles().length);
+		// System.out.println("Checking Active Profiles.... ");
+		if (environment.getActiveProfiles().length == 0) {
+			log.info("PROFILE is missing, so defaulting to "+devMode+" Profile!");
+			environment.addActiveProfile(devMode);
+		}
+		// System.out.println("Total Profiles = "+environment.getActiveProfiles().length);
+		StringBuilder sb = new StringBuilder();
+		for(String profile : environment.getActiveProfiles()) {
+			sb.append(profile).append(" ");
+		}
+		String profile = sb.toString().trim().replaceAll(" ", ", ");
+		log.info("Profiles = "+profile);
+		return profile;
+	}
 
 	/**
 	 * Shows Logo and Generate Test Tokens
@@ -83,7 +108,7 @@ public class ServiceEventListener {
 		showLogo();
 		// Initialize the Token
 		jsonWebToken.init(serviceConfig.getTokenType());
-		if(serverTokenTest && devMode) {
+		if(serverTokenTest && getDevMode() ) {
 			log.debug("Generate Test Tokens = {} ", serverTokenTest);
 			generateTestToken();
 		}
@@ -193,13 +218,20 @@ public class ServiceEventListener {
 				+ " :: Mode = "+geDeploymentMode()
 				+ " :: Restart = "+ServiceHelp.getCounter()
 				+ ServiceHelp.NL + ServiceHelp.DL);
-		if(devMode) {
+		// if(getDevMode() ) {
 			log.info(ServiceHelp.NL + "API URL : " + serviceConfig.apiURL()
 					+ ServiceHelp.NL + ServiceHelp.DL
 			);
-		}
+		//}
 	}
 	private String geDeploymentMode() {
-		return (devMode) ? "Staging" : "Production";
+		// System.out.println("<><><><2> Profile = "+getActiveProfile());
+		// System.out.println("<><><><3> Profile = "+devMode);
+		return switch (getActiveProfile()) {
+            case "dev" -> "Development";
+            case "staging" -> "Staging";
+            case "prod" -> "Production";
+            default -> "Development";
+        };
 	}
 }
