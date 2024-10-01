@@ -10,6 +10,8 @@ src/docker/Dockerfile-r
 
 ### Dont Commit Private Keys
 privateKey.pem
+privateKey-ds.pem
+privateKey-Data.pem
 
 ### STS ###
 .apt_generated
