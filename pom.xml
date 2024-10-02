@@ -54,11 +54,12 @@
 		<jakarta.servlet.version>6.0.0</jakarta.servlet.version>
 		<jakarta.persistence.version>3.1.0</jakarta.persistence.version>
 		<jakarta.jaxb.version>4.0.2</jakarta.jaxb.version>
-		<hibernate.version>8.0.1.Final</hibernate.version>
+		<jaxb.version>2.3.1</jaxb.version>
+
+		<hibernate.version>8.0.0.Final</hibernate.version>
+		<!-- <hibernate.version>9.0.0.Beta3</hibernate.version> -->
 		<hibernate.core.version>6.6.1.Final</hibernate.core.version>
 		<postgresql.version>42.7.4</postgresql.version>
-
-		<jaxb.version>2.3.1</jaxb.version>
 
 		<!-- Spring Libraries ============================================== -->
 		<spring.boot.version>3.3.4</spring.boot.version>
@@ -81,10 +82,12 @@
 			<id>central</id>
 			<url>https://repo.maven.apache.org/maven2</url>
 		</repository>
+		<!--
 		<repository>
 			<id>jboss-public-repository</id>
 			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
 		</repository>
+		-->
 	</repositories>
 
 	<dependencies>
@@ -120,20 +123,11 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
-		<!--
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
-		-->
-		<!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
-		<dependency>
-			<groupId>org.hibernate.validator</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>8.0.1.Final</version>
-		</dependency>
-
 
 		<!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core -->
 		<dependency>
@@ -526,6 +520,7 @@
 			</plugin>
 			<!-- Maven Jar Plugin with dependencies in libs folder -->
 			<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
+			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -545,6 +540,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			-->
 			<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
