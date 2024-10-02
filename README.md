@@ -71,7 +71,7 @@ Without generated application.properties file the service will NOT be running. T
 ![Run Results](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Run-Result.jpg)
 
 #### MS Cache Swagger UI Docs for Testing
-![Swagger Docs](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Cache-Swagger-UI.jpg)
+![Swagger Docs](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Vanilla-Swagger-UI.jpg)
 
 ### Step 1.4 - Testing the APIs Using Swagger API Docs or Postman
 
@@ -84,7 +84,7 @@ ServiceEventListener.java in the package documentation io.fusion.air.microservic
 production environment. 
 
 #### Step 1.4.1: Copy the Auth Token
-![Authorize Request](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/ms-cache-with-Test-Tokens.jpg)
+![Authorize Request](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/ms-vanilla-with-Test-Tokens.jpg)
 
 #### Step 1.4.2: Click on the Authorize Button (Top Left the Swagger UI)
 

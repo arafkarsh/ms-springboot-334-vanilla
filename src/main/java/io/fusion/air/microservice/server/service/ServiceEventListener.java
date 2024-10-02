@@ -142,13 +142,13 @@ public class ServiceEventListener {
 
 		String token = tokens.get("token");
 		String refresh = tokens.get("refresh");
-		log.debug("\nToken Expiry in Days:Hours:Mins  {} ", JsonWebToken.printExpiryTime(tokenAuthExpiry));
+		log.info("Token Expiry in Days:Hours:Mins  {} ", JsonWebToken.printExpiryTime(tokenAuthExpiry));
 		jsonWebToken.tokenStats(token, false, false);
 
-		log.debug("\nRefresh Token Expiry in Days:Hours:Mins  {}", JsonWebToken.printExpiryTime(tokenRefreshExpiry));
+		log.info("Refresh Token Expiry in Days:Hours:Mins  {}", JsonWebToken.printExpiryTime(tokenRefreshExpiry));
 		jsonWebToken.tokenStats(refresh, false, false);
 
-		log.debug("\nTx-Token Expiry in Days:Hours:Mins  {}", JsonWebToken.printExpiryTime(tokenRefreshExpiry));
+		log.info("Tx-Token Expiry in Days:Hours:Mins  {}", JsonWebToken.printExpiryTime(tokenRefreshExpiry));
 		String txToken = tokenManager.createTXToken(subject, type, null);
 		jsonWebToken.tokenStats(txToken, false, false);
 

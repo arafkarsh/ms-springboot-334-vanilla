@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.fusion.air.microservice.adapters.controllers;
+package io.fusion.air.microservice.adapters.controllers.open;
 
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.entities.example.ProductEntity;
@@ -26,7 +26,6 @@ import io.fusion.air.microservice.domain.models.example.Product;
 import io.fusion.air.microservice.domain.ports.services.ProductService;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.controllers.AbstractController;
-import io.fusion.air.microservice.utils.Utils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
