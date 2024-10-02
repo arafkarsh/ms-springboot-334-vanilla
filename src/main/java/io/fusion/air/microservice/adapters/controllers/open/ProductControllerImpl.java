@@ -16,7 +16,7 @@
 package io.fusion.air.microservice.adapters.controllers.open;
 
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
-import io.fusion.air.microservice.domain.entities.example.ProductEntity;
+import io.fusion.air.microservice.domain.entities.order.ProductEntity;
 import io.fusion.air.microservice.domain.exceptions.*;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.domain.models.example.PaymentDetails;

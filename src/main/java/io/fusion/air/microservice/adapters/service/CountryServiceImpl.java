@@ -15,7 +15,7 @@
  */
 package io.fusion.air.microservice.adapters.service;
 
-import io.fusion.air.microservice.domain.entities.example.CountryEntity;
+import io.fusion.air.microservice.domain.entities.order.CountryEntity;
 import io.fusion.air.microservice.adapters.repository.CountryRepository;
 import io.fusion.air.microservice.domain.ports.services.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;

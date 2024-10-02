@@ -16,7 +16,7 @@
 package io.fusion.air.microservice.adapters.service;
 
 import io.fusion.air.microservice.adapters.repository.ProductRepository;
-import io.fusion.air.microservice.domain.entities.example.ProductEntity;
+import io.fusion.air.microservice.domain.entities.order.ProductEntity;
 import io.fusion.air.microservice.domain.exceptions.DataNotFoundException;
 
 import io.fusion.air.microservice.domain.models.example.Product;
@@ -29,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
 
 
-import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;

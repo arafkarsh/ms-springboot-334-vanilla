@@ -36,6 +36,7 @@ import org.slf4j.MDC;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.ResponseCookie;
 
 /**
  * 
@@ -267,7 +268,29 @@ public final class Utils {
 		}
 		return "";
 	}
-	
+
+	private static final ObjectMapper objectMapper = new ObjectMapper();
+
+	static {
+		// Configure objectMapper for your needs
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	}
+
+	/**
+	 * Convert JSON to Object
+	 * @param jsonString
+	 * @param targetClass
+	 * @return
+	 * @param <T>
+	 */
+	public static <T> T fromJsonToObject(String jsonString, Class<T> targetClass) {
+		try {
+			return objectMapper.readValue(jsonString, targetClass);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Failed to convert JSON string to object: " + e.getMessage(), e);
+		}
+	}
+
 	/**
 	 * String Utilities
 	 * 
@@ -314,9 +337,11 @@ public final class Utils {
 	 * @param request
 	 * @param _key
 	 * @param _value
+	 * @deprecated Use createSecureCookie(String _key, String _value)
+	 * @see #createSecureCookie(String, String)
 	 * @return
 	 */
-	public static Cookie createCookie(HttpServletRequest request, String _key, String _value) {
+	public static Cookie createSecureCookie(HttpServletRequest request, String _key, String _value) {
 		Cookie c = new Cookie(_key, _value);
 		// c.setDomain(serviceConfig.getServerHost());
 		c.setSecure(true);
@@ -333,15 +358,150 @@ public final class Utils {
 	 * @param _value
 	 * @param _age
 	 * @return
+	 * @deprecated Use createSecureCookie(String _key, String _value)
+	 *  @see #createSecureCookie(String, String, String, int)
 	 */
-	public static Cookie createCookie(HttpServletRequest request, String _key, String _value, int _age) {
+	public static Cookie createSecureCookie(HttpServletRequest request, String _key, String _value, int _age) {
 		Cookie c = new Cookie(_key, _value);
 		// c.setDomain(serviceConfig.getServerHost());
 		c.setSecure(true);
 		c.setHttpOnly(true);
 		c.setMaxAge(_age);
-		// c.setPath(request.getRequestURI());
+		c.setPath(request.getRequestURI());
 		return c;
+	}
+
+	/**
+	 * Create Secure Cookie
+	 *
+	 * @param _key
+	 * @param _value
+	 * @return
+	 */
+	public static String createSecureCookie(String _key, String _value) {
+		return createSecureCookie( MDC.get("URI"), _key, _value, 3600);
+	}
+
+	/**
+	 * Create Secure Cookie
+	 * @param _key
+	 * @param _value
+	 * @param _age
+	 * @return
+	 */
+	public static String createSecureCookie(String _key, String _value, int _age) {
+		return createSecureCookie( MDC.get("URI"), _key, _value, _age);
+	}
+	/**
+	 * Create Secure Cookie
+	 *
+	 * @param _path
+	 * @param _key
+	 * @param _value
+	 * @param _age
+	 * @return
+	 */
+	public static String createSecureCookie(String _path, String _key, String _value, int _age) {
+		if(_value == null || _value.isEmpty()) {
+			throw new IllegalArgumentException("Invalid Value for the Cookie: "+_value);
+		}
+		if (_value.matches("[\\r\\n]")) {
+			throw new IllegalArgumentException("Invalid characters For the Cookie Value: "+_value);
+		}
+		String path = (_path == null) ? "/" : _path;
+		ResponseCookie cookie = ResponseCookie.from(_key, _value)
+				.httpOnly(true)         // Protects against XSS attacks.
+				.secure(true)           // Cookie will only be sent over HTTPS, not with unsecured HTTP.
+				.path(path)             // Define the path for the cookie.
+				.maxAge(_age)    		// Expire the cookie after X mins.
+				.sameSite("Strict")     // Mitigate CSRF attacks by restricting the sending of the cookie to same-site requests only.
+				.build();
+		return cookie.toString();
+	}
+
+	/**
+	 * Returns HttpHeaders with Secure Cookie
+	 *
+	 * @param _key
+	 * @param _value
+	 * @return
+	 */
+	public static HttpHeaders createSecureCookieHeaders(String _key, String _value) {
+		return createSecureCookieHeaders(null, _key, _value);
+	}
+
+	/**
+	 * Returns HttpHeaders with Secure Cookie
+	 *
+	 * @param _key
+	 * @param _value
+	 * @param _age
+	 * @return
+	 */
+	public static HttpHeaders createSecureCookieHeaders(String _key, String _value, int _age) {
+		return createSecureCookieHeaders(null, _key, _value, _age);
+	}
+
+	/**
+	 * Returns HttpHeaders with Secure Cookie
+	 *
+	 * @param headers
+	 * @param _key
+	 * @param _value
+	 * @return
+	 */
+	public static HttpHeaders createSecureCookieHeaders(HttpHeaders headers, String _key, String _value) {
+		return createSecureCookieHeaders(headers, _key, _value, 3600);
+	}
+
+	/**
+	 * Returns HttpHeaders with Secure Cookie
+	 *
+	 * @param headers
+	 * @param _key
+	 * @param _value
+	 * @param _age
+	 * @return
+	 */
+	public static HttpHeaders createSecureCookieHeaders(HttpHeaders headers, String _key, String _value, int _age) {
+		return createSecureCookieHeaders(headers,MDC.get("URI"), _key, _value, _age);
+	}
+
+	/**
+	 * Returns HttpHeaders with Secure Cookie
+	 *
+	 * @param headers
+	 * @param _path
+	 * @param _key
+	 * @param _value
+	 * @param _age
+	 * @return
+	 */
+	public static HttpHeaders createSecureCookieHeaders(HttpHeaders headers, String _path, String _key, String _value, int _age) {
+		if(headers == null) {
+			headers = new HttpHeaders();
+		}
+		if(_path == null) {
+			_path = MDC.get("URI");
+		}
+		headers.add(HttpHeaders.SET_COOKIE, createSecureCookie(_path, _key, _value, _age));
+		return headers;
+	}
+
+	/**
+	 * Returns the Cookie Map
+	 * @param request
+	 * @return
+	 */
+	public static HashMap<String, String> getCookieMap(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		HashMap<String, String> cookieMap = new HashMap<String, String>();
+		if(cookies != null) {
+			for(Cookie cookie : cookies) {
+				cookieMap.put(cookie.getName(), cookie.getValue());
+			}
+		}
+		return cookieMap;
 	}
 
 	/**
@@ -423,6 +583,12 @@ public final class Utils {
 		return sb.toString();
 	}
 
+	public static void generateUUIDs() {
+		for(int x=0; x<10; x++) {
+			System.out.println(x+" UUID = "+UUID.randomUUID());
+		}
+	}
+
 	/**
 	 * For Testing ONLY
 	 * @param args
@@ -430,6 +596,7 @@ public final class Utils {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		System.out.println("Utils.toJsonString() = "+Utils.toJsonString(new ServiceConfiguration("localhost", 9090)));
+		generateUUIDs();
+		// System.out.println("Utils.toJsonString() = "+Utils.toJsonString(new ServiceConfiguration("localhost", 9090)));
 	}
 }

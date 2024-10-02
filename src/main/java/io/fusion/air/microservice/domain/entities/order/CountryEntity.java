@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.fusion.air.microservice.domain.entities.example;
+package io.fusion.air.microservice.domain.entities.order;
 
 import java.io.Serializable;
 import java.util.Objects;

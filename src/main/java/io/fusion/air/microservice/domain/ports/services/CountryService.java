@@ -1,6 +1,6 @@
 package io.fusion.air.microservice.domain.ports.services;
 
-import io.fusion.air.microservice.domain.entities.example.CountryEntity;
+import io.fusion.air.microservice.domain.entities.order.CountryEntity;
 import java.util.List;
 
 /**

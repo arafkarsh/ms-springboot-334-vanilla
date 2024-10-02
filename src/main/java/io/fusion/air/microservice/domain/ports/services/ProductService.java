@@ -15,10 +15,8 @@
  */
 package io.fusion.air.microservice.domain.ports.services;
 
-import io.fusion.air.microservice.domain.entities.example.ProductEntity;
+import io.fusion.air.microservice.domain.entities.order.ProductEntity;
 import io.fusion.air.microservice.domain.models.example.Product;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
