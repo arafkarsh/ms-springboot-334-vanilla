@@ -77,7 +77,7 @@ public class ServiceEventListener {
 	private boolean  getDevMode() {
 		// System.out.println("<><><><1> Profile = "+devMode);
 		activeProfile = getActiveProfile();
-		return (activeProfile == null || activeProfile.equalsIgnoreCase("dev")) ? true : false;
+		return (activeProfile != null && activeProfile.equalsIgnoreCase("prod")) ? false : true;
 	}
 
 	private String getActiveProfile() {

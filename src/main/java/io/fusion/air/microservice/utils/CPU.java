@@ -86,7 +86,7 @@ public class CPU {
 			log.info("OS MXBean "+_osMXBean+"() Invalid!");
 			return "";
 		}
-		Object value = new Long("0");
+		Object value =  Long.valueOf("0");
 		Method method = methodsMap.get(_methodName);
 		if(method != null) {
 			try {
@@ -105,7 +105,6 @@ public class CPU {
 	}
 
 	// ---------------------------------------------------------------------------
-
 	/**
 	 * Prints All the CPU Stats
 	 */
@@ -117,7 +116,6 @@ public class CPU {
 
 	// ============  All CPU Stat Public Methods =================================
 	//  Memory Details -----------------------------------------------------------
-
 	/**
 	 * Get Committed Virtual Memory Size
 	 * @return
@@ -179,7 +177,6 @@ public class CPU {
 	}
 
 	//  File Descriptor Count ----------------------------------------------------
-
 	/**
 	 * Get Open File Descriptor Count
 	 * @return
@@ -203,7 +200,6 @@ public class CPU {
 	}
 
 	// CPU LOAD -------------------------------------------------------------------
-
 	/**
 	 * Get System CPU Load
 	 * @return

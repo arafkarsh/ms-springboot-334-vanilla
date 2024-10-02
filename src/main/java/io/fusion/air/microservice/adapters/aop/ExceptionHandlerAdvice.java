@@ -29,7 +29,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.firewall.RequestRejectedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -150,19 +149,18 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> createErrorResponse(Throwable _exception, String _message, String _errorCode,
                                                        HttpHeaders _headers, HttpStatus _httpStatus, WebRequest _request) {
 
-        String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AK";
-        String errorCode = errorPrefix+_errorCode;
-        if(_exception instanceof AbstractServiceException) {
-            AbstractServiceException ase = (AbstractServiceException)_exception;
-            ase.setErrorCode(errorCode);
+        String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AKH";           // Microservice Prefix
+        String errorCode = errorPrefix+_errorCode;                                                                       // Error Code
+        if(_exception instanceof AbstractServiceException ase) {
+            ase.setErrorCode(errorCode);                                                                                     // Set the Error Code
         }
-        logException(errorCode,  _exception);
+        logException(errorCode,  _exception);                                                                               // Log Exception
         StandardResponse stdResponse = Utils.createErrorResponse(
-                null, errorPrefix, _errorCode, _httpStatus,  _message);
-        if(_headers != null) {
-            return new ResponseEntity<>(stdResponse, _headers, _httpStatus);
-        }
-        return new ResponseEntity<>(stdResponse, _httpStatus);
+                null, errorPrefix, _errorCode, _httpStatus,  _message);                                // Std Response
+
+        return (_headers != null)
+                ?  new ResponseEntity<>(stdResponse, _headers, _httpStatus)                                         // HTTP Response
+                : new ResponseEntity<>(stdResponse, _httpStatus);
     }
 
     // ================================================================================================================
@@ -297,6 +295,17 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * JWT Invalid Signature Exception
+     * @param _adEx
+     * @param _request
+     * @return
+     */
+    @ExceptionHandler(value = JWTInvalidSignatureException.class)
+    public ResponseEntity<Object> JWTInvalidSignatureException(JWTInvalidSignatureException _adEx,  WebRequest _request) {
+        return createErrorResponse(_adEx,  "417",  _request);
+    }
+
+    /**
      * JWT UnDefined Exception
      * @param _adEx
      * @param _request
@@ -304,11 +313,11 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(value = JWTUnDefinedException.class)
     public ResponseEntity<Object> JWTUnDefinedException(JWTUnDefinedException _adEx,  WebRequest _request) {
-        return createErrorResponse(_adEx,  "417",  _request);
+        return createErrorResponse(_adEx,  "429",  _request);
     }
 
     // ================================================================================================================
-    // DATABASE EXCEPTIONS: ERROR CODES 430 - 439
+    // MESSAGING EXCEPTIONS: ERROR CODES 430 - 439
     // ================================================================================================================
     /**
      * Messaging Exception
@@ -486,7 +495,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(value = PersistenceException.class)
     public ResponseEntity<Object> handlePersistenceException(PersistenceException _pEx, WebRequest _request) {
-        return createErrorResponse(_pEx,  "Unable to Save Data!", "458", _request);
+        return createErrorResponse(_pEx,  "Persistence Error: "+_pEx.getMessage(), "458", _request);
     }
 
     /**
@@ -534,6 +543,17 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = MandatoryDataRequiredException.class)
     public ResponseEntity<Object> handleMandatoryDataRequiredException(MandatoryDataRequiredException _mdrEx,  WebRequest _request) {
         return createErrorResponse(_mdrEx,  "462", _request);
+    }
+
+    /**
+     * Rate Limit Exceeded Exception
+     * @param _mdrEx
+     * @param _request
+     * @return
+     */
+    @ExceptionHandler(value = LimitExceededException.class)
+    public ResponseEntity<Object> handleLimitExceededException(LimitExceededException _mdrEx, WebRequest _request) {
+        return createErrorResponse(_mdrEx,  "464", _request);
     }
 
     /**

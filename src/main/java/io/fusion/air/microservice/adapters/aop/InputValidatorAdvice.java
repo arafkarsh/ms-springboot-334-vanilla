@@ -66,7 +66,7 @@ public class InputValidatorAdvice extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException _manvEx,
                                       HttpHeaders _headers, HttpStatus _status, WebRequest _request) {
 
-        String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AK";
+        String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AKH";
         String errorMsg = "Input Errors: Invalid Method Arguments";
         long startTime = System.currentTimeMillis();
         String status = "STATUS=ERROR: "+errorMsg;
