@@ -38,10 +38,10 @@
 		<slf4j.version>2.0.16</slf4j.version>
 		<logback.version>1.5.8</logback.version>
 		<google.guava.version>33.3.1-jre</google.guava.version>
+		<!-- <apache.httpcore>4.5.13</apache.httpcore> -->
+		<apache.httpclient>5.4</apache.httpclient>
+		<apache.commons.version>3.17.0</apache.commons.version>
 
-		<apache.httpcore>4.5.13</apache.httpcore>
-		<apache.httpclient>5.2.1</apache.httpclient>
-		<apache.commons.version>3.12.0</apache.commons.version>
 		<fasterxml.version>2.15.1</fasterxml.version>
 		<jwt.api.version>0.11.5</jwt.api.version>
 		<google.gson.version>2.9.0</google.gson.version>
