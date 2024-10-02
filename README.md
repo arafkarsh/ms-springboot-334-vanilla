@@ -102,11 +102,15 @@ production environment.
 
 #### Step 1.4.2: Click on the Authorize Button (Top Left the Swagger UI)
 
-![Authorize Request](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/ms-cache-with-Test-Tokens-2.jpg)
+![Authorize Request](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/ms-vanilla-with-Test-Tokens-2.jpg)
 
 #### Step 1.4.3: Enter the Token and Click Authorize
 
-![Authorize Request](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/ms-cache-with-Test-Tokens-3.jpg)
+![Authorize Request](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/ms-vanilla-with-Test-Tokens-3.jpg)
+
+#### Step 1.4.4: Enter the Refresh Token & Tx Token with every request that needs authorization
+
+![Authorize Request](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/ms-vanilla-with-Test-Tokens-4.jpg)
 
 ### Step 1.5 -  Import Swagger API Docs Into Postman
 
