@@ -59,16 +59,30 @@ Without generated application.properties file the service will NOT be running. T
 
 ###  Step 1.3 - Run
 
+#### 1.3.0 Spring Profiles
+
+1. dev (Development Mode)
+2. staging (Staging Mode)
+3. prod (Production Mode)
+
 #### 1.3.1 Start the Service
 1. run OR ./run (Runs in Linux or Mac OS)
+   1.1 run OR run dev
+   1.2 run staging   
+   1.3 run prod
 2. mvn spring-boot:run (All Platforms)
 
 #### 1.3.2 Test the Service 
 1. test OR ./test (Runs in Linux or Mac OS)
 2. Execute the curl commands directly (from the test script)
 
-#### $ run Result 
+#### Running through IDE
+Check the application.properties (in the project root directory) to change the profile Ex. spring.profiles.default=dev
+
+#### $ run prod (Result) 
 ![Run Results](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Run-Result.jpg)
+
+
 
 #### MS Cache Swagger UI Docs for Testing
 ![Swagger Docs](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Vanilla-Swagger-UI.jpg)
