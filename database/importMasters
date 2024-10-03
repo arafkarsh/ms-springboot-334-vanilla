@@ -1,0 +1,2 @@
+psql -h localhost -p 5433 -d ms_vanilla_334 -c "\copy ms_schema.country_geolite_m FROM '$1/GeoLite2-Country-Locations-en.csv' DELIMITER ',' CSV HEADER"
+
