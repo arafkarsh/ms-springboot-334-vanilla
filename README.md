@@ -115,9 +115,9 @@ production environment.
 ### Step 1.5 -  Import Swagger API Docs Into Postman
 
 What is Postman?
-Postman is an API platform for building and using APIs. Postman simplifies each step of the API 
+- Postman is an API platform for building and using APIs. Postman simplifies each step of the API 
 lifecycle and streamlines collaboration so you can create better APIs—faster.
-Download Postman for Windows, Mac & Linux. https://www.postman.com/
+- Download Postman for Windows, Mac & Linux. https://www.postman.com/
 
 #### Step 1.5.1: Swagger Open API 3.0 Docs JSON Format
 ![Swagger JSON](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Import-API-into-Postman-0.jpg)
