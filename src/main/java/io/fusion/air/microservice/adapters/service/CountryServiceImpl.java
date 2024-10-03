@@ -15,11 +15,16 @@
  */
 package io.fusion.air.microservice.adapters.service;
 
+import io.fusion.air.microservice.adapters.repository.CountryGeoRepository;
 import io.fusion.air.microservice.domain.entities.order.CountryEntity;
 import io.fusion.air.microservice.adapters.repository.CountryRepository;
+import io.fusion.air.microservice.domain.entities.order.CountryGeoEntity;
 import io.fusion.air.microservice.domain.ports.services.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.List;
@@ -36,8 +41,32 @@ public class CountryServiceImpl implements CountryService {
     @Autowired
     CountryRepository countryRepositoryImpl;
 
+    @Autowired
+    private CountryGeoRepository countryGeoRepositoryImpl;
+
     @Override
     public List<CountryEntity> getAllCountries() {
         return (List<CountryEntity>) countryRepositoryImpl.findAll();
+    }
+
+    /**
+     * Get All Geo Countries
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Page<CountryGeoEntity> getAllGeoCountries() {
+        return getAllGeoCountries(1, 10);
+    }
+
+    /**
+     * Get All Geo Countries by Page Number and No. of Records (Size)
+     *
+     * @param page
+     * @param size
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Page<CountryGeoEntity> getAllGeoCountries(int page, int size) {
+        return countryGeoRepositoryImpl.findAll(PageRequest.of(page, size));
     }
 }
