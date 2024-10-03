@@ -1,8 +1,8 @@
 # =======================================================================
 # MS-Vanilla Service Properties
 # =======================================================================
-build.number=26
-build.date=Thu Oct 3 13:39:42 IST 2024
+build.number=25
+build.date=Thu Oct 3 13:15:33 IST 2024
 # ------------------------------------------------------------------------
 # Spring Profile
 # ------------------------------------------------------------------------
@@ -34,10 +34,10 @@ server.resources.url=${service.url}${service.api.path}
 # Rename the file fusionAir.pkcs12 in resources folder and uncomment the
 # following lines to enable SSL
 # ------------------------------------------------------------------------
-#server.ssl.key-store=classpath:fusionAir.pkcs12
-#server.ssl.key-store-type=PKCS12
-#server.ssl.key-store-password=Fusion.2023
-#server.ssl.key-alias=fusionAir
+server.ssl.key-store=classpath:fusionAir.pkcs12
+server.ssl.key-store-type=PKCS12
+server.ssl.key-store-password=Fusion.2023
+server.ssl.key-alias=fusionAir
 # ------------------------------------------------------------------------
 # Security & JWT Token  (Type 1 = secret key, 2 = public / private key)
 # ------------------------------------------------------------------------
