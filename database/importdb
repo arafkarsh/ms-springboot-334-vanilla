@@ -3,5 +3,4 @@
 # Import Database 
 # @author: Araf Karsh Hamid
 # ============================================================================
-#psql -h localhost -p 5433 ms_vanilla_334 < ms-sb334.sql
-psql -h localhost -p 5433 ms_vanilla_334 < ms-sb272.sql
+psql -h localhost -p 5433 ms_vanilla_334 < ms-sb334.sql

@@ -91,11 +91,11 @@ ALTER TABLE ms_schema.carts_tx OWNER TO msadm;
 
 CREATE TABLE ms_schema.country_geolite_m (
     geoname_id integer NOT NULL,
-    locale_code character varying NOT NULL,
-    continent_code character varying NOT NULL,
-    continent_name character varying NOT NULL,
-    country_iso_code character varying,
-    country_name character varying,
+    locale_code character varying(255) NOT NULL,
+    continent_code character varying(255) NOT NULL,
+    continent_name character varying(255) NOT NULL,
+    country_iso_code character varying(255),
+    country_name character varying(255),
     is_in_european_union integer NOT NULL
 );
 
@@ -150,18 +150,18 @@ ALTER TABLE ms_schema.critical_table_tx OWNER TO msadm;
 --
 
 CREATE TABLE ms_schema.order_item_tx (
-    uuid character(36) NOT NULL,
+    uuid uuid NOT NULL,
     createdby character varying(255) NOT NULL,
     createdtime timestamp without time zone NOT NULL,
     isactive boolean,
     updatedby character varying(255) NOT NULL,
     updatedtime timestamp without time zone NOT NULL,
     version integer,
-    price numeric(19,2),
+    price numeric(38,2),
     productid character varying(255),
     productname character varying(255),
-    quantity numeric(19,2),
-    order_id character(36)
+    quantity numeric(38,2),
+    order_id uuid
 );
 
 
@@ -172,7 +172,7 @@ ALTER TABLE ms_schema.order_item_tx OWNER TO msadm;
 --
 
 CREATE TABLE ms_schema.order_payment_tx (
-    uuid character(36) NOT NULL,
+    uuid uuid NOT NULL,
     createdby character varying(255) NOT NULL,
     createdtime timestamp without time zone NOT NULL,
     isactive boolean,
@@ -191,7 +191,7 @@ ALTER TABLE ms_schema.order_payment_tx OWNER TO msadm;
 --
 
 CREATE TABLE ms_schema.order_state_history_tx (
-    uuid character(36) NOT NULL,
+    uuid uuid NOT NULL,
     createdby character varying(255) NOT NULL,
     createdtime timestamp without time zone NOT NULL,
     isactive boolean,
@@ -202,7 +202,7 @@ CREATE TABLE ms_schema.order_state_history_tx (
     sourcestate character varying(255),
     targetstate character varying(255),
     transitionevent character varying(255),
-    order_id character(36),
+    order_id uuid,
     orderversion integer
 );
 
@@ -214,7 +214,7 @@ ALTER TABLE ms_schema.order_state_history_tx OWNER TO msadm;
 --
 
 CREATE TABLE ms_schema.order_tx (
-    uuid character(36) NOT NULL,
+    uuid uuid NOT NULL,
     createdby character varying(255) NOT NULL,
     createdtime timestamp without time zone NOT NULL,
     isactive boolean,
@@ -230,8 +230,8 @@ CREATE TABLE ms_schema.order_tx (
     state character varying(255),
     street character varying(255),
     zip_code character varying(255),
-    totalordervalue numeric(19,2),
-    payment_id character(36),
+    totalordervalue numeric(38,2),
+    payment_id uuid,
     orderstatus character varying(255),
     result character varying(255)
 );
