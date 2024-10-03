@@ -17,7 +17,7 @@ package io.fusion.air.microservice.domain.entities.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.fusion.air.microservice.domain.entities.core.AbstractBaseEntityWithUUID;
-import io.fusion.air.microservice.domain.models.example.Product;
+import io.fusion.air.microservice.domain.models.order.Product;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

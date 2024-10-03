@@ -13,37 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.fusion.air.microservice.domain.models.example;
+package io.fusion.air.microservice.domain.models.order;
 
 /**
  * 
  * @author arafkarsh
  *
  */
-public enum PaymentType {
+public enum CardType {
 	
 	/**
-	 * Credit Card Payment
+	 * Master Card Payment
 	 */
-	CREDIT_CARD,
+	MASTER,
 	/**
-	 * Debit Card Payment
+	 * Visa Card Payment
 	 */
-	DEBIT_CARD,
+	VISA,
 	/**
-	 * NetBanking Payment
+	 * Discover Payment
 	 */
-	NET_BANKING,
+	DISCOVER,
 	/**
-	 * UPI Payment
+	 * American Express Payment
 	 */
-	UPI,
-	/**
-	 * Paytm Payment
-	 */
-	PAYTM,
-	/**
-	 * Google Pay
-	 */
-	GOOGLE_PAY;
+	AMERICAN_EXPRESS;
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.fusion.air.microservice.domain.models.example;
+package io.fusion.air.microservice.domain.models.order;
 
 import java.time.LocalDateTime;
 

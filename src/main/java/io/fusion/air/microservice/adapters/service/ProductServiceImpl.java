@@ -19,7 +19,7 @@ import io.fusion.air.microservice.adapters.repository.ProductRepository;
 import io.fusion.air.microservice.domain.entities.order.ProductEntity;
 import io.fusion.air.microservice.domain.exceptions.DataNotFoundException;
 
-import io.fusion.air.microservice.domain.models.example.Product;
+import io.fusion.air.microservice.domain.models.order.Product;
 import io.fusion.air.microservice.domain.ports.services.ProductService;
 
 import org.slf4j.Logger;

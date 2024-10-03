@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.UUID;
 
 
-import io.fusion.air.microservice.domain.models.example.PaymentDetails;
-import io.fusion.air.microservice.domain.models.example.PaymentStatus;
+import io.fusion.air.microservice.domain.models.order.PaymentDetails;
+import io.fusion.air.microservice.domain.models.order.PaymentStatus;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.models.EchoData;
 import io.fusion.air.microservice.server.models.EchoResponseData;

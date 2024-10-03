@@ -122,6 +122,10 @@ production environment.
 
 #### Step 1.5.3: Import Into Postman - Confirm
 ![Postman Import](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Import-API-into-Postman-2.jpg)
+![Postman Import](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Import-API-into-Postman-3.jpg)
+
+#### Step 1.5.4: Test the API
+![Postman Import](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Import-API-into-Postman-4.jpg)
 
 ## 2. CRUD Operations Demo & Error Handling
 
