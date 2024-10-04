@@ -49,7 +49,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @CrossOrigin
 @Configuration
 @RestController
-// "/ms-cache/api/v1"
+// "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/order")
 @RequestScope
 @Tag(name = "Order API", description = "To Manage (Add/Update/Delete/Search) Order CRUD Operations")

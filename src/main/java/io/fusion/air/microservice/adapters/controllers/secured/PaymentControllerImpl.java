@@ -14,36 +14,34 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.adapters.controllers.secured;
-
-
+// Custom
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.domain.models.order.PaymentDetails;
 import io.fusion.air.microservice.domain.models.order.PaymentStatus;
 import io.fusion.air.microservice.domain.models.order.PaymentType;
-
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.controllers.AbstractController;
+// Swagger
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+// Spring
 import org.slf4j.Logger;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
-
+// Java
+import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.UUID;
-
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -59,7 +57,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @CrossOrigin
 @Configuration
 @RestController
-// "/ms-cache/api/v1"
+// "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/payment")
 @RequestScope
 @Tag(name = "Secured Payments API", description = "Ex. io.f.a.m.adapters.controllers.secured.PaymentControllerImpl")
@@ -97,9 +95,6 @@ public class PaymentControllerImpl extends AbstractController {
 		status.put("ReferenceNo", _referenceNo);
 		status.put("Message","Payment Status is good!");
 		stdResponse.setPayload(status);
-		// Additional Headers
-		// HttpHeaders headers = new HttpHeaders();
-		// headers.add(HttpHeaders.CACHE_CONTROL, "no-cache");
 		// Return the Response
 		return new ResponseEntity<StandardResponse>(stdResponse, HttpStatus.OK);
 	}

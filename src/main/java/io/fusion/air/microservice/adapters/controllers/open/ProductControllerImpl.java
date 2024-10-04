@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.adapters.controllers.open;
-
+// Custom
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.entities.order.ProductEntity;
 import io.fusion.air.microservice.domain.exceptions.*;
@@ -26,6 +26,7 @@ import io.fusion.air.microservice.domain.models.order.Product;
 import io.fusion.air.microservice.domain.ports.services.ProductService;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.controllers.AbstractController;
+// Swagger
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -35,13 +36,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+// Spring
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
-
+// Java
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -66,10 +68,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 @CrossOrigin
 @Configuration
 @RestController
-// "/ms-cache/api/v1"
+// "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/product")
 @RequestScope
-@Tag(name = "Product API", description = "Ex. io.f.a.m.adapters.controllers.ProductControllerImpl")
+@Tag(name = "Product API", description = "Search Products, Create Products, Activate / DeActivate, Delete & Update Product")
 public class ProductControllerImpl extends AbstractController {
 
 	// Set Logger -> Lookup will automatically determine the class name.
@@ -123,8 +125,6 @@ public class ProductControllerImpl extends AbstractController {
 														HttpServletRequest request,
 														HttpServletResponse response) throws Exception {
 		log.debug("|"+name()+"|Request to Get Product Status.. "+_productId);
-		//  response.setHeader("Cache-Control", "no-cache");
-		// response.addCookie(new Cookie("SameSite", "Strict"));
 		ProductEntity product = productServiceImpl.getProductById(_productId);
 		StandardResponse stdResponse = createSuccessResponse("Data Fetch Success!");
 		stdResponse.setPayload(product);

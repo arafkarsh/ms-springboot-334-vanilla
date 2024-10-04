@@ -53,7 +53,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @CrossOrigin
 @Configuration
 @RestController
-// "/ms-cache/api/v1"
+// "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/country")
 @RequestScope
 @Tag(name = "Country API", description = "Spring Examples with Pagination")
