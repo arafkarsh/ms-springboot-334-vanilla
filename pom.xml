@@ -41,8 +41,8 @@
 		<!-- <apache.httpcore>4.5.13</apache.httpcore> -->
 		<apache.httpclient>5.4</apache.httpclient>
 		<apache.commons.version>3.17.0</apache.commons.version>
+		<fasterxml.version>2.18.0</fasterxml.version>
 
-		<fasterxml.version>2.15.1</fasterxml.version>
 		<jwt.api.version>0.11.5</jwt.api.version>
 		<google.gson.version>2.9.0</google.gson.version>
 		<bouncycastle.version>1.46</bouncycastle.version>
@@ -169,8 +169,6 @@
 			<version>${jaxb.version}</version>
 		</dependency>
 
-
-
 		<!-- ================================================================= -->
 		<!-- Log Framework -->
 		<!-- ================================================================= -->
@@ -209,11 +207,13 @@
 			<version>${apache.commons.version}</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 			<version>${fasterxml.version}</version>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
