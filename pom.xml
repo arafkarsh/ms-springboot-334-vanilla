@@ -55,9 +55,8 @@
 		<jaxb.version>2.3.1</jaxb.version>
 
 		<mapstruct.version>1.6.2</mapstruct.version>
-		<hibernate.version>8.0.0.Final</hibernate.version>
-		<!-- <hibernate.version>9.0.0.Beta3</hibernate.version> -->
 		<hibernate.core.version>6.6.1.Final</hibernate.core.version>
+		<hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
 		<postgresql.version>42.7.4</postgresql.version>
 		<h2.version>2.3.232</h2.version>
 		<redis.embedded.version>0.7.3</redis.embedded.version>
@@ -143,7 +142,7 @@
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>${hibernate.version}</version>
+			<version>${hibernate.validator.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core -->

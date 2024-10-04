@@ -621,7 +621,7 @@ public final class JsonWebToken {
 		System.out.println("----------------------------------------------");
 		Jws<Claims> jws = getJws(token);
 
-		System.out.println("Header      : " + jws.getHeader());
+		System.out.println("Header       : " + jws.getHeader());
 		System.out.println("Body         : " + jws.getPayload());
 		System.out.println("Content      : " + jws.toString());
 
