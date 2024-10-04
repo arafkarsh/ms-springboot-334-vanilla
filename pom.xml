@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.fusion.air</groupId>
 	<artifactId>ms-vanilla-service</artifactId>
-	<version>0.1.1</version>
+	<version>0.1.2</version>
 	<packaging>jar</packaging>
 	<name>msVanillaService</name>
 	<description>Microservice Vanilla Template</description>
@@ -73,7 +73,8 @@
 		<spring.kafka.version>3.2.4</spring.kafka.version>
 
 		<!-- Open API v3 - Swagger UI ===================================== -->
-		<openapi.version>1.7.0</openapi.version>
+		<openapi.webmvc.version>2.6.0</openapi.webmvc.version>
+		<openapi.common.version>1.8.0</openapi.common.version>
 
 	</properties>
 
@@ -471,25 +472,17 @@
 		<!-- ================================================================= -->
 		<!-- API Docs - Open API v3.0 (Swagger 3) -->
 		<!-- ================================================================= -->
-
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.1.0</version>
+			<version>${openapi.webmvc.version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-webflux-ui -->
+		<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-common -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-webflux-ui</artifactId>
-			<version>${openapi.version}</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-data-rest -->
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-data-rest</artifactId>
-			<version>${openapi.version}</version>
+			<artifactId>springdoc-openapi-common</artifactId>
+			<version>${openapi.common.version}</version>
 		</dependency>
 
 		<!-- End of Dependency Definitions -->
