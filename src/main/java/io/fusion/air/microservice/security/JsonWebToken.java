@@ -32,11 +32,14 @@ import java.util.stream.Collectors;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+
 /**
- * 
- * @author arafkarsh
+ * JSON Web Token Implementation
+ * Supports Secret Key based and Public / Private Key based Token Generation & Validation.
  *
+ * @author arafkarsh
+ * @version 1.0
+ * @date
  */
 @Service
 public final class JsonWebToken {
@@ -346,17 +349,6 @@ public final class JsonWebToken {
 	}
 
 	/**
-	 * Returns the Algorithm
-	 * @return
-	 * @deprecated
-	 */
-	/**
-	public SignatureAlgorithm getAlgorithm() {
-		return algorithm;
-	}
-	 */
-
-	/**
 	 * Returns the Key
 	 * @return
 	 */
@@ -510,7 +502,6 @@ public final class JsonWebToken {
 				.stream()
 				.map(String::valueOf) // Convert each element to a string (if needed)
 				.collect(Collectors.joining(", "));
-        // return getClaimFromToken(_token, Claims::getAudience);
     }
 
     /**
@@ -552,11 +543,17 @@ public final class JsonWebToken {
 	 * @return
 	 */
 	public Jws<Claims> getJws(String _token) {
-		return Jwts.parser()
-				.setSigningKey(validatorKey)
-				.requireIssuer(issuer)
-				.build()
-				.parseSignedClaims(_token);
+		return (tokenType  == PUBLIC_KEY) ?
+				Jwts.parser()
+					.verifyWith( (PublicKey) validatorKey )
+					.requireIssuer(issuer)
+					.build()
+					.parseSignedClaims(_token)
+			: Jwts.parser()
+					.verifyWith( (SecretKey) validatorKey )
+					.requireIssuer(issuer)
+					.build()
+					.parseSignedClaims(_token);
 	}
 
 	/**
@@ -722,7 +719,7 @@ public final class JsonWebToken {
 		long tokenRefreshExpiry = JsonWebToken.EXPIRE_IN_THIRTY_MINS;
 
 		String subject	 = "jane.doe";
-		String issuer    = "metarivu.com";
+		String issuer    = "arafkarsh.com";
 
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("aud", "generic");

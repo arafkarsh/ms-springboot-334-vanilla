@@ -41,9 +41,8 @@
 		<apache.httpclient>5.4</apache.httpclient>
 		<apache.commons.version>3.17.0</apache.commons.version>
 		<fasterxml.version>2.18.0</fasterxml.version>
-
 		<jwt.api.version>0.12.6</jwt.api.version>
-		<bouncycastle.version>1.46</bouncycastle.version>
+		<bouncycastle.version>1.78.1</bouncycastle.version>
 
 		<!-- Jakarta EE / Jaxb / Hibernate ================================= -->
 		<javax.bean.validation.version>2.0.1.Final</javax.bean.validation.version>
@@ -83,12 +82,6 @@
 			<id>central</id>
 			<url>https://repo.maven.apache.org/maven2</url>
 		</repository>
-		<!--
-		<repository>
-			<id>jboss-public-repository</id>
-			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
-		</repository>
-		-->
 	</repositories>
 
 	<dependencies>
@@ -159,7 +152,7 @@
 			<version>${postgresql.version}</version>
 		</dependency>
 
-		<!-- Replaced by Jakarta Jaxb -->
+		<!-- Replaced by Jakarta Jaxb, But FasterXML still uses Java Jaxb -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
@@ -420,19 +413,11 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk16 -->
-		<!--
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk16</artifactId>
-			<version>${bouncycastle.version}</version>
-		</dependency>
-		-->
 		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk18on</artifactId>
-			<version>1.78.1</version>
+			<version>${bouncycastle.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
