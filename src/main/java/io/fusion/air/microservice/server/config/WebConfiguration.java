@@ -20,6 +20,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.setUseTrailingSlashMatch(true);
+        // configurer.setUseTrailingSlashMatch(true);
     }
 }

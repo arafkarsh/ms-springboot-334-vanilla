@@ -16,20 +16,23 @@
 
 package io.fusion.air.microservice.security;
 
+// Spring
+import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+// Java
 import java.security.*;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
-
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import io.jsonwebtoken.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.spec.SecretKeySpec;
-
-
+import java.util.stream.Collectors;
+// Json Web Token
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 /**
  * 
  * @author arafkarsh
@@ -82,9 +85,6 @@ public final class JsonWebToken {
 	private Key signingKey;
 	private Key validatorKey;
 
-	private SignatureAlgorithm algorithm;
-	public final static SignatureAlgorithm defaultAlgo = SignatureAlgorithm.HS512;
-
 	private final Map<String, Object> claimsToken;
 	private final Map<String, Object> claimsRefreshToken;
 	private String issuer;
@@ -117,12 +117,9 @@ public final class JsonWebToken {
 	public JsonWebToken init(int _tokenType) {
 		tokenType 			= _tokenType;
 		// Set the Algo Symmetric (Secret) OR Asymmetric (Public/Private) based on the Configuration
-		algorithm 			= (tokenType == SECRET_KEY) ? SignatureAlgorithm.HS512 : SignatureAlgorithm.RS256;
-
-		System.out.println("Token Type = "+tokenType+" Algorithm = "+algorithm);
+		System.out.println("Token Type = "+tokenType);
 		// Create the Key based on Secret Key or Private Key
 		createSigningKey();
-
 		issuer				= (serviceConfig != null) ? serviceConfig.getServiceOrg() : "metarivu";
 		subject 			= "jane.doe";
 		setTokenAuthExpiry((serviceConfig != null) ? serviceConfig.getTokenAuthExpiry() : EXPIRE_IN_FIVE_MINS );
@@ -138,7 +135,7 @@ public final class JsonWebToken {
 	private void createSigningKey() {
 		switch(tokenType) {
 			case SECRET_KEY:
-				signingKey = new SecretKeySpec(getTokenKeyBytes(), algorithm.getJcaName());
+				signingKey = new SecretKeySpec(getTokenKeyBytes(), "HmacSHA512");
 				validatorKey = signingKey;
 				break;
 			case PUBLIC_KEY:
@@ -351,10 +348,13 @@ public final class JsonWebToken {
 	/**
 	 * Returns the Algorithm
 	 * @return
+	 * @deprecated
 	 */
+	/**
 	public SignatureAlgorithm getAlgorithm() {
 		return algorithm;
 	}
+	 */
 
 	/**
 	 * Returns the Key
@@ -375,7 +375,7 @@ public final class JsonWebToken {
         Map<String, Object> claims = new HashMap<>();
         claims.put("aud", "general");
         claims.put("jti", UUID.randomUUID().toString());
-        return generateToken(_userId,issuer,_expiryTime,claims);
+        return generateToken(_userId, issuer, _expiryTime, claims);
     }
 
     /**
@@ -387,7 +387,7 @@ public final class JsonWebToken {
      * @return
      */
     public String generateToken(String _userId, long _expiryTime, Map<String, Object> _claims) {
-        return generateToken(_userId,issuer,_expiryTime, _claims);
+        return generateToken(_userId, issuer, _expiryTime, _claims);
     }
     
     /**
@@ -400,7 +400,7 @@ public final class JsonWebToken {
 	 * @return
 	 */
     public String generateToken(String _userId, String _issuer, long _expiryTime, Map<String, Object> _claims) {
-		return generateToken( _userId,  _issuer,  _expiryTime, _claims, signingKey, algorithm);
+		return generateToken( _userId,  _issuer,  _expiryTime, _claims, signingKey);
 
     }
 
@@ -412,20 +412,19 @@ public final class JsonWebToken {
 	 * @param _expiryTime
 	 * @param _claims
 	 * @param key
-	 * @param algorithm
 	 * @return
 	 */
 	public String generateToken(String _userId, String _issuer, long _expiryTime,
-								Map<String, Object> _claims, Key key, SignatureAlgorithm algorithm) {
+								Map<String, Object> _claims, Key key) {
 		long currentTime = System.currentTimeMillis();
 		return Jwts.builder()
-				.setSubject(_userId)
-				.setIssuer(_issuer)
-				.setClaims(_claims)
-				.setIssuedAt(new Date(currentTime))
-				.setExpiration(new Date(currentTime + _expiryTime))
+				.claims(_claims)
+				.subject(_userId)
+				.issuer(_issuer)
+				.issuedAt(new Date(currentTime))
+				.expiration(new Date(currentTime + _expiryTime))
 				// Key Secret Key or Public/Private Key
-				.signWith(key, algorithm)
+				.signWith(key)
 				.compact();
 	}
 
@@ -507,7 +506,23 @@ public final class JsonWebToken {
      * @return
      */
     public String getAudienceFromToken(String _token) {
-        return getClaimFromToken(_token, Claims::getAudience);
+		return getClaimFromToken(_token, Claims::getAudience)
+				.stream()
+				.map(String::valueOf) // Convert each element to a string (if needed)
+				.collect(Collectors.joining(", "));
+        // return getClaimFromToken(_token, Claims::getAudience);
+    }
+
+    /**
+     * Get a Claim from the Token based on the Claim Type
+     * 
+     * @param <T>
+     * @param _token
+     * @param _claimsResolver
+     * @return
+     */
+    public <T> T getClaimFromToken(String _token, Function<Claims, T> _claimsResolver) {
+        return _claimsResolver.apply(getAllClaims(_token));
     }
 
 	/**
@@ -522,13 +537,36 @@ public final class JsonWebToken {
 	}
     
     /**
-     * Return Payload as JSON String
+     * Return All Claims for the Token
      * 
      * @param _token
      * @return
      */
-    public String getPayload(String _token) {
-    	StringBuilder sb = new StringBuilder();
+    public Claims getAllClaims(String _token) {
+		return getJws(_token).getPayload();
+    }
+
+	/**
+	 * Returns Jws
+	 * @param _token
+	 * @return
+	 */
+	public Jws<Claims> getJws(String _token) {
+		return Jwts.parser()
+				.setSigningKey(validatorKey)
+				.requireIssuer(issuer)
+				.build()
+				.parseSignedClaims(_token);
+	}
+
+	/**
+	 * Return Payload as JSON String
+	 *
+	 * @param _token
+	 * @return
+	 */
+	public String getPayload(String _token) {
+		StringBuilder sb = new StringBuilder();
 		Claims claims = getAllClaims(_token);
 		int x=1;
 		int size=claims.size();
@@ -544,52 +582,9 @@ public final class JsonWebToken {
 			x++;
 		}
 		sb.append("}");
-    	return sb.toString();
-    }
-
-    /**
-     * Get a Claim from the Token based on the Claim Type
-     * 
-     * @param <T>
-     * @param _token
-     * @param _claimsResolver
-     * @return
-     */
-    public <T> T getClaimFromToken(String _token, 
-    		Function<Claims, T> _claimsResolver) {
-        return _claimsResolver.apply(getAllClaims(_token));
-    }
-    
-    /**
-     * Return All Claims for the Token
-     * 
-     * @param _token
-     * @return
-     */
-    public Claims getAllClaims(String _token) {
-    	/**
-		return Jwts.parserBuilder()
-				.setSigningKey(validatorKey)
-				.requireIssuer(issuer)
-				.build()
-				.parseClaimsJws(_token)
-				.getBody();
-		 */
-    	return (Claims) getJws(_token).getBody();
-    }
-
-	/**
-	 * Returns Jws
-	 * @param _token
-	 * @return
-	 */
-	public Jws getJws(String _token) {
-		return Jwts.parserBuilder()
-				.setSigningKey(validatorKey)
-				.requireIssuer(issuer)
-				.build()
-				.parseClaimsJws(_token);
+		return sb.toString();
 	}
+
 	/**
 	 * Print Token Stats
 	 * @param token
@@ -624,11 +619,12 @@ public final class JsonWebToken {
 		System.out.println("Expiry   = "+getExpiryDateFromToken(token));
 		System.out.println("Expired  = "+isTokenExpired(token));
 		System.out.println("----------------------------------------------");
-		Jws jws = getJws(token);
+		Jws<Claims> jws = getJws(token);
 
-		System.out.println("Header     : " + jws.getHeader());
-		System.out.println("Body       : " + jws.getBody());
-		System.out.println("Signature  : " + jws.getSignature());
+		System.out.println("Header      : " + jws.getHeader());
+		System.out.println("Body         : " + jws.getPayload());
+		System.out.println("Content      : " + jws.toString());
+
 		if(showClaims) {
 			Claims claims = getAllClaims(token);
 			int x = 1;

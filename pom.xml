@@ -38,13 +38,11 @@
 		<slf4j.version>2.0.16</slf4j.version>
 		<logback.version>1.5.8</logback.version>
 		<google.guava.version>33.3.1-jre</google.guava.version>
-		<!-- <apache.httpcore>4.5.13</apache.httpcore> -->
 		<apache.httpclient>5.4</apache.httpclient>
 		<apache.commons.version>3.17.0</apache.commons.version>
 		<fasterxml.version>2.18.0</fasterxml.version>
 
-		<jwt.api.version>0.11.5</jwt.api.version>
-		<google.gson.version>2.9.0</google.gson.version>
+		<jwt.api.version>0.12.6</jwt.api.version>
 		<bouncycastle.version>1.46</bouncycastle.version>
 
 		<!-- Jakarta EE / Jaxb / Hibernate ================================= -->
@@ -313,18 +311,12 @@
 			<version>${spring.boot.version}</version>
 		</dependency>
 
+
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 			<version>${spring.boot.version}</version>
-		</dependency>	
-
-		<!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-tracing -->
-		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-tracing</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-aop -->
@@ -414,6 +406,7 @@
 			<artifactId>jjwt-api</artifactId>
 			<version>${jwt.api.version}</version>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -429,10 +422,18 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk16 -->
+		<!--
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk16</artifactId>
 			<version>${bouncycastle.version}</version>
+		</dependency>
+		-->
+		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk18on</artifactId>
+			<version>1.78.1</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
