@@ -199,8 +199,8 @@ public class TokenController extends AbstractController {
 	 */
 	private HashMap<String, String> refreshTokens(String subject,
 												  Claims authTokenClaims, Claims refreshTokenClaims) {
-		tokenAuthExpiry = (tokenAuthExpiry < 10) ? JsonWebToken.EXPIRE_IN_FIVE_MINS : tokenAuthExpiry;
-		tokenRefreshExpiry = (tokenRefreshExpiry < 10) ? JsonWebToken.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;
+		tokenAuthExpiry = (tokenAuthExpiry < 5) ? JsonWebToken.EXPIRE_IN_FIVE_MINS : tokenAuthExpiry;
+		tokenRefreshExpiry = (tokenRefreshExpiry < 30) ? JsonWebToken.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;
 		return jsonWebToken
 				.init(serviceConfig.getTokenType())
 				.generateTokens(subject, serviceConfig.getServiceOrg(), tokenAuthExpiry, tokenRefreshExpiry);

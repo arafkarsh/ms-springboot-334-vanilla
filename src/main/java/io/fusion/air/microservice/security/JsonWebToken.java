@@ -87,9 +87,7 @@ public final class JsonWebToken {
 
 	private Key signingKey;
 	private Key validatorKey;
-
-	private final Map<String, Object> claimsToken;
-	private final Map<String, Object> claimsRefreshToken;
+	
 	private String issuer;
 	private String subject;
 	private long tokenAuthExpiry;
@@ -99,8 +97,6 @@ public final class JsonWebToken {
 	 * Initialize the JWT with the Signature Algorithm based on Secret Key or Public / Private Key
 	 */
 	public JsonWebToken() {
-		claimsToken 		= new HashMap<String, Object>();
-		claimsRefreshToken 	= new HashMap<String, Object>();
 	}
 
 	/**
@@ -257,36 +253,6 @@ public final class JsonWebToken {
 	}
 
 	/**
-	 * Clear & Add All Claims for Token
-	 * @param _claims
-	 * @return
-	 */
-	public JsonWebToken addAllTokenClaims(Map<String, Object> _claims) {
-		claimsToken.clear();
-		claimsToken.putAll(_claims);
-		String aud = (serviceConfig != null) ? serviceConfig.getServiceName() : "general";
-		claimsToken.putIfAbsent("aud", aud);
-		claimsToken.putIfAbsent("jti", UUID.randomUUID().toString());
-		claimsToken.putIfAbsent("rol", "User");
-		return this;
-	}
-
-	/**
-	 * Clear & Add All Claims for Refresh Token
-	 * @param _claims
-	 * @return
-	 */
-	private JsonWebToken addAllRefreshTokenClaims(Map<String, Object> _claims) {
-		claimsRefreshToken.clear();
-		claimsRefreshToken.putAll(_claims);
-		String aud = (serviceConfig != null) ? serviceConfig.getServiceName() : "general";
-		claimsRefreshToken.putIfAbsent("aud", aud);
-		claimsRefreshToken.putIfAbsent("jti", UUID.randomUUID().toString());
-		claimsRefreshToken.putIfAbsent("rol", "User");
-		return this;
-	}
-
-	/**
 	 * Generate Authorize Bearer Token and Refresh Token
 	 * Returns in a HashMap
 	 * token = Authorization Token
@@ -365,11 +331,12 @@ public final class JsonWebToken {
 
 	/**
 	 * Clear All Claims (Token and Refresh Token)
+	 * @deprecated
 	 * @return
 	 */
-	public JsonWebToken clearAllClaims()  {
-		claimsToken.clear();
-		claimsRefreshToken.clear();
+	private JsonWebToken clearAllClaims()  {
+		// claimsToken.clear();
+		// claimsRefreshToken.clear();
 		return this;
 	}
 
@@ -682,22 +649,6 @@ public final class JsonWebToken {
 	}
 
 	/**
-	 * Returns Token Claims Set for Generating the Token
-	 * @return
-	 */
-	public Map<String, Object> getClaimsToken() {
-		return claimsToken;
-	}
-
-	/**
-	 * Returns the Token Claims set for Generating the Refresh Token
-	 * @return
-	 */
-	public Map<String, Object> getClaimsRefreshToken() {
-		return claimsRefreshToken;
-	}
-
-	/**
 	 * Get the Issuer Set for Generating Token / Refresher Token
 	 * @return
 	 */
@@ -756,13 +707,7 @@ public final class JsonWebToken {
 
 		HashMap<String,String> tokens = jsonWebToken
 				.init(_tokenType)
-				.setSubject(subject)
-				.setIssuer(issuer)
-				.setTokenAuthExpiry(tokenAuthExpiry)
-				.setTokenRefreshExpiry(tokenRefreshExpiry)
-				.addAllTokenClaims(claims)
-				.addAllRefreshTokenClaims(claims)
-				.generateTokens();
+				.generateTokens(subject, issuer, tokenAuthExpiry, tokenRefreshExpiry);
 
 		String token = tokens.get("token");
 		String refresh = tokens.get("refresh");
