@@ -276,7 +276,7 @@ public final class JsonWebToken {
 	 * @param _claims
 	 * @return
 	 */
-	public JsonWebToken addAllRefreshTokenClaims(Map<String, Object> _claims) {
+	private JsonWebToken addAllRefreshTokenClaims(Map<String, Object> _claims) {
 		claimsRefreshToken.clear();
 		claimsRefreshToken.putAll(_claims);
 		String aud = (serviceConfig != null) ? serviceConfig.getServiceName() : "general";
@@ -305,8 +305,32 @@ public final class JsonWebToken {
 	 */
 	public HashMap<String,String>  generateTokens() {
 		HashMap<String, String> tokens  = new HashMap<String, String>();
-		String tokenAuth 	= generateToken(subject, issuer, tokenAuthExpiry, claimsToken);
-		String tokenRefresh = generateToken(subject, issuer, tokenRefreshExpiry, claimsRefreshToken);
+		String tokenAuth 	= generateToken(subject, issuer, tokenAuthExpiry, addDefaultClaims(new HashMap<String, Object>()));
+		String tokenRefresh = generateToken(subject, issuer, tokenRefreshExpiry, addDefaultClaims(new HashMap<String, Object>()));
+		tokens.put("token", tokenAuth);
+		tokens.put("refresh", tokenRefresh);
+		return tokens;
+	}
+
+	/**
+	 * Generate Authorize Bearer Token and Refresh Token
+	 * Returns in a HashMap
+	 * token = Authorization Token
+	 * refresh = Refresh token to re-generate the Authorize Token
+	 * API Usage
+	 * HashMap<String,String> tokens = new JsonWebToken()
+	 * 									.init()
+	 * 									generateTokens(_subject, _issuer, _tokenExpiryTime, _refreshTokenExpiryTime);
+	 * @param _subject
+	 * @param _issuer
+	 * @return
+	 */
+	public HashMap<String,String>  generateTokens(String _subject, String _issuer, long _tokenExpiryTime, long _refreshTokenExpiryTime) {
+		Map<String, Object> claimsToken = addDefaultClaims(new HashMap<String, Object>());
+		Map<String, Object> claimsRefreshToken = addDefaultClaims(new HashMap<String, Object>());
+		HashMap<String, String> tokens  = new HashMap<String, String>();
+		String tokenAuth 	= generateToken(_subject, _issuer, _tokenExpiryTime, claimsToken);
+		String tokenRefresh = generateToken(_subject, _issuer, _refreshTokenExpiryTime, claimsRefreshToken);
 		tokens.put("token", tokenAuth);
 		tokens.put("refresh", tokenRefresh);
 		return tokens;
@@ -323,16 +347,17 @@ public final class JsonWebToken {
 	 * 									.setTokenExpiry(JsonWebToken.EXPIRE_IN_FIVE_MINS)
 	 * 									.setTokenRefreshExpiry(JsonWebToken.EXPIRE_IN_THIRTY_MINS)
 	 * 									generateTokens(Map<String,Object> claimsToken, Map<String,Object> claimsRefreshToken)
-	 * @param claimsToken
-	 * @param claimsRefreshToken
+	 * @param _claimsToken
+	 * @param _claimsRefreshToken
 	 * @return
 	 */
-	public HashMap<String,String>  generateTokens(String subject, String issuer, Map<String,Object> claimsToken, Map<String,Object> claimsRefreshToken) {
-		claimsToken = addDefaultClaims(claimsToken);
-		claimsRefreshToken = addDefaultClaims(claimsRefreshToken);
+	public HashMap<String,String>  generateTokens(String _subject, String _issuer,
+												  Map<String,Object> _claimsToken, Map<String,Object> _claimsRefreshToken) {
+		addDefaultClaims(_claimsToken);
+		addDefaultClaims(_claimsRefreshToken);
 		HashMap<String, String> tokens  = new HashMap<String, String>();
-		String tokenAuth 	= generateToken(subject, issuer, tokenAuthExpiry, claimsToken);
-		String tokenRefresh = generateToken(subject, issuer, tokenRefreshExpiry, claimsRefreshToken);
+		String tokenAuth 	= generateToken(_subject, _issuer, tokenAuthExpiry, _claimsToken);
+		String tokenRefresh = generateToken(_subject, _issuer, tokenRefreshExpiry, _claimsRefreshToken);
 		tokens.put("token", tokenAuth);
 		tokens.put("refresh", tokenRefresh);
 		return tokens;

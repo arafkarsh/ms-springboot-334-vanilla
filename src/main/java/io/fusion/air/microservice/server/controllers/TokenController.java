@@ -203,13 +203,7 @@ public class TokenController extends AbstractController {
 		tokenRefreshExpiry = (tokenRefreshExpiry < 10) ? JsonWebToken.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;
 		return jsonWebToken
 				.init(serviceConfig.getTokenType())
-				.setSubject(subject)
-				.setIssuer(serviceConfig.getServiceOrg())
-				.setTokenAuthExpiry(tokenAuthExpiry)
-				.setTokenRefreshExpiry(tokenRefreshExpiry)
-				.addAllTokenClaims(authTokenClaims)
-				.addAllRefreshTokenClaims(refreshTokenClaims)
-				.generateTokens();
+				.generateTokens(subject, serviceConfig.getServiceOrg(), tokenAuthExpiry, tokenRefreshExpiry);
 	}
  }
 
