@@ -542,7 +542,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(value = MandatoryDataRequiredException.class)
     public ResponseEntity<Object> handleMandatoryDataRequiredException(MandatoryDataRequiredException _mdrEx,  WebRequest _request) {
-        return createErrorResponse(_mdrEx,  "462", _request);
+        return createErrorResponse(_mdrEx,  "463", _request);
     }
 
     /**

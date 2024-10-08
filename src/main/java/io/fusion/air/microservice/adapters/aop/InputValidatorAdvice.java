@@ -15,14 +15,16 @@
  */
 package io.fusion.air.microservice.adapters.aop;
 
+// Custom
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.utils.Utils;
-import org.slf4j.Logger;
+// Spring
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,15 +32,19 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
+// Java
 import jakarta.validation.ConstraintViolationException;
 import java.util.*;
 import java.util.stream.Collectors;
-
+import org.slf4j.Logger;
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * Input Validator Advice
+ *
+ * This (AOP) Advice will validate all the inputs at a central location.
+ *
  * @author: Araf Karsh Hamid
  * @version:
  * @date:
@@ -62,26 +68,25 @@ public class InputValidatorAdvice extends ResponseEntityExceptionHandler {
      * @param _request
      * @return
      */
-    // @Override
+    @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException _manvEx,
-                                      HttpHeaders _headers, HttpStatus _status, WebRequest _request) {
+                                                                  HttpHeaders _headers, HttpStatusCode _status, WebRequest _request) {
 
         String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AKH";
-        String errorMsg = "Input Errors: Invalid Method Arguments";
+        String errorMsg = "Errors: Invalid Method Arguments";
         long startTime = System.currentTimeMillis();
         String status = "STATUS=ERROR: "+errorMsg;
         // Create Input Errors
-        List<String> errors = new ArrayList<String>();
-        _manvEx.getBindingResult().getAllErrors().forEach((error) -> {
-            try {
-                errors.add(((FieldError) error).getField() + "|" + error.getDefaultMessage());
-            } catch (Exception ignored) {}
-        });
+        List<String> errors = _manvEx.getBindingResult().getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + " | " + error.getDefaultMessage())
+                .collect(Collectors.toList());
         Collections.sort(errors);
-        StandardResponse stdResponse = Utils.createErrorResponse(errors, errorPrefix,"461", _status,errorMsg);
+        StandardResponse stdResponse = Utils.createErrorResponse(errors, errorPrefix,"462", (HttpStatus) _status , errorMsg);
         logTime(startTime, status);
         return new ResponseEntity<>(stdResponse, _headers, HttpStatus.BAD_REQUEST);
     }
+
 
     /**
      * Constraints Violation Exceptions
@@ -92,16 +97,18 @@ public class InputValidatorAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException _cvEx,  WebRequest _request) {
 
-        String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AK";
-        String errorMsg = "Input Errors: Constraint Violations";
+        String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AKH";
+        String errorMsg = "Errors: Input Constraint Violations";
         long startTime = System.currentTimeMillis();
         String status = "STATUS=ERROR: "+errorMsg;
 
-        List<String> errors = new ArrayList<>();
+        // List<String> errors = new ArrayList<>();
+        List<String> errors = new ArrayList<String>();
         _cvEx.getConstraintViolations().forEach(cv -> errors.add(cv.getMessage()));
+        Collections.sort(errors);
 
         StandardResponse stdResponse = Utils.createErrorResponse(
-                errors, errorPrefix, "461", HttpStatus.BAD_REQUEST, "Input Errors: Constraint Violations");
+                errors, errorPrefix, "463", HttpStatus.BAD_REQUEST, "Errors: Input Constraint Violations");
         logTime(startTime, status);
         return new ResponseEntity<>(stdResponse, null, HttpStatus.BAD_REQUEST);
     }

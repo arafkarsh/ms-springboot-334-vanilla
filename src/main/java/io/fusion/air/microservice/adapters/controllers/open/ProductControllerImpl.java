@@ -40,10 +40,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 // Spring
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 // Java
@@ -72,6 +75,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Configuration
 @RestController
 // "/ms-vanilla/api/v1"
+@Validated // This enables validation for method parameters
 @RequestMapping("${service.api.path}/product")
 @RequestScope
 @MicroMeterCounter(name = "fusion.air.product")
@@ -87,16 +91,16 @@ public class ProductControllerImpl extends AbstractController {
 	// @Autowired not required - Constructor based Autowiring
 	private final ProductService productServiceImpl;
 
-	// Micro Meter Instrumentation
-	// @Autowired not required - Constructor based Autowiring
-	private final MeterRegistry meterRegistry;
-
-	public ProductControllerImpl(ServiceConfiguration _serviceConfig,
-								 ProductService _productServiceImpl, MeterRegistry _meterRegistry) {
+	/**
+	 * Constructor based Autowiring
+	 * @param _serviceConfig
+	 * @param _productServiceImpl
+	 */
+	public ProductControllerImpl(ServiceConfiguration _serviceConfig, ProductService _productServiceImpl) {
 		serviceConfig = _serviceConfig;
 		productServiceImpl = _productServiceImpl;
-		meterRegistry = _meterRegistry;
 	}
+
 	/**
 	 * Create the Product
 	 */
@@ -111,7 +115,7 @@ public class ProductControllerImpl extends AbstractController {
 	})
 	@PostMapping("/create")
 	@MicroMeterCounter(endpoint = "/create")
-	public ResponseEntity<StandardResponse> createProduct( @RequestBody Product _product) {
+	public ResponseEntity<StandardResponse> createProduct(@Valid @RequestBody Product _product) {
 		log.debug("|"+name()+"|Request to Create Product... "+_product);
 		ProductEntity prodEntity = productServiceImpl.createProduct(_product);
 		StandardResponse stdResponse = createSuccessResponse("Product Created");
@@ -165,11 +169,6 @@ public class ProductControllerImpl extends AbstractController {
 	@ResponseBody
 	public ResponseEntity<StandardResponse> getAllProducts(HttpServletRequest request,
 														   HttpServletResponse response) throws Exception {
-		// Create a counter with a tag for the specific API endpoint
-		// Counter requestCounter = Counter.builder("fusion.air.product")
-		// 		.tag("endpoint", "/all/")
-		// 		.register(meterRegistry);
-		// requestCounter.increment();	// Increment the counter whenever a request is processed
 		return getAllProducts();
 	}
 
@@ -187,12 +186,6 @@ public class ProductControllerImpl extends AbstractController {
 	@ResponseBody
 	public ResponseEntity<StandardResponse> getAllProductsSecured(HttpServletRequest request,
 														   HttpServletResponse response) throws Exception {
-		// Counter  requestCounter = meterRegistry.counter("fusion.air.product.all.request.count");
-		// Create a counter with a tag for the specific API endpoint
-		// Counter requestCounter = Counter.builder("fusion.air.product")
-		// 		.tag("endpoint", "/all/secured/")
-		// 		.register(meterRegistry);
-		// requestCounter.increment();	// Increment the counter whenever a request is processed
 		return getAllProducts();
 	}
 
@@ -229,7 +222,11 @@ public class ProductControllerImpl extends AbstractController {
 	})
 	@GetMapping("/search/product/{productName}")
 	@MicroMeterCounter(endpoint = "/search/product")
-	public ResponseEntity<StandardResponse> searchProductsByName(@PathVariable("productName") String _productName) {
+	public ResponseEntity<StandardResponse> searchProductsByName(
+			@PathVariable("productName")
+			@NotBlank(message = "The Product Name is  required.")
+			@Size(min = 3, max = 32, message = "The length of Product Name must be between 3 and 32 characters.")
+			String _productName) {
 		log.debug("|"+name()+"|Request to Search the Product By Name ... "+_productName);
 		List<ProductEntity> products = productServiceImpl.fetchProductsByName(_productName);
 		StandardResponse stdResponse = createSuccessResponse("Products Found For Search Term = "+_productName);
@@ -455,6 +452,7 @@ public class ProductControllerImpl extends AbstractController {
 					@ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
 			},
 			parameters = {
+					/**
 					@Parameter(
 							name = "x-csrf-header",
 							in = ParameterIn.HEADER,
@@ -475,6 +473,14 @@ public class ProductControllerImpl extends AbstractController {
 							description = "CSRF-TOKEN",
 							required = false,
 							schema = @Schema(type = "string", defaultValue = "2072dc75-d126-4442-a006-1f657c8973c2")
+					),
+					 */
+					@Parameter(
+							name = "custom-header",
+							in = ParameterIn.HEADER,
+							description = "Custom Parameter in the HTTP Header",
+							required = false,
+							schema = @Schema(type = "string", defaultValue = "2072dc75-d126-4442-a006-1f657c8973c2")
 					)
 			}
 	)
@@ -493,15 +499,12 @@ public class ProductControllerImpl extends AbstractController {
 					PaymentType.CREDIT_CARD);
 			stdResponse.setPayload(ps);
 			return ResponseEntity.ok(stdResponse);
-		} else {
-			 // throw new DuplicateDataException("Invalid Order Value");
-			throw new InputDataException("Invalid Order Value");
-			// throw new BusinessServiceException("Invalid Order Value");
-			// throw new ControllerException("Invalid Order Value");
-			// throw new ResourceNotFoundException("Invalid Order Value");
-			// throw new RuntimeException("Invalid Order Value");
-
 		}
+		// throw new DuplicateDataException("Invalid Order Value");
+		// throw new InputDataException("Invalid Order Value");
+		throw new BusinessServiceException("Invalid Order Value");
+		// throw new ControllerException("Invalid Order Value");
+		// throw new ResourceNotFoundException("Invalid Order Value");
+		// throw new RuntimeException("Invalid Order Value");
     }
-
  }

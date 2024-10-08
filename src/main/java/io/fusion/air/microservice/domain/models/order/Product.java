@@ -18,11 +18,9 @@ package io.fusion.air.microservice.domain.models.order;
 
 import io.fusion.air.microservice.utils.Utils;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import jakarta.validation.constraints.Pattern.Flag;
-import jakarta.validation.constraints.Size;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -47,6 +45,7 @@ public class Product implements Serializable {
     private String productDetails;
 
     @NotNull(message = "The Price is required.")
+    @DecimalMin(value = "0.0", inclusive = false, message = "The Price must be greater than zero.")
     private BigDecimal productPrice;
 
     @NotBlank(message = "The Product Location Zip code is required.")
