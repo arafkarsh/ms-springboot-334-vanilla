@@ -15,29 +15,31 @@
  */
 package io.fusion.air.microservice.adapters.service;
 
+// Custom
 import io.fusion.air.microservice.adapters.repository.ProductRepository;
 import io.fusion.air.microservice.domain.entities.order.ProductEntity;
 import io.fusion.air.microservice.domain.exceptions.DataNotFoundException;
-
 import io.fusion.air.microservice.domain.models.order.Product;
 import io.fusion.air.microservice.domain.ports.services.ProductService;
-
-import org.slf4j.Logger;
+// Spring
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
-
-
+// Java
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import static java.lang.invoke.MethodHandles.lookup;
+// Logging
+import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
+// MicroMeter
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 
 /**
  * An Example of Standard CRUD Operations in a Jpa Repository
@@ -54,8 +56,21 @@ public class ProductServiceImpl implements ProductService {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
 
-    @Autowired
-    private ProductRepository productRepository;
+    // @Autowired not required - Constructor based Autowiring
+    private final ProductRepository productRepository;
+    // @Autowired not required - Constructor based Autowiring
+    private final Timer queryTimer;
+
+    /**
+     * Constructor for Autowiring
+     * @param _productRepository
+     * @param meterRegistry
+     */
+    public ProductServiceImpl(ProductRepository _productRepository,
+                              MeterRegistry meterRegistry) {
+        productRepository = _productRepository;
+        queryTimer = meterRegistry.timer("fusion.air.product.query");
+    }
 
     /**
      * WARNING:
@@ -68,7 +83,10 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<ProductEntity> getAllProduct() {
-        return this.productRepository.findAll();
+        return queryTimer.record(() -> {
+            return this.productRepository.findAll();
+        });
+        // return this.productRepository.findAll();
     }
 
     /**
