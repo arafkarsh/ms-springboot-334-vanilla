@@ -66,6 +66,16 @@ public class CryptoKeyGenerator {
     }
 
     /**
+     * Set the Public Key from KeyCloak
+     * @param key
+     */
+    public void setPublicKeyFromKeyCloak(Key key) {
+        if(key != null) {
+            publicKey = (PublicKey) key;
+        }
+    }
+
+    /**
      * Set the Crypto Key File Names
      * @param _publicKeyFile
      * @param _privateKeyFile
@@ -216,7 +226,7 @@ public class CryptoKeyGenerator {
      * @param _description
      * @return
      */
-    private String convertKeyToText(Key _key, String _description){
+    public String convertKeyToText(Key _key, String _description){
         if(_key == null || _description == null) {
             return "";
         }
@@ -263,12 +273,12 @@ public class CryptoKeyGenerator {
     public RSAPublicKey readPublicKey(File file) throws Exception {
         KeyFactory factory = KeyFactory.getInstance("RSA");
 
-        try (FileReader keyReader = new FileReader(file);
-             PemReader pemReader = new PemReader(keyReader)) {
+        try (var keyReader = new FileReader(file);
+             var pemReader = new PemReader(keyReader)) {
 
-            PemObject pemObject = pemReader.readPemObject();
+            var pemObject = pemReader.readPemObject();
             byte[] content = pemObject.getContent();
-            X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(content);
+            var pubKeySpec = new X509EncodedKeySpec(content);
             return (RSAPublicKey) factory.generatePublic(pubKeySpec);
         }
     }
@@ -282,12 +292,12 @@ public class CryptoKeyGenerator {
     public RSAPrivateKey readPrivateKey(File file) throws Exception {
         KeyFactory factory = KeyFactory.getInstance("RSA");
 
-        try (FileReader keyReader = new FileReader(file);
-             PemReader pemReader = new PemReader(keyReader)) {
+        try (var keyReader = new FileReader(file);
+             var pemReader = new PemReader(keyReader)) {
 
-            PemObject pemObject = pemReader.readPemObject();
+            var pemObject = pemReader.readPemObject();
             byte[] content = pemObject.getContent();
-            PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(content);
+            var privKeySpec = new PKCS8EncodedKeySpec(content);
             return (RSAPrivateKey) factory.generatePrivate(privKeySpec);
         }
     }

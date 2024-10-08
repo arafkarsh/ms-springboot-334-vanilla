@@ -28,10 +28,12 @@ public final class Algorithms {
     public final static String	SHA_1			= "SHA-1";
     public final static String	SHA_224			= "SHA-224";
     public final static String	SHA_256			= "SHA-256";
-    public final static String	SHA_384			= "SHA-386";
+    // public final static String	SHA_384			= "SHA-386";
     public final static String	SHA_512			= "SHA-512";
-    public final static String	SHA_512_224		= "SHA-512_224";
-    public final static String	SHA_512_256		= "SHA-512_256";
+    // public final static String	SHA_512_224		= "SHA-512_224";
+    // public final static String	SHA_512_256		= "SHA-512_256";
+
+    public final static String[] ALGOS           = { MD2, MD5, SHA_1, SHA_224, SHA_256, SHA_512 };
 
     // Cipher Algorithms
     public final static String AES_CBC_NoPadding    = "AES/CBC/NoPadding";

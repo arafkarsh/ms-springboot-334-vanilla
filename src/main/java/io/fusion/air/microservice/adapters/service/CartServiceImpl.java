@@ -21,6 +21,7 @@ import io.fusion.air.microservice.domain.exceptions.DataNotFoundException;
 import io.fusion.air.microservice.domain.models.order.Cart;
 import io.fusion.air.microservice.domain.ports.services.CartService;
 import io.fusion.air.microservice.utils.Utils;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +64,9 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     private CartRepository cartRepository;
+
+    @Autowired
+    private MeterRegistry meterRegistry;
 
     /**
      * ONLY FOR TESTING PURPOSE
@@ -146,13 +150,15 @@ public class CartServiceImpl implements CartService {
     /**
      * Save the Cart
      *
-     * @param cart
+     * @param _cart
      * @return
      */
     @Override
     @Transactional
-    public CartEntity save(Cart cart) {
-        return cartRepository.save(new CartEntity(cart));
+    public CartEntity save(Cart _cart) {
+        CartEntity cart = new CartEntity(_cart);
+        meterRegistry.counter("cart.saved", "status", "Cart Saved!").increment();
+        return cartRepository.save(cart);
     }
 
     /**

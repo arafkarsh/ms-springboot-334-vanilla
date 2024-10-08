@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.security;
-
+// Custom
 import io.fusion.air.microservice.adapters.filters.HeaderManager;
 import io.fusion.air.microservice.adapters.security.AuthorizeRequestAspect;
 import io.fusion.air.microservice.adapters.security.ClaimsManager;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
+// Spring
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
-
+// Java
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import static java.lang.invoke.MethodHandles.lookup;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author: Araf Karsh Hamid
@@ -38,6 +43,9 @@ import java.util.UUID;
 @Service
 @RequestScope
 public class TokenManager {
+
+    // Set Logger -> Lookup will automatically determine the class name.
+    private static final Logger log = getLogger(lookup().lookupClass());
 
     public final static String AUTH         = "auth";
     public final static String AUTH_REFRESH = "refresh";
@@ -98,10 +106,9 @@ public class TokenManager {
         claims.put("rol", "User");
         claims.put("jti", UUID.randomUUID().toString());
 
-        long txTokenExpiry = (tokenRefreshExpiry < 50) ? JsonWebToken.EXPIRE_IN_ONE_HOUR : tokenRefreshExpiry;
-        String token = new JsonWebToken()
+        long txTokenExpiry = (tokenRefreshExpiry < 50) ? JsonWebTokenConstants.EXPIRE_IN_ONE_HOUR : tokenRefreshExpiry;
+        String token = new JsonWebTokenNew()
                             .init(serviceConfig.getTokenType())
-                            .setIssuer(serviceConfig.getServiceOrg())
                             .generateToken(_subject,  serviceConfig.getServiceOrg(),  txTokenExpiry,  claims);
 
         if(headers != null) {
@@ -125,10 +132,9 @@ public class TokenManager {
         Map<String, Object> claims = getServiceClaims(serviceId, serviceName, serviceOwner, servicesAllowed);
         claims.put("type",TX_EXTERNAL);
 
-        long txTokenExpiry =  JsonWebToken.EXPIRE_IN_ONE_DAY;
+        long txTokenExpiry =  JsonWebTokenConstants.EXPIRE_IN_ONE_DAY;
         String token = new JsonWebToken()
                             .init(serviceConfig.getTokenType())
-                            .setIssuer(serviceConfig.getServiceOrg())
                             .generateToken( subject,  serviceConfig.getServiceOrg(),  txTokenExpiry,  claims);
 
         // Store Tokens
@@ -157,17 +163,15 @@ public class TokenManager {
         // Auth Token
         Map<String, Object> claims = getServiceClaims(serviceId, serviceName, serviceOwner, servicesAllowed);
         claims.put("type",TX_SERVICE);
-        long txTokenExpiry =  JsonWebToken.EXPIRE_IN_ONE_DAY;
+        long txTokenExpiry =  JsonWebTokenConstants.EXPIRE_IN_ONE_DAY;
         String token = new JsonWebToken()
                             .init(serviceConfig.getTokenType())
-                            .setIssuer(serviceConfig.getServiceOrg())
                             .generateToken( subject,  serviceConfig.getServiceOrg(),  txTokenExpiry,  claims);
 
         // TX-Token
         claims.put("type",TX_USERS);
         String txToken = new JsonWebToken()
                             .init(serviceConfig.getTokenType())
-                            .setIssuer(serviceConfig.getServiceOrg())
                             .generateToken( subject,  serviceConfig.getServiceOrg(),  txTokenExpiry,  claims);
 
         // Store Tokens
@@ -223,7 +227,6 @@ public class TokenManager {
         authClaims.put("type",AUTH);
         authClaims.put("iss", serviceConfig.getServiceOrg());
         authClaims.put("rol", "User");
-
         authClaims.put("jti", UUID.randomUUID().toString());
 
         Map<String, Object> refreshClaims = new LinkedHashMap<>();
@@ -233,7 +236,6 @@ public class TokenManager {
         refreshClaims.put("iss", serviceConfig.getServiceOrg());
         refreshClaims.put("rol", "User");
         refreshClaims.put("jti", UUID.randomUUID().toString());
-
 
         HashMap<String, String> tokens = refreshTokens(subject, authClaims, refreshClaims);
         String authToken = tokens.get("token");
@@ -256,13 +258,46 @@ public class TokenManager {
      */
     private HashMap<String, String> refreshTokens(String subject,
                                                   Map<String, Object> authTokenClaims, Map<String, Object> refreshTokenClaims) {
-        tokenAuthExpiry = (tokenAuthExpiry < 10) ? JsonWebToken.EXPIRE_IN_FIVE_MINS : tokenAuthExpiry;
-        tokenRefreshExpiry = (tokenRefreshExpiry < 10) ? JsonWebToken.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;
-        return  new JsonWebToken()
+        tokenAuthExpiry = (tokenAuthExpiry < 10) ? JsonWebTokenConstants.EXPIRE_IN_FIVE_MINS : tokenAuthExpiry;
+        tokenRefreshExpiry = (tokenRefreshExpiry < 10) ? JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;
+        return  new JsonWebTokenNew()
                     .init(serviceConfig.getTokenType())
                     .setTokenAuthExpiry(tokenAuthExpiry)
                     .setTokenRefreshExpiry(tokenRefreshExpiry)
                     .generateTokens(subject, serviceConfig.getServiceOrg(), authTokenClaims, refreshTokenClaims);
+    }
+
+    /**
+     * Create Admin Token
+     * @param subject
+     * @return
+     */
+    public String adminToken(String subject, String issuer) {
+        Map<String, Object> claims = getClaims(subject,  issuer);
+        claims.put("rol", "Admin");
+
+        long txTokenExpiry = (tokenRefreshExpiry < 50) ? JsonWebTokenConstants.EXPIRE_IN_ONE_HOUR : tokenRefreshExpiry;;
+        log.info("Admin Token Expiry in Days:Hours:Mins  {}", JsonWebToken.printExpiryTime(txTokenExpiry));
+        return new JsonWebTokenNew()
+                .init(serviceConfig.getTokenType())
+                .generateToken( subject,  issuer,  txTokenExpiry,  claims);
+    }
+
+    /**
+     * Create Claims
+     * @param subject
+     * @param issuer
+     * @return
+     */
+    private Map<String, Object> getClaims(String subject, String issuer) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("aud", serviceConfig.getServiceName());
+        claims.put("jti", UUID.randomUUID().toString());
+        claims.put("sub", subject);
+        claims.put("iss", issuer);
+        claims.put("type",TokenManager.TX_USERS);
+        claims.put("rol", "User");
+        return claims;
     }
 
 }

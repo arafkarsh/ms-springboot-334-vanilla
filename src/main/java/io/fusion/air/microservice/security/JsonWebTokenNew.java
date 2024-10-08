@@ -16,26 +16,22 @@
 
 package io.fusion.air.microservice.security;
 
-// Custom
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
-// JWT
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 // Spring
+import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 // Java
+import java.security.*;
 import javax.crypto.SecretKey;
-import java.security.Key;
-import java.security.PublicKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+// Json Web Token
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 
 /**
  * JSON Web Token Implementation
@@ -46,40 +42,61 @@ import java.util.stream.Collectors;
  * @date
  */
 @Service
-public final class JsonWebToken {
+public final class JsonWebTokenNew {
 
 	// Set Logger -> Lookup will automatically determine the class name.
 	//  private static final Logger log = getLogger(lookup().lookupClass());
-
+	
 	private static String TOKEN = "<([1234567890SecretKey!!To??Encrypt##Data@12345%6790])>";
+
+	public static final long EXPIRE_IN_ONE_MINS 		= 1000 * 60;
+	public static final long EXPIRE_IN_FIVE_MINS 	= EXPIRE_IN_ONE_MINS * 5;
+	public static final long EXPIRE_IN_TEN_MINS 		= EXPIRE_IN_ONE_MINS * 10;
+	public static final long EXPIRE_IN_TWENTY_MINS 	= EXPIRE_IN_ONE_MINS * 20;
+	public static final long EXPIRE_IN_THIRTY_MINS 	= EXPIRE_IN_ONE_MINS * 30;
+	public static final long EXPIRE_IN_ONE_HOUR 		= EXPIRE_IN_ONE_MINS * 60;
+
+	public static final long EXPIRE_IN_TWO_HOUR 		= EXPIRE_IN_ONE_HOUR * 2;
+	public static final long EXPIRE_IN_THREE_HOUR 	= EXPIRE_IN_ONE_HOUR * 3;
+	public static final long EXPIRE_IN_FIVE_HOUR 	= EXPIRE_IN_ONE_HOUR * 5;
+	public static final long EXPIRE_IN_EIGHT_HOUR 	= EXPIRE_IN_ONE_HOUR * 8;
+	public static final long EXPIRE_IN_ONE_DAY 		= EXPIRE_IN_ONE_HOUR * 24;
+
+	public static final long EXPIRE_IN_TWO_DAYS 		= EXPIRE_IN_ONE_DAY * 2;
+	public static final long EXPIRE_IN_ONE_WEEK 		= EXPIRE_IN_ONE_DAY * 7;
+	public static final long EXPIRE_IN_TWO_WEEKS 	= EXPIRE_IN_ONE_DAY * 14;
+	public static final long EXPIRE_IN_ONE_MONTH 	= EXPIRE_IN_ONE_DAY * 30;
+	public static final long EXPIRE_IN_THREE_MONTHS	= EXPIRE_IN_ONE_DAY * 90;
+	public static final long EXPIRE_IN_SIX_MONTHS 	= EXPIRE_IN_ONE_DAY * 180;
+	public static final long EXPIRE_IN_ONE_YEAR 		= EXPIRE_IN_ONE_DAY * 365;
+
+	public static final long EXPIRE_IN_TWO_YEARS 	= EXPIRE_IN_ONE_YEAR * 2;
+	public static final long EXPIRE_IN_FIVE_YEARS 	= EXPIRE_IN_ONE_YEAR * 5;
+	public static final long EXPIRE_IN_TEN_YEARS 	= EXPIRE_IN_ONE_YEAR * 10;
 
 	public static final int SECRET_KEY 				= 1;
 	public static final int PUBLIC_KEY				= 2;
-	public static final int LOCAL_KEY 				= 1;
-	public static final int KEYCLOAK_KEY 			= 2;
-
 
 	@Autowired
 	private ServiceConfiguration serviceConfig;
 
 	@Autowired
-	private JsonWebTokenKeyManager keyManager;
+	private CryptoKeyGenerator cryptoKeys;
 
 	private int tokenType;
 
 	private Key signingKey;
 	private Key validatorKey;
-	private Key validatorLocalKey;
 
 	private String issuer;
-
+	private String subject;
 	private long tokenAuthExpiry;
 	private long tokenRefreshExpiry;
 
 	/**
 	 * Initialize the JWT with the Signature Algorithm based on Secret Key or Public / Private Key
 	 */
-	public JsonWebToken() {
+	public JsonWebTokenNew() {
 	}
 
 	/**
@@ -87,7 +104,7 @@ public final class JsonWebToken {
 	 * settings.
 	 * @return
 	 */
-	public JsonWebToken init() {
+	public JsonWebTokenNew init() {
 		return init(SECRET_KEY);
 	}
 
@@ -96,23 +113,109 @@ public final class JsonWebToken {
 	 * settings.
 	 * @return
 	 */
-	public JsonWebToken init(int _tokenType) {
+	public JsonWebTokenNew init(int _tokenType) {
 		tokenType 			= _tokenType;
-		if(keyManager == null) {
-			System.out.println("Key Manager is Not Auto-Initialized. Manually Initializing now...");
-			keyManager = new JsonWebTokenKeyManager();
-		}
-		keyManager.init(_tokenType);
+		// Set the Algo Symmetric (Secret) OR Asymmetric (Public/Private) based on the Configuration
+		System.out.println("Token Type = "+tokenType);
+		// Create the Key based on Secret Key or Private Key
+		createSigningKey();
+		issuer				= (serviceConfig != null) ? serviceConfig.getServiceOrg() : "fusion.air";
+		subject 			= "jane.doe";
+		setTokenAuthExpiry((serviceConfig != null) ? serviceConfig.getTokenAuthExpiry() : EXPIRE_IN_FIVE_MINS );
+		setTokenRefreshExpiry((serviceConfig != null) ? serviceConfig.getTokenRefreshExpiry() : EXPIRE_IN_THIRTY_MINS );
 		return this;
 	}
 
 	/**
-	 * This is set when the Applications Boots Up from the Servlet Event Listener
-	 * Servlet Event Listener ensures that the public key is downloaded from the KeyCloak Server
-	 * Set the Validator Key as KeyCloak Public Key if the Public Key downloaded from KeyCloak.
+	 * Create the Key based on  Secret Key or Public / Private Key
+	 *
+	 * @return
 	 */
-	public void setKeyCloakPublicKey() {
-		keyManager.setKeyCloakPublicKey();
+	private void createSigningKey() {
+		switch(tokenType) {
+			case SECRET_KEY:
+				signingKey = new SecretKeySpec(getTokenKeyBytes(), "HmacSHA512");
+				validatorKey = signingKey;
+				break;
+			case PUBLIC_KEY:
+				getCryptoKeyGenerator()
+				.setKeyFiles(getCryptoPublicKeyFile(), getCryptoPrivateKeyFile())
+				.iFPublicPrivateKeyFileNotFound().THEN()
+					.createRSAKeyFiles()
+				.ELSE()
+					.readRSAKeyFiles()
+				.build();
+				signingKey = getCryptoKeyGenerator().getPrivateKey();
+				validatorKey = getCryptoKeyGenerator().getPublicKey();
+				System.out.println("Public key format: " + getCryptoKeyGenerator().getPublicKey().getFormat());
+				System.out.println(getCryptoKeyGenerator().getPublicKeyPEMFormat());
+				break;
+		}
+	}
+
+	/**
+	 * Returns Crypto Public Key File
+	 * @return
+	 */
+	private String getCryptoPublicKeyFile() {
+		return (serviceConfig != null) ? serviceConfig.getCryptoPublicKeyFile() : "publicKey.pem";
+	}
+
+	/**
+	 * Returns Crypto Private Key File
+	 * @return
+	 */
+	private String getCryptoPrivateKeyFile() {
+		return (serviceConfig != null) ? serviceConfig.getCryptoPrivateKeyFile() : "privateKey.pem";
+	}
+
+	/**
+	 * Returns Token Key -
+	 * In SpringBooT Context from ServiceConfiguration
+	 * Else from Static TOKEN Key
+	 * @return
+	 */
+	private String getTokenKey() {
+		return (serviceConfig != null) ? serviceConfig.getTokenKey() : TOKEN;
+	}
+
+	/**
+	 * Returns the Token Key in Bytes
+	 * @return
+	 */
+	private byte[] getTokenKeyBytes() {
+		return HashData.base64Encoder(getTokenKey()).getBytes();
+	}
+
+	/**
+	 * Returns CryptoKeyGenerator
+	 * @return
+	 */
+	private CryptoKeyGenerator getCryptoKeyGenerator() {
+		if(cryptoKeys == null) {
+			cryptoKeys = new CryptoKeyGenerator();
+		}
+		return cryptoKeys;
+	}
+
+	/**
+	 * Set the Issuer
+	 * @param _issuer
+	 * @return
+	 */
+	public JsonWebTokenNew setIssuer(String _issuer) {
+		issuer = _issuer;
+		return this;
+	}
+
+	/**
+	 * Set the Subject
+	 * @param _subject
+	 * @return
+	 */
+	public JsonWebTokenNew setSubject(String _subject)   {
+		subject = _subject;
+		return this;
 	}
 
 	/**
@@ -121,8 +224,8 @@ public final class JsonWebToken {
 	 * @param _time
 	 * @return
 	 */
-	public JsonWebToken setTokenAuthExpiry(long _time)   {
-		tokenAuthExpiry = (_time > JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS) ? JsonWebTokenConstants.EXPIRE_IN_FIVE_MINS : _time;
+	public JsonWebTokenNew setTokenAuthExpiry(long _time)   {
+		tokenAuthExpiry = (_time > EXPIRE_IN_THIRTY_MINS) ? EXPIRE_IN_FIVE_MINS : _time;
 		return this;
 	}
 
@@ -131,8 +234,8 @@ public final class JsonWebToken {
 	 * @param _time
 	 * @return
 	 */
-	public JsonWebToken setTokenRefreshExpiry(long _time)   {
-		tokenRefreshExpiry = (_time < JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS) ? JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS : _time;;
+	public JsonWebTokenNew setTokenRefreshExpiry(long _time)   {
+		tokenRefreshExpiry = (_time < EXPIRE_IN_THIRTY_MINS) ? EXPIRE_IN_THIRTY_MINS : _time;;
 		return this;
 	}
 
@@ -157,6 +260,30 @@ public final class JsonWebToken {
 	 * API Usage
 	 * HashMap<String,String> tokens = new JsonWebToken()
 	 * 									.init()
+	 * 									.setTokenExpiry(JsonWebToken.EXPIRE_IN_FIVE_MINS)
+	 * 									.setTokenRefreshExpiry(JsonWebToken.EXPIRE_IN_THIRTY_MINS)
+	 * 									.addAllTokenClaims(Map<String,Object> claims)
+	 * 									.addAllRefreshTokenClaims(Map<String,Object> claims)
+	 * 									generateTokens()
+	 * @return
+	 */
+	public HashMap<String,String>  generateTokens() {
+		HashMap<String, String> tokens  = new HashMap<String, String>();
+		String tokenAuth 	= generateToken(subject, issuer, tokenAuthExpiry, addDefaultClaims(new HashMap<String, Object>()));
+		String tokenRefresh = generateToken(subject, issuer, tokenRefreshExpiry, addDefaultClaims(new HashMap<String, Object>()));
+		tokens.put("token", tokenAuth);
+		tokens.put("refresh", tokenRefresh);
+		return tokens;
+	}
+
+	/**
+	 * Generate Authorize Bearer Token and Refresh Token
+	 * Returns in a HashMap
+	 * token = Authorization Token
+	 * refresh = Refresh token to re-generate the Authorize Token
+	 * API Usage
+	 * HashMap<String,String> tokens = new JsonWebToken()
+	 * 									.init()
 	 * 									generateTokens(_subject, _issuer, _tokenExpiryTime, _refreshTokenExpiryTime);
 	 * @param _subject
 	 * @param _issuer
@@ -168,15 +295,8 @@ public final class JsonWebToken {
 		HashMap<String, String> tokens  = new HashMap<String, String>();
 		String tokenAuth 	= generateToken(_subject, _issuer, _tokenExpiryTime, claimsToken);
 		String tokenRefresh = generateToken(_subject, _issuer, _refreshTokenExpiryTime, claimsRefreshToken);
-		tokens.put("access_token", tokenAuth);
-		tokens.put("refresh_token", tokenRefresh);
-		tokens.put("expires_in", ""+_tokenExpiryTime);
-		tokens.put("refresh_expires_in", ""+_refreshTokenExpiryTime);
-		tokens.put("token_type", "Bearer");
-		tokens.put("not-before-policy", "0");
-		tokens.put("session_state", UUID.randomUUID().toString());
-		tokens.put("scope", "");
-		tokens.put("mode", "Local Auth");
+		tokens.put("token", tokenAuth);
+		tokens.put("refresh", tokenRefresh);
 		return tokens;
 	}
 
@@ -204,19 +324,18 @@ public final class JsonWebToken {
 		String tokenRefresh = generateToken(_subject, _issuer, tokenRefreshExpiry, _claimsRefreshToken);
 		tokens.put("token", tokenAuth);
 		tokens.put("refresh", tokenRefresh);
-		try {
-			tokens.put("expires_in", "" + (tokenAuthExpiry / 1000));
-			tokens.put("refresh_expires_in", "" + (tokenRefreshExpiry / 1000));
-		} catch (Exception e) {
-			tokens.put("expires_in", "" + tokenAuthExpiry);
-			tokens.put("refresh_expires_in", "" + tokenRefreshExpiry);
-		}
-		tokens.put("token_type", "Bearer");
-		tokens.put("not-before-policy", "0");
-		tokens.put("session_state", UUID.randomUUID().toString());
-		tokens.put("scope", "");
-		tokens.put("mode", "Local Auth");
 		return tokens;
+	}
+
+	/**
+	 * Clear All Claims (Token and Refresh Token)
+	 * @deprecated
+	 * @return
+	 */
+	private JsonWebTokenNew clearAllClaims()  {
+		// claimsToken.clear();
+		// claimsRefreshToken.clear();
+		return this;
 	}
 
 	/**
@@ -225,14 +344,6 @@ public final class JsonWebToken {
 	 */
 	public Key getKey() {
 		return signingKey;
-	}
-
-	public Key getValidatorKey() {
-		return validatorKey;
-	}
-
-	public Key getValidatorLocalKey() {
-		return validatorLocalKey;
 	}
 
     /**
@@ -246,7 +357,7 @@ public final class JsonWebToken {
         Map<String, Object> claims = new HashMap<>();
         claims.put("aud", "general");
         claims.put("jti", UUID.randomUUID().toString());
-		return generateToken(_userId,keyManager.getIssuer(),_expiryTime,claims);
+        return generateToken(_userId, issuer, _expiryTime, claims);
     }
 
     /**
@@ -258,7 +369,7 @@ public final class JsonWebToken {
      * @return
      */
     public String generateToken(String _userId, long _expiryTime, Map<String, Object> _claims) {
-        return generateToken(_userId, keyManager.getIssuer(), _expiryTime, _claims);
+        return generateToken(_userId, issuer, _expiryTime, _claims);
     }
     
     /**
@@ -271,8 +382,9 @@ public final class JsonWebToken {
 	 * @return
 	 */
     public String generateToken(String _userId, String _issuer, long _expiryTime, Map<String, Object> _claims) {
-		return generateToken( _userId,  _issuer,  _expiryTime, _claims, keyManager.getKey());
-	}
+		return generateToken( _userId,  _issuer,  _expiryTime, _claims, signingKey);
+
+    }
 
 	/**
 	 * Generate Token with Claims and with Either Secret Key or Private Key
@@ -423,37 +535,15 @@ public final class JsonWebToken {
 	public Jws<Claims> getJws(String _token) {
 		return (tokenType  == PUBLIC_KEY) ?
 				Jwts.parser()
-					.verifyWith( (PublicKey) keyManager.getValidatorKey() )
-					.requireIssuer(keyManager.getIssuer())
+					.verifyWith( (PublicKey) validatorKey )
+					.requireIssuer(issuer)
 					.build()
 					.parseSignedClaims(_token)
 			: Jwts.parser()
-					.verifyWith( (SecretKey) keyManager.getValidatorKey() )
-					.requireIssuer(keyManager.getIssuer())
+					.verifyWith( (SecretKey) validatorKey )
+					.requireIssuer(issuer)
 					.build()
 					.parseSignedClaims(_token);
-	}
-
-	/**
-	 * Returns Jws
-	 * @param _token
-	 * @param issuer
-	 * @param keyType
-	 * @return
-	 */
-	public Jws<Claims> getJws(String _token, String issuer, int keyType) {
-		Key key = (keyType == LOCAL_KEY) ? getValidatorLocalKey() : getValidatorKey();
-		return (tokenType  == PUBLIC_KEY) ?
-				Jwts.parser()
-						.verifyWith( (PublicKey) key )
-						.requireIssuer(keyManager.getIssuer())
-						.build()
-						.parseSignedClaims(_token)
-				: Jwts.parser()
-				.verifyWith( (SecretKey) key )
-				.requireIssuer(keyManager.getIssuer())
-				.build()
-				.parseSignedClaims(_token);
 	}
 
 	/**
@@ -532,6 +622,7 @@ public final class JsonWebToken {
 		}
 		System.out.println("----------------------------------------------");
 		if(showPayload) {
+			System.out.println("----------------------------------------------");
 			System.out.println("Payload=" + getPayload(token));
 			System.out.println("----------------------------------------------");
 		}
@@ -565,6 +656,14 @@ public final class JsonWebToken {
 	}
 
 	/**
+	 * Get the Subject Set for Generating Token / Refresher Token
+	 * @return
+	 */
+	public String getSubject() {
+		return subject;
+	}
+
+	/**
 	 * Only for Testing from Command Line
 	 *
 	 * @param args
@@ -574,11 +673,11 @@ public final class JsonWebToken {
 		System.out.println("===============================================================================");
 		System.out.println("Generate Json Web Tokens Based on SECRET KEYS");
 		System.out.println("===============================================================================");
-		testJWTCreation(JsonWebToken.SECRET_KEY);
+		testJWTCreation(JsonWebTokenNew.SECRET_KEY);
 		System.out.println("===============================================================================");
 		System.out.println("Generate Json Web Tokens Based on PUBLIC/PRIVATE KEYS");
 		System.out.println("===============================================================================");
-		testJWTCreation(JsonWebToken.PUBLIC_KEY);
+		testJWTCreation(JsonWebTokenNew.PUBLIC_KEY);
 		System.out.println("===============================================================================");
 	}
 
@@ -589,10 +688,10 @@ public final class JsonWebToken {
 	protected static void testJWTCreation(int _tokenType) {
 		// Default Algo Secret Key is HS512 = Hmac with SHA-512
 		// for Public / Private Key is RS256
-		JsonWebToken jsonWebToken = new JsonWebToken();
+		JsonWebTokenNew jsonWebToken = new JsonWebTokenNew();
 
-		long tokenAuthExpiry = JsonWebTokenConstants.EXPIRE_IN_FIVE_MINS;
-		long tokenRefreshExpiry = JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS;
+		long tokenAuthExpiry = JsonWebTokenNew.EXPIRE_IN_FIVE_MINS;
+		long tokenRefreshExpiry = JsonWebTokenNew.EXPIRE_IN_THIRTY_MINS;
 
 		String subject	 = "jane.doe";
 		String issuer    = "fusion.air";
@@ -611,11 +710,23 @@ public final class JsonWebToken {
 
 		String token = tokens.get("token");
 		String refresh = tokens.get("refresh");
-		System.out.println("Token Expiry in Days:or:Hours:or:Mins  "+ JsonWebToken.printExpiryTime(tokenAuthExpiry));
+		System.out.println("Token Expiry in Days:or:Hours:or:Mins  "+ JsonWebTokenNew.printExpiryTime(tokenAuthExpiry));
 		jsonWebToken.tokenStats(token, false, false);
 
-		System.out.println("Refresh Token Expiry in Days:or:Hours:or:Mins "+ JsonWebToken.printExpiryTime(tokenRefreshExpiry));
+		System.out.println("Refresh Token Expiry in Days:or:Hours:or:Mins "+ JsonWebTokenNew.printExpiryTime(tokenRefreshExpiry));
 		jsonWebToken.tokenStats(refresh, false, false);
 
 	}
+
+	/**
+	 protected static void test() {
+	 System.out.println(printExpiryTime(JsonWebToken.EXPIRE_IN_FIVE_MINS));
+	 System.out.println(printExpiryTime(JsonWebToken.EXPIRE_IN_THIRTY_MINS));
+	 System.out.println(printExpiryTime(JsonWebToken.EXPIRE_IN_THREE_HOUR));
+	 System.out.println(printExpiryTime(JsonWebToken.EXPIRE_IN_ONE_DAY));
+	 System.out.println(printExpiryTime(JsonWebToken.EXPIRE_IN_THREE_HOUR
+	 +JsonWebToken.EXPIRE_IN_TWENTY_MINS));
+	 System.out.println(printExpiryTime(JsonWebToken.EXPIRE_IN_TWO_DAYS
+	 +JsonWebToken.EXPIRE_IN_THREE_HOUR+JsonWebToken.EXPIRE_IN_THIRTY_MINS));
+	 }*/
 }

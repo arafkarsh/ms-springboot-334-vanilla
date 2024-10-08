@@ -142,13 +142,37 @@ public class ProductControllerImpl extends AbstractController {
 					description = "List All the Product",
 					content = {@Content(mediaType = "application/json")}),
 			@ApiResponse(responseCode = "400",
-					description = "Invalid Product Reference No.",
+					description = "No Products Found!",
 					content = @Content)
 	})
 	@GetMapping("/all/")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> getAllProducts(HttpServletRequest request,
 														   HttpServletResponse response) throws Exception {
+		return getAllProducts();
+	}
+
+	@Operation(summary = "Get All the Products (Secured)", security = { @SecurityRequirement(name = "bearer-key") })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200",
+					description = "List All the Product",
+					content = {@Content(mediaType = "application/json")}),
+			@ApiResponse(responseCode = "400",
+					description = "No Products Found!",
+					content = @Content)
+	})
+	@GetMapping("/all/secured/")
+	@ResponseBody
+	public ResponseEntity<StandardResponse> getAllProductsSecured(HttpServletRequest request,
+														   HttpServletResponse response) throws Exception {
+		return getAllProducts();
+	}
+
+	/**
+	 * Get All the Products
+	 * @return
+	 */
+	private ResponseEntity<StandardResponse> getAllProducts() {
 		log.debug("|"+name()+"|Request to get All Products ... ");
 		List<ProductEntity> productList = productServiceImpl.getAllProduct();
 		StandardResponse stdResponse = null;

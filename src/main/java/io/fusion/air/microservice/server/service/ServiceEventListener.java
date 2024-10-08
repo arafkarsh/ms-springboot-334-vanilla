@@ -16,13 +16,11 @@
 package io.fusion.air.microservice.server.service;
 
 // Custom
-import io.fusion.air.microservice.security.JsonWebToken;
-import io.fusion.air.microservice.security.TokenManager;
+import io.fusion.air.microservice.security.*;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.config.ServiceHelp;
 import io.fusion.air.microservice.utils.CPU;
-
-import org.slf4j.MDC;
+// Spring
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootVersion;
@@ -34,14 +32,14 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.slf4j.Logger;
 // Java
 import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
+import org.slf4j.MDC;
 import static org.slf4j.LoggerFactory.getLogger;
 import static java.lang.invoke.MethodHandles.lookup;
 
 /**
- * 
+ * Service Event Listener
+ * This Service is called (by the Spring Framework) when the Application is Ready.
+ *
  * @author arafkarsh
  * @version 1.0
  */
@@ -55,7 +53,13 @@ public class ServiceEventListener {
 	private ServiceConfiguration serviceConfig;
 
 	@Autowired
-	JsonWebToken jsonWebToken;
+	private JsonWebToken jsonWebToken;
+
+	@Autowired
+	private JsonWebTokenValidator jsonWebTokenValidator;
+
+	@Autowired
+	private JsonWebTokenKeyManager jsonWebTokenKeyManager;
 
 	@Value("${server.token.test}")
 	private boolean serverTokenTest;
@@ -74,12 +78,20 @@ public class ServiceEventListener {
 	@Autowired
 	private ConfigurableEnvironment environment;
 
+	/**
+	 * Check the Dev Mode
+	 * @return
+	 */
 	private boolean  getDevMode() {
 		// System.out.println("<><><><1> Profile = "+devMode);
 		activeProfile = getActiveProfile();
 		return (activeProfile != null && activeProfile.equalsIgnoreCase("prod")) ? false : true;
 	}
 
+	/**
+	 * Get Active Profile
+	 * @return
+	 */
 	private String getActiveProfile() {
 		// System.out.println("Total Profiles = "+environment.getActiveProfiles().length);
 		// System.out.println("Checking Active Profiles.... ");
@@ -99,23 +111,32 @@ public class ServiceEventListener {
 
 	/**
 	 * Shows Logo and Generate Test Tokens
+	 * This method is automatically called by the SpringBoot Application when the Application
+	 * is ready.
 	 */
 	@EventListener(ApplicationReadyEvent.class)
 	public void doSomethingAfterStartup() {
 		log.info("Service is getting ready. Getting the CPU Stats ... ");
 		log.info(CPU.printCpuStats());
 		showLogo();
+		// Initialize the Key Manager
+		jsonWebTokenKeyManager.init(serviceConfig.getTokenType());
+		jsonWebTokenKeyManager.setKeyCloakPublicKey();
 		// Initialize the Token
 		jsonWebToken.init(serviceConfig.getTokenType());
 		if(serverTokenTest && getDevMode() ) {
-			log.debug("Generate Test Tokens = {} ", serverTokenTest);
+			log.info("Generate Test Tokens = {} ", serverTokenTest);
 			generateTestToken();		// ONLY FOR DEVELOPER TESTING
 		}
+		// Initialize the KeyCloak Public Key
+		jsonWebToken.setKeyCloakPublicKey();
 	}
 
 	/**
+	 * ----------------------------------------------------------------------------------------------------------
 	 * WARNING:
-	 * These tokens can be generated only in an Auth Service. All the services need not generate these tokens
+	 * ----------------------------------------------------------------------------------------------------------
+	 * These tokens MUST be generated only in an Auth Service. All the services need not generate these tokens
 	 * unless for the developers to test it out. In a real world scenario, disable (Comment out the function
 	 * generateTestToken()) this feature for production environment.
 	 * THIS IS ONLY FOR TESTING PURPOSES.
@@ -128,68 +149,42 @@ public class ServiceEventListener {
 	 */
 	private void generateTestToken() {
 		log.info("Token Type = {}", serviceConfig.getTokenType());
-		tokenAuthExpiry = (tokenAuthExpiry < 10) ? JsonWebToken.EXPIRE_IN_FIVE_MINS : tokenAuthExpiry;
-		tokenRefreshExpiry = (tokenRefreshExpiry < 10) ? JsonWebToken.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;
+		// Step 1: Set Expiry Time
+		tokenAuthExpiry = (tokenAuthExpiry < 10) ? JsonWebTokenConstants.EXPIRE_IN_FIVE_MINS : tokenAuthExpiry;
+		tokenRefreshExpiry = (tokenRefreshExpiry < 10) ? JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;
 
+		// Step 2: Set Subject and Issuer
 		String subject	 = "jane.doe";
 		String issuer    = serviceConfig.getServiceOrg();
 		String type 	 = TokenManager.TX_USERS;
 
+		// Step 3: Initialize TokenManager
 		TokenManager tokenManager = new TokenManager(serviceConfig, tokenAuthExpiry, tokenRefreshExpiry);
 
 		// Step 4: Generate Authorize Tokens
 		HashMap<String, String> tokens = tokenManager.createAuthorizationToken(subject, null);
-
 		String token = tokens.get("token");
 		String refresh = tokens.get("refresh");
-		log.info("Token Expiry in Days:Hours:Mins  {} ", JsonWebToken.printExpiryTime(tokenAuthExpiry));
+
+		log.info("Auth Token Expiry in Days:Hours:Mins  {}   Tkn-1 <>", JsonWebToken.printExpiryTime(tokenAuthExpiry));
 		jsonWebToken.tokenStats(token, false, false);
+		log.info("Auth Token.... END ................................... Tkn-1 <>");
 
-		log.info("Refresh Token Expiry in Days:Hours:Mins  {}", JsonWebToken.printExpiryTime(tokenRefreshExpiry));
+		log.info("Refresh Token Expiry in Days:Hours:Mins  {} Tkn-2 <>", JsonWebToken.printExpiryTime(tokenRefreshExpiry));
 		jsonWebToken.tokenStats(refresh, false, false);
+		log.info("Refresh Token.... END ............................... Tkn-2 <>");
 
-		log.info("Tx-Token Expiry in Days:Hours:Mins  {}", JsonWebToken.printExpiryTime(tokenRefreshExpiry));
+		log.info("Tx-Token Expiry in Days:Hours:Mins  {}    Tkn-3 <>", JsonWebToken.printExpiryTime(tokenRefreshExpiry));
 		String txToken = tokenManager.createTXToken(subject, type, null);
 		jsonWebToken.tokenStats(txToken, false, false);
+		log.info("Tx Token.... END ....................................... Tkn-3 <>");
 
-		String admToken = adminToken(subject);
+		log.info("Admin Token Expiry in Days:Hours:Mins  {} Tkn-4 <>", JsonWebToken.printExpiryTime(tokenRefreshExpiry));
+		String admToken = tokenManager.adminToken(subject, issuer);
 		jsonWebToken.tokenStats(admToken, false, false);
-	}
+		log.info("Admin Token.... END ................................. Tkn-4 <>");
 
-	/**
-	 * Create Admin Token
-	 * @param subject
-	 * @return
-	 */
-	private String adminToken(String subject) {
-		String issuer    = serviceConfig.getServiceOrg();
-		Map<String, Object> claims = getClaims( subject,  issuer);
-		claims.put("rol", "Admin");
-
-		long txTokenExpiry = (tokenRefreshExpiry < 50) ? JsonWebToken.EXPIRE_IN_ONE_HOUR : tokenRefreshExpiry;;
-		log.info("\nAdmin Token Expiry in Days:Hours:Mins  {}", JsonWebToken.printExpiryTime(txTokenExpiry));
-		return jsonWebToken
-				.init(serviceConfig.getTokenType())
-				.setSubject(subject)
-				.setIssuer(serviceConfig.getServiceOrg())
-				.generateToken( subject,  serviceConfig.getServiceOrg(),  txTokenExpiry,  claims);
-	}
-
-	/**
-	 * Create Claims
-	 * @param subject
-	 * @param issuer
-	 * @return
-	 */
-	private Map<String, Object> getClaims(String subject, String issuer) {
-		Map<String, Object> claims = new HashMap<>();
-		claims.put("aud", serviceConfig.getServiceName());
-		claims.put("jti", UUID.randomUUID().toString());
-		claims.put("sub", subject);
-		claims.put("iss", issuer);
-		claims.put("type",TokenManager.TX_USERS);
-		claims.put("rol", "User");
-		return claims;
+		log.info("Token Creation done... for Dev Testing........... ............ COMPLETE!!");
 	}
 
 	/**
@@ -218,8 +213,7 @@ public class ServiceEventListener {
 				+ " :: Restart = "+ServiceHelp.getCounter()
 				+ ServiceHelp.NL + ServiceHelp.DL);
 		// if(getDevMode() ) {
-			log.info(ServiceHelp.NL + "API URL : " + serviceConfig.apiURL()
-					+ ServiceHelp.NL + ServiceHelp.DL
+			log.info(ServiceHelp.NL + "API URL : " + serviceConfig.apiURL() + ServiceHelp.NL + ServiceHelp.DL
 			);
 		//}
 	}

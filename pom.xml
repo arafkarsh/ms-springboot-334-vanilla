@@ -9,6 +9,9 @@
 	<name>msVanillaService</name>
 	<description>Microservice Vanilla Template</description>
 
+	<!-- =================================================================== -->
+	<!-- SpringBoot Parent -->
+	<!-- =================================================================== -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -34,17 +37,22 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<!-- Utilities ===================================================== -->
+		<!-- Logging ======================================================= -->
 		<slf4j.version>2.0.16</slf4j.version>
 		<logback.version>1.5.8</logback.version>
+		<micrometer.version>1.13.5</micrometer.version>
+
+		<!-- Utilities ===================================================== -->
 		<google.guava.version>33.3.1-jre</google.guava.version>
 		<apache.httpclient>5.4</apache.httpclient>
 		<apache.commons.version>3.17.0</apache.commons.version>
 		<fasterxml.version>2.18.0</fasterxml.version>
+
+		<!-- Security JWT ================================================== -->
 		<jwt.api.version>0.12.6</jwt.api.version>
 		<bouncycastle.version>1.78.1</bouncycastle.version>
 
-		<!-- Jakarta EE / Jaxb / Hibernate ================================= -->
+		<!-- Jakarta EE ========================================= ========== -->
 		<javax.bean.validation.version>2.0.1.Final</javax.bean.validation.version>
 		<jakarta.bean.validation.version>3.0.0</jakarta.bean.validation.version>
 		<jakarta.ee.version>10.0.0</jakarta.ee.version>
@@ -53,6 +61,7 @@
 		<jakarta.jaxb.version>4.0.2</jakarta.jaxb.version>
 		<jaxb.version>2.3.1</jaxb.version>
 
+		<!-- Hibernate / H2 / PostgreSQL / Redis Cache ===================== -->
 		<mapstruct.version>1.6.2</mapstruct.version>
 		<hibernate.core.version>6.6.1.Final</hibernate.core.version>
 		<hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
@@ -85,6 +94,45 @@
 	</repositories>
 
 	<dependencies>
+		<!-- ================================================================= -->
+		<!-- Logging - SLF4J / LogBack / Micrometer / SpringBoot Actuator  -->
+		<!-- ================================================================= -->
+
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-core -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+			<version>${micrometer.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+			<version>${micrometer.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+
 		<!-- ================================================================= -->
 		<!-- Jakarta EE Frameworks / Hibernate / PostgresSQL -->
 		<!-- Required from Java 17 onwards -->
@@ -157,20 +205,6 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>${jaxb.version}</version>
-		</dependency>
-
-		<!-- ================================================================= -->
-		<!-- Log Framework -->
-		<!-- ================================================================= -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
 		</dependency>
 
 		<!-- ================================================================= -->
@@ -300,14 +334,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
-			<version>${spring.boot.version}</version>
-		</dependency>
-
-
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
 

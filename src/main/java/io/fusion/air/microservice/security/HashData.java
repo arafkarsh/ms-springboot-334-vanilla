@@ -158,12 +158,10 @@ public final class HashData {
         if(_message == null) {							// Check Input Message
             throw new Exception("Invalid message for hashing");
         }
-
         String encoding = _encoding;
         if(encoding == null) {								// Check Input Encoding
             encoding = "UTF-8";
         }
-
         // Input validation over -------------------------------------------------------------------------------
         MessageDigest mesgDigest = null;
         try {
@@ -172,9 +170,7 @@ public final class HashData {
         try {
             mesgDigest.update(_message.getBytes(encoding)); 				// Updates the digest
         } catch(UnsupportedEncodingException e) { throw e; }
-
         byte raw[] = mesgDigest.digest(); 									// Hash Computation and reset
-
         return base64Encoder(raw); 											// Convert raw data in Base64
 
         // Hash computing over -------------------------------------------------------------------------------
@@ -224,7 +220,6 @@ public final class HashData {
     /**
      * Use this method to test the code in the command line.
      */
-
     public static void main(String[] args) throws Exception {
 
         System.out.println("12345 = "+HashData.createHash("12345"));
@@ -240,46 +235,24 @@ public final class HashData {
 
             System.out.println("\nTesting with default Password = MyC0mp13xPa$$w0rd -----------------------\n");
 
-            long ll = System.currentTimeMillis();
-            int xx = 9999999;
-            System.out.println("TimeInMillis = "+ll);
-            System.out.println("Hex Value    = "+Long.toHexString(ll).toUpperCase());
-            System.out.println("Base64 Value = "+ HashData.base64Encoder(""+ll));
-            System.out.println("Running No.  = "+xx);
-            System.out.println("Hex Value    = "+Integer.toHexString(xx).toUpperCase());
-
-            System.out.println("\n");
-
             args = new String[2];
             args[0]	=	new String("MyC0mp13xPa$$w0rd");
             args[1]	=	"0";
-
         }
-        /**
-         MD5     	Password = ( MyC0mp13xPa$$w0rd ) { FdI/f4FwX9G77bWsXvPdNA== }
-         SHA-1     	Password = ( MyC0mp13xPa$$w0rd ) { 1efAOuOs0D6NOqispKWGOV4hPyk= }
-         SHA-256     Password = ( MyC0mp13xPa$$w0rd ) { Q0RVvX7GKq2vShiNF8VPv9A770eGY/ZvluRpQ+sFcUg= }
-         SHA-384     Password = ( MyC0mp13xPa$$w0rd ) { mXlHG4Nrw+e7Z/si20aBzm02Mpadj1AzZ9TBBg86UBjD9hvmytvCogWO5BleQJax }
-         SHA-512     Password = ( MyC0mp13xPa$$w0rd ) { XR/g4iAU1mGrGAVj6XUNfsfptbg+9cenyCtb8z2NdIlJZfm1dpET61fnc34hYUa2FuEUZealj4UCla16+rpaXA== }
-         */
+
         String passwordHash = "";
         String password 	= args[0];
-        String algo 		= HashData.getDefaultAlgorithm();
-        Algorithms algos    = HashData.algo();
-        algo = args[1];
 
         // Print all the algorithms computed hash value of the input message if the algo code == ZERO
-        /**
-        if (algo == 0) {
-            for(int x = 0; x< (algos.totalMessageDigestAlgorithms()-1); x++) {
-                passwordHash = HashData.createHash(password, x+1);
-                System.out.println(algos.algos(x+1)+"\tPassword = ( "+password+" )"+" { "+passwordHash+" }");
-            }
-        } else {
-            passwordHash = HashData.createHash(password, algo);
-            System.out.println("ALGOS="+algos.algos(algo)+" \tPassword = ( "+password+" )"+" { "+passwordHash+" }");
+        for(int x = 0; x< Algorithms.ALGOS.length; x++) {
+            passwordHash = HashData.createHash(password, Algorithms.ALGOS[x]);
+            System.out.println(Algorithms.ALGOS[x]+"\tPassword = ( "+password+" )"+" { "+passwordHash+" }");
         }
-         */
+        System.out.println("-----------------------------------------------\n");
+        for(int x = 0; x< Algorithms.ALGOS.length; x++) {
+            passwordHash = HashData.createHash("Hello", Algorithms.ALGOS[x]);
+            System.out.println(Algorithms.ALGOS[x]+"\tPassword = ( Hello )"+" { "+passwordHash+" }");
+        }
     }
 }
 

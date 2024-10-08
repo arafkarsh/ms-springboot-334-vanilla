@@ -25,6 +25,7 @@ import io.fusion.air.microservice.domain.ports.services.OrderService;
 import io.fusion.air.microservice.domain.statemachine.order.OrderEvent;
 import io.fusion.air.microservice.utils.Utils;
 // Spring
+import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private MeterRegistry meterRegistry;
 
     /**
      * ONLY FOR TESTING PURPOSE
@@ -131,6 +135,8 @@ public class OrderServiceImpl implements OrderService {
             throw new InputDataException("Invalid Order Data");
         }
         order.calculateTotalOrderValue();
+        // Log Order Status
+        meterRegistry.counter("orders.processed", "status", order.getOrderState().name()).increment();
         return orderRepository.save(order);
     }
 

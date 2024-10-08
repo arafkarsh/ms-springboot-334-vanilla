@@ -22,6 +22,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
 /**
+ * Claims Manager
+ *
+ * Claims Manager handles all the Claims Extracted from the JWT Token
+ * Claims Manager is Scoped at the Request Level and is Thread Safe as the ProxyMode is set to TARGET_CLASS.
+ *
+ * Scoped Proxy: The proxyMode = ScopedProxyMode.TARGET_CLASS creates a CGLIB proxy of the actual target bean.
+ * Method Invocation: When methods of the injected bean are invoked in the singleton, the proxy routes those
+ * calls to the instance of the bean that is tied to the current HTTP request.
+ * Thread Safety: Since a new instance of the bean is created for each HTTP request, this setup is inherently
+ * thread-safe for the request-scoped bean. Different threads handling different HTTP requests will each get
+ * their own unique instance.
+ * This way, the singleton bean is interacting with a request-specific instance of the request-scoped bean,
+ * thanks to the proxy, which makes it safe and thread-local to the current request.
+ * Note: Although the request-scoped bean is thread-safe in this context, the singleton bean into which it is
+ * injected still needs to be designed to be thread-safe if it maintains any mutable shared state.
+ *
  * @author: Araf Karsh Hamid
  * @version:
  * @date:
@@ -99,4 +115,33 @@ public class ClaimsManager {
     public String getUserRole() {
         return (String) claims.get("rol");
     }
+
+    // ====================================================================================================
+    // Claims from KeyCloak Authentication
+    // ====================================================================================================
+
+    /**
+     * Returns the User ID
+     * @return
+     */
+    public String getUserID() {
+        return (claims != null) ? (String) claims.get("preferred_username") : "";
+    }
+
+    /**
+     * Returns the User Name
+     * @return
+     */
+    public String getUserName() {
+        return (claims != null) ? (String) claims.get("name") : "";
+    }
+
+    /**
+     * Returns the Email Address
+     * @return
+     */
+    public String getEmail() {
+        return (claims != null) ? (String) claims.get("email") : "";
+    }
+
 }
