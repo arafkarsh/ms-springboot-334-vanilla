@@ -51,7 +51,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @ControllerAdvice
 @Order(1)
-public class InputValidatorAdvice extends ResponseEntityExceptionHandler {
+public class InputValidatorAdvice {
 
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
@@ -61,54 +61,49 @@ public class InputValidatorAdvice extends ResponseEntityExceptionHandler {
     private ServiceConfiguration serviceConfig;
 
     /**
-     * Handling Invalid Input in Requests
-     * @param _manvEx
-     * @param _headers
-     * @param _status
+     * Validating Complex Object Rules
+     * @param _ex
      * @param _request
      * @return
      */
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException _manvEx,
-                                                                  HttpHeaders _headers, HttpStatusCode _status, WebRequest _request) {
-
-        String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AKH";
-        String errorMsg = "Errors: Invalid Method Arguments";
-        long startTime = System.currentTimeMillis();
-        String status = "STATUS=ERROR: "+errorMsg;
-        // Create Input Errors
-        List<String> errors = _manvEx.getBindingResult().getFieldErrors()
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException _ex, WebRequest _request) {
+        List<String> errors = _ex.getBindingResult()
+                .getFieldErrors()
                 .stream()
                 .map(error -> error.getField() + " | " + error.getDefaultMessage())
                 .collect(Collectors.toList());
-        Collections.sort(errors);
-        StandardResponse stdResponse = Utils.createErrorResponse(errors, errorPrefix,"462", (HttpStatus) _status , errorMsg);
-        logTime(startTime, status);
-        return new ResponseEntity<>(stdResponse, _headers, HttpStatus.BAD_REQUEST);
+        return prepareErrorResponse( "462",  "Errors: Invalid Method Arguments",  errors );
     }
 
-
     /**
-     * Constraints Violation Exceptions
-     * @param _cvEx
+     * Validating Method Parameters
+     * @param _ex
      * @param _request
      * @return
      */
     @ExceptionHandler(value = ConstraintViolationException.class)
-    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException _cvEx,  WebRequest _request) {
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException _ex,  WebRequest _request) {
+        List<String> errors = _ex.getConstraintViolations()
+                .stream()
+                .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
+                .collect(Collectors.toList());
+        return prepareErrorResponse( "463",  "Errors: Input Constraint Violations",  errors );
+    }
 
+    /**
+     * Prepares the Error Message
+     * @param errorCode
+     * @param errorMsg
+     * @param errors
+     * @return
+     */
+    private ResponseEntity<Object> prepareErrorResponse(String errorCode, String errorMsg, List<String> errors ) {
         String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AKH";
-        String errorMsg = "Errors: Input Constraint Violations";
         long startTime = System.currentTimeMillis();
         String status = "STATUS=ERROR: "+errorMsg;
-
-        // List<String> errors = new ArrayList<>();
-        List<String> errors = new ArrayList<String>();
-        _cvEx.getConstraintViolations().forEach(cv -> errors.add(cv.getMessage()));
         Collections.sort(errors);
-
-        StandardResponse stdResponse = Utils.createErrorResponse(
-                errors, errorPrefix, "463", HttpStatus.BAD_REQUEST, "Errors: Input Constraint Violations");
+        StandardResponse stdResponse = Utils.createErrorResponse(errors, errorPrefix, errorCode, HttpStatus.BAD_REQUEST, errorMsg);
         logTime(startTime, status);
         return new ResponseEntity<>(stdResponse, null, HttpStatus.BAD_REQUEST);
     }

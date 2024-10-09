@@ -54,6 +54,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -452,29 +453,6 @@ public class ProductControllerImpl extends AbstractController {
 					@ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
 			},
 			parameters = {
-					/**
-					@Parameter(
-							name = "x-csrf-header",
-							in = ParameterIn.HEADER,
-							description = "CSRF-HEADER",
-							required = false,
-							schema = @Schema(type = "string", defaultValue = "X-XSRF-TOKEN")
-					),
-					@Parameter(
-							name = "x-csrf-param",
-							in = ParameterIn.HEADER,
-							description = "CSRF-PARAM",
-							required = false,
-							schema = @Schema(type = "string", defaultValue = "_csrf")
-					),
-					@Parameter(
-							name = "x-csrf-token",
-							in = ParameterIn.HEADER,
-							description = "CSRF-TOKEN",
-							required = false,
-							schema = @Schema(type = "string", defaultValue = "2072dc75-d126-4442-a006-1f657c8973c2")
-					),
-					 */
 					@Parameter(
 							name = "custom-header",
 							in = ParameterIn.HEADER,
@@ -488,23 +466,32 @@ public class ProductControllerImpl extends AbstractController {
 	@MicroMeterCounter(endpoint = "/processProducts")
 	public ResponseEntity<StandardResponse> processProduct(@RequestBody PaymentDetails _payDetails) {
 		log.debug("|"+name()+"|Request to process Product... "+_payDetails);
-		if(_payDetails != null && _payDetails.getOrderValue() > 0) {
-			StandardResponse stdResponse = createSuccessResponse("Processing Success!");
-			PaymentStatus ps = new PaymentStatus(
-					"fb908151-d249-4d30-a6a1-4705729394f4",
-					LocalDateTime.now(),
-					"Accepted",
-					UUID.randomUUID().toString(),
-					LocalDateTime.now(),
-					PaymentType.CREDIT_CARD);
-			stdResponse.setPayload(ps);
-			return ResponseEntity.ok(stdResponse);
+		if(_payDetails != null) {
+			if(_payDetails.getCardDetails().getExpiryYear() < LocalDate.now().getYear()) {
+				throw new BusinessServiceException("Invalid Card Expiry Year");
+			}
+			if(_payDetails.getCardDetails().getExpiryMonth() < 1 ||  _payDetails.getCardDetails().getExpiryMonth() >12) {
+				throw new BusinessServiceException("Invalid Card Expiry Month");
+			}
+			if (_payDetails.getOrderValue() > 0) {
+				StandardResponse stdResponse = createSuccessResponse("Processing Success!");
+				PaymentStatus ps = new PaymentStatus(
+						"fb908151-d249-4d30-a6a1-4705729394f4",
+						LocalDateTime.now(),
+						"Accepted",
+						UUID.randomUUID().toString(),
+						LocalDateTime.now(),
+						PaymentType.CREDIT_CARD);
+				stdResponse.setPayload(ps);
+				return ResponseEntity.ok(stdResponse);
+			}
+			throw new InputDataException("Invalid Order Value");
 		}
-		// throw new DuplicateDataException("Invalid Order Value");
-		// throw new InputDataException("Invalid Order Value");
-		throw new BusinessServiceException("Invalid Order Value");
-		// throw new ControllerException("Invalid Order Value");
-		// throw new ResourceNotFoundException("Invalid Order Value");
-		// throw new RuntimeException("Invalid Order Value");
+		throw new ControllerException("Invalid Order!!!");
     }
  }
+// throw new DuplicateDataException("Invalid Order Value");
+// throw new InputDataException("Invalid Order Value");
+// throw new BusinessServiceException("Invalid Order Value");
+// throw new ResourceNotFoundException("Invalid Order Value");
+// throw new RuntimeException("Invalid Order Value");

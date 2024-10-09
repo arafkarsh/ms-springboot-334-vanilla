@@ -556,19 +556,6 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
         return createErrorResponse(_mdrEx,  "464", _request);
     }
 
-    /**
-     * Method Argument Not Valid Exception
-     * @param _mANVEx
-     * @param _request
-     * @return
-     */
-    /**
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException _mANVEx,  WebRequest _request) {
-        return createErrorResponse(_mANVEx, _mANVEx.getMessage(), "463", null, HttpStatus.BAD_REQUEST, _request);
-    }
-    */
-
     // ================================================================================================================
     // CONTROLLER EXCEPTIONS: ERROR CODES 490 - 499
     // ================================================================================================================
@@ -581,6 +568,20 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = ControllerException.class)
     public ResponseEntity<Object> handleControllerException(ControllerException _coEx,  WebRequest _request) {
         return createErrorResponse(_coEx,  "490", _request);
+    }
+
+    // ================================================================================================================
+    // GENERIC Exception Handling
+    // ================================================================================================================
+    /**
+     * Handle any unspecified Exceptions
+     * @param _runEx
+     * @param _request
+     * @return
+     */
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<Object> handleGenericException(Exception _runEx, WebRequest _request) {
+        return createErrorResponse(_runEx, _runEx.getMessage(), "500", null, HttpStatus.INTERNAL_SERVER_ERROR, _request);
     }
 
     // ================================================================================================================
