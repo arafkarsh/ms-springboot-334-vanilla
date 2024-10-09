@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.adapters.aop;
-
+// Custom
 import io.fusion.air.microservice.domain.exceptions.*;
 import io.fusion.air.microservice.domain.exceptions.SecurityException;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.utils.Utils;
-import org.slf4j.Logger;
+// Spring
+import org.checkerframework.common.returnsreceiver.qual.This;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.AccessDeniedException;
@@ -33,16 +35,18 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
+// Java
+import org.slf4j.Logger;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import jakarta.persistence.*;
-
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * Exception Handler to handle All Exceptions at a centralized location using AOP
+ *
  * @author: Araf Karsh Hamid
  * @version:
  * @date:
@@ -55,8 +59,16 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     private static final Logger log = getLogger(lookup().lookupClass());
 
     // ServiceConfiguration
-    @Autowired
-    private ServiceConfiguration serviceConfig;
+    // @Autowired not required - Constructor based Autowiring
+    private final ServiceConfiguration serviceConfig;
+
+    /**
+     * Constructor for Autowiring
+     * @param _serviceConfig
+     */
+    public ExceptionHandlerAdvice(ServiceConfiguration _serviceConfig) {
+        serviceConfig = _serviceConfig;
+    }
 
     /**
      * Handle All Exceptions
@@ -67,14 +79,21 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @param request
      * @return
      */
-    // @Override
+    @Override
     protected ResponseEntity<Object> handleExceptionInternal(
-                Exception ex, @Nullable Object body,
-                HttpHeaders headers, HttpStatus status, WebRequest request) {
+            Exception ex, @Nullable Object body,
+            HttpHeaders headers, HttpStatusCode status,
+            WebRequest request) {
         if (HttpStatus.INTERNAL_SERVER_ERROR.equals(status)) {
-            request.setAttribute("javax.servlet.error.exception", ex, 0);
+            // Purpose: If the status is an internal server error (500), this block sets the exception
+            // as a request attribute (jakarta.servlet.error.exception). This is useful for internal
+            // logging or forwarding error details to a logging framework or view.
+	        // request.setAttribute(): This sets an attribute on the WebRequest with the key
+            // "jakarta.servlet.error.exception" and the value of the exception (ex). The 0 is the
+            // scope, indicating that the attribute is available only for the current request.
+            request.setAttribute("jakarta.servlet.error.exception", ex, 0);
         }
-        return createErrorResponse(ex, headers, status, request);
+        return createErrorResponse(ex, headers, (HttpStatus) status, request);
     }
 
     /**
@@ -84,7 +103,9 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @param _request
      * @return
      */
-    private ResponseEntity<Object> createErrorResponse(Exception _ex, HttpStatus _status, WebRequest _request) {
+    private ResponseEntity<Object> createErrorResponse(Exception _ex,
+                                                       HttpStatus _status,
+                                                       WebRequest _request) {
         return createErrorResponse(_ex, _ex.getMessage(), "599",null, _status, _request);
     }
 
@@ -96,8 +117,10 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @param _request
      * @return
      */
-    private ResponseEntity<Object> createErrorResponse(Exception _ex, HttpHeaders _headers,
-                                                       HttpStatus _status, WebRequest _request) {
+    private ResponseEntity<Object> createErrorResponse(Exception _ex,
+                                                       HttpHeaders _headers,
+                                                       HttpStatus _status,
+                                                       WebRequest _request) {
         return createErrorResponse(_ex, _ex.getMessage(), "599",_headers, _status, _request);
     }
 
@@ -109,7 +132,8 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @return
      */
     private ResponseEntity<Object> createErrorResponse(AbstractServiceException _ase,
-                                                       String _errorCode, WebRequest _request) {
+                                                       String _errorCode,
+                                                       WebRequest _request) {
         return createErrorResponse(_ase, _ase.getMessage(), _errorCode, null, _ase.getHttpStatus(), _request);
     }
     /**
@@ -120,8 +144,10 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @param _request
      * @return
      */
-    private ResponseEntity<Object> createErrorResponse(AbstractServiceException _ase, String _errorCode,
-                                                       HttpHeaders _headers, WebRequest _request) {
+    private ResponseEntity<Object> createErrorResponse(AbstractServiceException _ase,
+                                                       String _errorCode,
+                                                       HttpHeaders _headers,
+                                                       WebRequest _request) {
         return createErrorResponse(_ase, _ase.getMessage(), _errorCode, _headers, _ase.getHttpStatus(), _request);
     }
 
@@ -131,8 +157,10 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @param _request
      * @return
      */
-    private ResponseEntity<Object> createErrorResponse(PersistenceException _pEx, String _message,
-                                                      String _errorCode, WebRequest _request) {
+    private ResponseEntity<Object> createErrorResponse(PersistenceException _pEx,
+                                                       String _message,
+                                                       String _errorCode,
+                                                       WebRequest _request) {
         return createErrorResponse(_pEx, _message, _errorCode, null, HttpStatus.BAD_REQUEST, _request);
     }
 
@@ -146,8 +174,12 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @param _request
      * @return
      */
-    private ResponseEntity<Object> createErrorResponse(Throwable _exception, String _message, String _errorCode,
-                                                       HttpHeaders _headers, HttpStatus _httpStatus, WebRequest _request) {
+    private ResponseEntity<Object> createErrorResponse(Throwable _exception,
+                                                       String _message,
+                                                       String _errorCode,
+                                                       HttpHeaders _headers,
+                                                       HttpStatus _httpStatus,
+                                                       WebRequest _request) {
 
         String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AKH";           // Microservice Prefix
         String errorCode = errorPrefix+_errorCode;                                                                       // Error Code

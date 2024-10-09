@@ -362,10 +362,4 @@ public class ServiceBootStrap {
 		return factory.createMultipartConfig();
 	}
 	 */
-
-	@Primary
-	@Bean
-	public ExceptionHandlerAdvice serviceExceptionAdvisor(){
-		return new ExceptionHandlerAdvice();
-	}
 }

@@ -15,6 +15,7 @@
  */
 package io.fusion.air.microservice.adapters.controllers.open;
 // Custom
+import io.fusion.air.microservice.adapters.logging.MicroMeterCounter;
 import io.fusion.air.microservice.domain.entities.order.CartEntity;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.domain.models.order.Cart;
@@ -32,6 +33,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 // Java
@@ -44,7 +46,9 @@ import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Cart Controller for the Service
+ * Cart Controller for the Cart Service
+ * This is to demonstrate certain concepts in Exception Handling ONLY.
+ * Order, Product, Cart all must be part of 3 different Microservices.
  *
  * @author arafkarsh
  * @version 1.0
@@ -52,10 +56,12 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @CrossOrigin
 @Configuration
+@Validated // This enables validation for method parameters
 @RestController
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/cart")
 @RequestScope
+@MicroMeterCounter(name = "fusion.air.cart")
 @Tag(name = "Cart API", description = "CRUD Operations for Cart, Cart Items, Add to Cart, Delete item...")
 public class CartControllerImpl extends AbstractController {
 

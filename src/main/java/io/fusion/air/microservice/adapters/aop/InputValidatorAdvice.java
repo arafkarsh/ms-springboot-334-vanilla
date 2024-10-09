@@ -73,7 +73,7 @@ public class InputValidatorAdvice {
                 .stream()
                 .map(error -> error.getField() + " | " + error.getDefaultMessage())
                 .collect(Collectors.toList());
-        return prepareErrorResponse( "462",  "Errors: Invalid Method Arguments",  errors );
+        return createErrorResponse( "462",  "Errors: Invalid Method Arguments",  errors );
     }
 
     /**
@@ -88,17 +88,17 @@ public class InputValidatorAdvice {
                 .stream()
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
                 .collect(Collectors.toList());
-        return prepareErrorResponse( "463",  "Errors: Input Constraint Violations",  errors );
+        return createErrorResponse( "463",  "Errors: Input Constraint Violations",  errors );
     }
 
     /**
-     * Prepares the Error Message
+     * Create the Error Response
      * @param errorCode
      * @param errorMsg
      * @param errors
      * @return
      */
-    private ResponseEntity<Object> prepareErrorResponse(String errorCode, String errorMsg, List<String> errors ) {
+    private ResponseEntity<Object> createErrorResponse(String errorCode, String errorMsg, List<String> errors ) {
         String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AKH";
         long startTime = System.currentTimeMillis();
         String status = "STATUS=ERROR: "+errorMsg;

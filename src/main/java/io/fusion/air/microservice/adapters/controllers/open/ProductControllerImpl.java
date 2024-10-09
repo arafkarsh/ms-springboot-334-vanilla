@@ -20,21 +20,13 @@ import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.entities.order.ProductEntity;
 import io.fusion.air.microservice.domain.exceptions.*;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.domain.models.order.PaymentDetails;
-import io.fusion.air.microservice.domain.models.order.PaymentStatus;
-import io.fusion.air.microservice.domain.models.order.PaymentType;
 import io.fusion.air.microservice.domain.models.order.Product;
 import io.fusion.air.microservice.domain.ports.services.ProductService;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.controllers.AbstractController;
 // Swagger
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -54,15 +46,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Product Controller for the Service
+ * Product Controller for the Product Service
+ * This is to demonstrate certain concepts in Exception Handling ONLY.
+ * Order, Product, Cart all must be part of 3 different Microservices.
  *
  * Only Selected Methods will be secured in this packaged - which are Annotated with
  * @AuthorizationRequired
@@ -74,9 +66,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @CrossOrigin
 @Configuration
+@Validated // This enables validation for method parameters
 @RestController
 // "/ms-vanilla/api/v1"
-@Validated // This enables validation for method parameters
 @RequestMapping("${service.api.path}/product")
 @RequestScope
 @MicroMeterCounter(name = "fusion.air.product")
@@ -431,64 +423,6 @@ public class ProductControllerImpl extends AbstractController {
 		} catch (Exception ignored) { ignored.printStackTrace();}
 		return productList;
 	}
-
-	/**
-	 * Process the Product
-	 * To Demonstrate Exception Handling.
-	 * The Error Code for the Exceptions will be automatically determined by the Framework.
-	 * Error Code will be Different for Each Microservice.
-	 */
-	@Operation(
-			summary = "Process Product",
-			responses = {
-					@ApiResponse(
-							responseCode = "200",
-							description = "Process the payment",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = ResponseEntity.class))
-					),
-					@ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
-					@ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
-					@ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
-			},
-			parameters = {
-					@Parameter(
-							name = "custom-header",
-							in = ParameterIn.HEADER,
-							description = "Custom Parameter in the HTTP Header",
-							required = false,
-							schema = @Schema(type = "string", defaultValue = "2072dc75-d126-4442-a006-1f657c8973c2")
-					)
-			}
-	)
-	@PostMapping("/processProducts")
-	@MicroMeterCounter(endpoint = "/processProducts")
-	public ResponseEntity<StandardResponse> processProduct(@RequestBody PaymentDetails _payDetails) {
-		log.debug("|"+name()+"|Request to process Product... "+_payDetails);
-		if(_payDetails != null) {
-			if(_payDetails.getCardDetails().getExpiryYear() < LocalDate.now().getYear()) {
-				throw new BusinessServiceException("Invalid Card Expiry Year");
-			}
-			if(_payDetails.getCardDetails().getExpiryMonth() < 1 ||  _payDetails.getCardDetails().getExpiryMonth() >12) {
-				throw new BusinessServiceException("Invalid Card Expiry Month");
-			}
-			if (_payDetails.getOrderValue() > 0) {
-				StandardResponse stdResponse = createSuccessResponse("Processing Success!");
-				PaymentStatus ps = new PaymentStatus(
-						"fb908151-d249-4d30-a6a1-4705729394f4",
-						LocalDateTime.now(),
-						"Accepted",
-						UUID.randomUUID().toString(),
-						LocalDateTime.now(),
-						PaymentType.CREDIT_CARD);
-				stdResponse.setPayload(ps);
-				return ResponseEntity.ok(stdResponse);
-			}
-			throw new InputDataException("Invalid Order Value");
-		}
-		throw new ControllerException("Invalid Order!!!");
-    }
  }
 // throw new DuplicateDataException("Invalid Order Value");
 // throw new InputDataException("Invalid Order Value");

@@ -15,6 +15,7 @@
  */
 package io.fusion.air.microservice.adapters.controllers.open;
 // Custom
+import io.fusion.air.microservice.adapters.logging.MicroMeterCounter;
 import io.fusion.air.microservice.domain.entities.order.CountryEntity;
 import io.fusion.air.microservice.domain.entities.order.CountryGeoEntity;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
@@ -33,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 // Java
@@ -44,7 +46,11 @@ import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Country Controller for the Service
+ * Country Controller for the Country Service
+ * This is to demonstrate certain concepts in Exception Handling ONLY.
+ * Order, Product, Cart all must be part of 3 different Microservices.
+ *
+ * This is to demonstrate Certain Spring Data Capabilities like Pagination.
  *
  * @author arafkarsh
  * @version 1.0
@@ -52,10 +58,12 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @CrossOrigin
 @Configuration
+@Validated // This enables validation for method parameters
 @RestController
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/country")
 @RequestScope
+@MicroMeterCounter(name = "fusion.air.country")
 @Tag(name = "Country API", description = "Spring Examples with Pagination")
 public class CountryControllerImpl extends AbstractController {
 
