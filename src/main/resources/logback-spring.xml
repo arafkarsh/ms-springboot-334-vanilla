@@ -17,14 +17,16 @@
 
 	<!-- Define the File Logging -->
 	<appender name="APPLOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>/tmp/ms-service-server.log</file>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<!-- Combines time-based rolling and size-based rolling -->
-			<fileNamePattern>/tmp/MS-Vanilla-server.%d{yyyy-MM-dd}.log</fileNamePattern>
+		<file>${LOG_PATH}/${LOG_FILE}</file>
+		<!-- <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+		<!-- Combines time-based rolling and time-based rolling -->
+			<fileNamePattern>${LOG_FILE_PATTERN}</fileNamePattern>
 			<!-- Specify max size of a single log file -->
-			<maxFileSize>10MB</maxFileSize>
+			<maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
 			<!-- Retain log history for a specific number of days -->
-			<maxHistory>30</maxHistory>
+			<maxHistory>${LOG_FILE_MAX_HISTORY}</maxHistory>
+			<!-- <totalSizeCap>${LOG_FILE_TOTAL_SIZE_CAP}</totalSizeCap> -->
 		</rollingPolicy>
 		<encoder>
 			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} |Service=%X{Service} |%-5level| %logger{36}:%L |IP=%X{IP}:%X{Port}| Proto=%X{Protocol}| URI=%X{URI}| User=%X{user}| ReqID=%X{ReqId}| %msg%n</pattern>
