@@ -2,7 +2,7 @@
 # MS-Vanilla Service Properties
 # =======================================================================
 build.number=46
-build.date=Fri Oct 11 10:09:19 IST 2024
+build.date=Fri Oct 11 10:05:37 IST 2024
 # ------------------------------------------------------------------------
 # Spring Profile
 # ------------------------------------------------------------------------
@@ -91,8 +91,8 @@ logging.level.root=INFO
 logging.config=classpath:logback-spring.xml
 # Log file paths and rolling policy
 logging.path=/tmp/logs/${service.api.name}
-logging.file.name=${service.api.name}.v${server.version}.log
-logging.pattern.rolling-file-name=${service.api.name}.v${server.version}-%d{yyyy-MM-dd}-%i.log
+logging.file.name=${service.api.name}.${server.version}.log
+logging.pattern.rolling-file-name=${service.api.name}.${server.version}.%d{yyyy-MM-dd}-%i.log
 logging.file.max-size=30MB
 # Retention and total size cap for logs
 # Keep Log Files for 100 Days with Max Cap at 3 GB
