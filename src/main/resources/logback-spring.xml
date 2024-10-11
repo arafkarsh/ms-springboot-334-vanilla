@@ -26,7 +26,8 @@
 			<maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
 			<!-- Retain log history for a specific number of days -->
 			<maxHistory>${LOG_FILE_MAX_HISTORY}</maxHistory>
-			<!-- <totalSizeCap>${LOG_FILE_TOTAL_SIZE_CAP}</totalSizeCap> -->
+			<!-- Specify file size Cap -->
+			<totalSizeCap>${LOG_FILE_SIZE_CAP}</totalSizeCap>
 		</rollingPolicy>
 		<encoder>
 			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} |Service=%X{Service} |%-5level| %logger{36}:%L |IP=%X{IP}:%X{Port}| Proto=%X{Protocol}| URI=%X{URI}| User=%X{user}| ReqID=%X{ReqId}| %msg%n</pattern>
