@@ -1,6 +1,7 @@
 HELP.md
 target/
 lib
+tmp/
 src/docker/*.jar
 src/docker/libs
 src/docker/Dockerfile-r
