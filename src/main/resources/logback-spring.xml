@@ -18,9 +18,9 @@
 	<!-- Define the File Logging -->
 	<appender name="APPLOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${LOG_PATH}/${LOG_FILE}</file>
-		<!-- <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> -->
+		<!-- <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> -->
 		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-		<!-- Combines time-based rolling and time-based rolling -->
+		<!-- Combines size-based rolling and time-based rolling -->
 			<fileNamePattern>${LOG_FILE_PATTERN}</fileNamePattern>
 			<!-- Specify max size of a single log file -->
 			<maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>

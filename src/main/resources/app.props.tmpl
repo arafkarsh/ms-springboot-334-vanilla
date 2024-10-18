@@ -88,7 +88,7 @@ logging.config=classpath:logback-spring.xml
 logging.path=/tmp/logs/${service.api.name}
 logging.file.name=${service.api.name}.v${server.version}.log
 # Log File Pattern for Size and Time based File Roll Over Name
-logging.pattern.rolling-file-name=${service.api.name}.v${server.version}-%d{yyyy-MM-dd}-%i.log
+logging.pattern.rolling-file-name=${logging.path}/${service.api.name}.v${server.version}-%d{yyyy-MM-dd}-%i.log
 # Max Single File Size = 30 MB
 logging.file.max-size=1MB
 # Retention and total size cap for logs

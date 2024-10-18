@@ -1,0 +1,5 @@
+#!/bin/bash
+# -------------------------------------------------------------------------------------------
+# @author: Araf Karsh Hamid
+# -------------------------------------------------------------------------------------------
+while true; do   curl -X 'GET' 'http://localhost:9334/ms-vanilla/api/v1/product/all/' -H 'accept: application/json';   echo "Query done"; done

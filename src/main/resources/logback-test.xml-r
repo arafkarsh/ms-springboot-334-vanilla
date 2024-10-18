@@ -10,9 +10,10 @@
 	<!-- Define the File Logging -->
 	<appender name="APPLOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>/tmp/ms-service-server.log</file>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+		<!-- <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
 			<!-- Combines time-based rolling and size-based rolling -->
-			<fileNamePattern>/tmp/MS-Vanilla-server.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<fileNamePattern>/tmp/logs/ms-vanilla/ms-vanilla-server.%d{yyyy-MM-dd}-%i.log</fileNamePattern>
 			<!-- Specify max size of a single log file -->
 			<maxFileSize>10MB</maxFileSize>
 			<!-- Retain log history for a specific number of days -->
