@@ -101,15 +101,15 @@
 			</root>
 			<logger level="info" name="ms-service-info">
 				<appender-ref ref="STDOUT_JSON"/>
-				<appender-ref ref="FILE_JSON"/>
+				<appender-ref ref="ASYNC_JSON"/>
 			</logger>
 			<logger level="debug" name="ms-service-debug">
 				<appender-ref ref="STDOUT_JSON"/>
-				<appender-ref ref="FILE_JSON"/>
+				<appender-ref ref="ASYNC_JSON"/>
 			</logger>
 			<logger  level="warn" name="ms-service-warn">
 				<appender-ref ref="STDOUT_JSON"/>
-				<appender-ref ref="FILE_JSON"/>
+				<appender-ref ref="ASYNC_JSON"/>
 			</logger>
 		</then>
 		<!-- If the Log Format == PLAIN -->
@@ -120,15 +120,15 @@
 			</root>
 			<logger level="info" name="ms-service-info">
 				<appender-ref ref="STDOUT_TEXT" />
-				<appender-ref ref="FILE_TEXT" />
+				<appender-ref ref="ASYNC_TEXT" />
 			</logger>
 			<logger level="debug" name="ms-service-debug">
 				<appender-ref ref="STDOUT_TEXT" />
-				<appender-ref ref="FILE_TEXT" />
+				<appender-ref ref="ASYNC_TEXT" />
 			</logger>
 			<logger  level="warn" name="ms-service-warn">
 				<appender-ref ref="STDOUT_TEXT" />
-				<appender-ref ref="FILE_TEXT" />
+				<appender-ref ref="ASYNC_TEXT" />
 			</logger>
 		</else>
 	</if>
