@@ -41,6 +41,7 @@
 		<slf4j.version>2.0.16</slf4j.version>
 		<logback.version>1.5.8</logback.version>
 		<logstash.version>8.0</logstash.version>
+		<janino.version>3.1.12</janino.version>
 		<micrometer.version>1.13.5</micrometer.version>
 
 		<!-- Utilities ===================================================== -->
@@ -96,7 +97,7 @@
 
 	<dependencies>
 		<!-- ================================================================= -->
-		<!-- Logging - SLF4J / LogBack / Micrometer / SpringBoot Actuator  -->
+		<!-- SLF4J / LogBack / LogStash / Janino / Micrometer /  Actuator       -->
 		<!-- ================================================================= -->
 
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
@@ -124,9 +125,8 @@
 		<dependency>
 			<groupId>org.codehaus.janino</groupId>
 			<artifactId>janino</artifactId>
-			<version>3.1.12</version>
+			<version>${janino.version}</version>
 		</dependency>
-
 
 		<!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-core -->
 		<dependency>
