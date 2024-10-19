@@ -78,13 +78,26 @@
 		</encoder>
 	</appender>
 
+	<!-- Asynchronous Logging PLAIN Text -->
+	<appender name="ASYNC_TEXT" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="FILE_TEXT" />
+		<queueSize>5000</queueSize>
+		<discardingThreshold>0</discardingThreshold>
+	</appender>
+	<!-- Asynchronous Logging JSON Text -->
+	<appender name="ASYNC_JSON" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="FILE_JSON" />
+		<queueSize>3000</queueSize>
+		<discardingThreshold>0</discardingThreshold>
+	</appender>
+
 	<!-- Define the Conditional Loggers -->
 	<!-- IF The Log Format == JSON -->
 	<if condition='property("LOG_FORMAT").contains("json")'>
 		<then>
 			<root level="INFO">
 				<appender-ref ref="STDOUT_JSON"/>
-				<appender-ref ref="FILE_JSON"/>
+				<appender-ref ref="ASYNC_JSON"/>
 			</root>
 			<logger level="info" name="ms-service-info">
 				<appender-ref ref="STDOUT_JSON"/>
@@ -103,7 +116,7 @@
 		<else>
 			<root level="INFO">
 				<appender-ref ref="STDOUT_TEXT"/>
-				<appender-ref ref="FILE_TEXT"/>
+				<appender-ref ref="ASYNC_TEXT"/>
 			</root>
 			<logger level="info" name="ms-service-info">
 				<appender-ref ref="STDOUT_TEXT" />
