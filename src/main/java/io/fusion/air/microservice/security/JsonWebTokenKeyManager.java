@@ -87,7 +87,7 @@ public final class JsonWebTokenKeyManager {
 	 */
 	public JsonWebTokenKeyManager init(int _tokenType) {
 		tokenType 			= _tokenType;
-		log.info("JWT-KeyManager: JSON Web Token Type = "+tokenType);
+		log.debug("JWT-KeyManager: JSON Web Token Type = "+tokenType);
 		// Create the Key based on Secret Key or Private Key
 		createSigningKey();
 		issuer				= (jwtConfig != null) ? jwtConfig.getServiceOrg() : "fusion-air";

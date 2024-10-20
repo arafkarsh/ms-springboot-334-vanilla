@@ -78,10 +78,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         try {
             HttpHeaders headers = Utils.createSecureCookieHeaders("JSESSIONID", UUID.randomUUID().toString(), 3000);
-            System.out.println("<[2]>>> Security Filter Called => "+ headers.getFirst("Set-Cookie"));
-
+            // System.out.println("<[2]>>> Security Filter Called => "+ headers.getFirst("Set-Cookie"));
+            log.info("1|SF|TIME=|STATUS=INIT|CLASS=| Security Filter invoked "+headers.getFirst("Set-Cookie"));
             _filterChain.doFilter(request, response);
-
             response.setHeader("Set-Cookie", headers.getFirst("Set-Cookie"));
             // Return the Headers
             HeaderManager.returnHeaders(request, response);
