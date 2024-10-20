@@ -1,0 +1,9 @@
+<included>
+	<springProperty scope="context" name="LOG_PATH" source="logging.path"/>
+	<springProperty scope="context" name="LOG_FILE" source="logging.file.name"/>
+	<springProperty scope="context" name="LOG_FILE_PATTERN" source="logging.pattern.rolling-file-name"/>
+	<springProperty scope="context" name="LOG_FILE_MAX_SIZE" source="logging.file.max-size"/>
+	<springProperty scope="context" name="LOG_FILE_MAX_HISTORY" source="logging.file.max-history"/>
+	<springProperty scope="context" name="LOG_FILE_SIZE_CAP" source="logging.file.total-size-cap"/>
+	<springProperty scope="context" name="LOG_FORMAT" source="logging.format"/>
+</included>

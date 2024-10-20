@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="120 seconds">
+	<springProperty scope="context" name="LOG_PATH" source="logging.path"/>
+	<springProperty scope="context" name="LOG_FILE" source="logging.file.name"/>
+	<springProperty scope="context" name="LOG_FILE_PATTERN" source="logging.pattern.rolling-file-name"/>
+	<springProperty scope="context" name="LOG_FILE_MAX_SIZE" source="logging.file.max-size"/>
+	<springProperty scope="context" name="LOG_FILE_MAX_HISTORY" source="logging.file.max-history"/>
+	<springProperty scope="context" name="LOG_FILE_SIZE_CAP" source="logging.file.total-size-cap"/>
+	<springProperty scope="context" name="LOG_FORMAT" source="logging.format"/>
+
+	<!-- Define the Standard Output - Console JSON -->
+	<appender name="STDOUT_JSON" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+			<providers>
+				<timestamp/>
+				<loggerName/>
+				<logLevel/>
+				<message/>
+				<threadName/>
+				<!-- <context/> -->
+				<mdc/>
+			</providers>
+		</encoder>
+	</appender>
+
+	<!-- JSON File Appender -->
+	<appender name="FILE_JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/${LOG_FILE}.json</file>
+		<!-- <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- Combines size-based rolling and time-based rolling -->
+			<fileNamePattern>${LOG_FILE_PATTERN}.json</fileNamePattern>
+			<!-- Specify max size of a single log file -->
+			<maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+			<!-- Retain log history for a specific number of days -->
+			<maxHistory>${LOG_FILE_MAX_HISTORY}</maxHistory>
+			<!-- Specify file size Cap -->
+			<totalSizeCap>${LOG_FILE_SIZE_CAP}</totalSizeCap>
+		</rollingPolicy>
+		<!-- <encoder class="net.logstash.logback.encoder.LogstashEncoder"/> -->
+		<encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+			<providers>
+				<timestamp/>
+				<loggerName/>
+				<logLevel/>
+				<message/>
+				<threadName/>
+				<!-- <context/> -->
+				<mdc/>
+			</providers>
+		</encoder>
+	</appender>
+
+	<!-- Define the Standard Output - Console TEXT -->
+	<appender name="STDOUT_TEXT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%white(%d{yyyy-MM-dd HH:mm:ss.SSS}) |Service=%cyan(%X{Service})|%highlight(%-5level)| %cyan(%logger{10}:%L) |IP=%white(%X{IP}:%X{Port})| Proto=%white(%X{Protocol})| URI=%white(%X{URI})| User=%green(%X{user})| ReqID=%magenta(%X{ReqId})| %yellow(%msg%n)</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Define the File Appender -->
+	<appender name="FILE_TEXT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/${LOG_FILE}.log</file>
+		<!-- <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- Combines size-based rolling and time-based rolling -->
+			<fileNamePattern>${LOG_FILE_PATTERN}.log</fileNamePattern>
+			<!-- Specify max size of a single log file -->
+			<maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+			<!-- Retain log history for a specific number of days -->
+			<maxHistory>${LOG_FILE_MAX_HISTORY}</maxHistory>
+			<!-- Specify file size Cap -->
+			<totalSizeCap>${LOG_FILE_SIZE_CAP}</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} |Service=%X{Service} |%-5level| %logger{36}:%L |IP=%X{IP}:%X{Port}| Proto=%X{Protocol}| URI=%X{URI}| User=%X{user}| ReqID=%X{ReqId}| %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Asynchronous Logging PLAIN Text -->
+	<appender name="ASYNC_TEXT" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="FILE_TEXT" />
+		<queueSize>5000</queueSize>
+		<discardingThreshold>0</discardingThreshold>
+	</appender>
+	<!-- Asynchronous Logging JSON Text -->
+	<appender name="ASYNC_JSON" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="FILE_JSON" />
+		<queueSize>3000</queueSize>
+		<discardingThreshold>0</discardingThreshold>
+	</appender>
+
+	<!-- Define the Conditional Loggers -->
+	<!-- IF The Log Format == JSON -->
+	<if condition='property("LOG_FORMAT").contains("json")'>
+		<then>
+			<root level="INFO">
+				<appender-ref ref="STDOUT_JSON"/>
+				<appender-ref ref="ASYNC_JSON"/>
+			</root>
+			<logger level="info" name="ms-service-info">
+				<appender-ref ref="STDOUT_JSON"/>
+				<appender-ref ref="ASYNC_JSON"/>
+			</logger>
+			<logger level="debug" name="io.fusion.air.microservice.adapters.security">
+				<appender-ref ref="STDOUT_JSON"/>
+				<appender-ref ref="ASYNC_JSON"/>
+			</logger>
+			<logger  level="trace" name="io.fusion.air.microservice.security.JsonWebTokenValidator">
+				<appender-ref ref="STDOUT_JSON"/>
+				<appender-ref ref="ASYNC_JSON"/>
+			</logger>
+		</then>
+		<!-- If the Log Format == PLAIN -->
+		<else>
+			<root level="INFO">
+				<appender-ref ref="STDOUT_TEXT"/>
+				<appender-ref ref="ASYNC_TEXT"/>
+			</root>
+			<logger level="info" name="ms-service-info">
+				<appender-ref ref="STDOUT_TEXT" />
+				<appender-ref ref="ASYNC_TEXT" />
+			</logger>
+			<logger level="debug" name="io.fusion.air.microservice.adapters.security">
+				<appender-ref ref="STDOUT_TEXT" />
+				<appender-ref ref="ASYNC_TEXT" />
+			</logger>
+			<logger  level="trace" name="io.fusion.air.microservice.security.JsonWebTokenValidator">
+				<appender-ref ref="STDOUT_TEXT" />
+				<appender-ref ref="ASYNC_TEXT" />
+			</logger>
+		</else>
+	</if>
+</configuration>
