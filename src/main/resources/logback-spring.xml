@@ -6,7 +6,6 @@
 	<springProperty scope="context" name="LOG_FILE_MAX_SIZE" source="logging.file.max-size"/>
 	<springProperty scope="context" name="LOG_FILE_MAX_HISTORY" source="logging.file.max-history"/>
 	<springProperty scope="context" name="LOG_FILE_SIZE_CAP" source="logging.file.total-size-cap"/>
-	<!-- Define a property from application.properties or environment -->
 	<springProperty scope="context" name="LOG_FORMAT" source="logging.format"/>
 
 	<!-- Define the Standard Output - Console JSON -->
@@ -103,11 +102,11 @@
 				<appender-ref ref="STDOUT_JSON"/>
 				<appender-ref ref="ASYNC_JSON"/>
 			</logger>
-			<logger level="debug" name="ms-service-debug">
+			<logger level="debug" name="io.fusion.air.microservice.adapters.security">
 				<appender-ref ref="STDOUT_JSON"/>
 				<appender-ref ref="ASYNC_JSON"/>
 			</logger>
-			<logger  level="warn" name="ms-service-warn">
+			<logger  level="trace" name="io.fusion.air.microservice.security.JsonWebTokenValidator">
 				<appender-ref ref="STDOUT_JSON"/>
 				<appender-ref ref="ASYNC_JSON"/>
 			</logger>
@@ -122,11 +121,11 @@
 				<appender-ref ref="STDOUT_TEXT" />
 				<appender-ref ref="ASYNC_TEXT" />
 			</logger>
-			<logger level="debug" name="ms-service-debug">
+			<logger level="debug" name="io.fusion.air.microservice.adapters.security">
 				<appender-ref ref="STDOUT_TEXT" />
 				<appender-ref ref="ASYNC_TEXT" />
 			</logger>
-			<logger  level="warn" name="ms-service-warn">
+			<logger  level="trace" name="io.fusion.air.microservice.security.JsonWebTokenValidator">
 				<appender-ref ref="STDOUT_TEXT" />
 				<appender-ref ref="ASYNC_TEXT" />
 			</logger>

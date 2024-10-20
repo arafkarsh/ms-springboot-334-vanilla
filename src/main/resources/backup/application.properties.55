@@ -1,8 +1,8 @@
 # =======================================================================
 # MS-Vanilla Service Properties
 # =======================================================================
-build.number=56
-build.date=Sun Oct 20 07:42:49 IST 2024
+build.number=55
+build.date=Sat Oct 19 23:59:20 IST 2024
 # ------------------------------------------------------------------------
 # Spring Profile
 # ------------------------------------------------------------------------
@@ -90,7 +90,7 @@ logging.level.root=INFO
 # Specify the logback configuration file
 logging.config=classpath:logback-spring.xml
 # Supported Log Format plain / json
-logging.format=plain
+logging.format=json
 # Log file paths and rolling policy
 logging.path=/tmp/logs/${service.api.name}
 # Log File Name. File Extension .log or .json is added dynamically based on logging format.
