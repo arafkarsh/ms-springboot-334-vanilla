@@ -1,5 +1,13 @@
 # Microservice Vanilla Template
 
+## Template Tutorials - Java 23, SpringBoot 3.3.4 & Jakarta 10 Series
+1. [Java 23, SpringBoot 3.3.4 & Jakarta 10 — Part 1](https://arafkarsh.medium.com/java-23-springboot-3-3-4-jakarta-10-125bc815d6c1)
+2. [Java 23, SpringBoot 3.3.4: AOP Exception Handling — Part 2](https://arafkarsh.medium.com/java-23-springboot-3-3-4-aop-exception-handling-part-2-e6adc86c8a26)
+3. [Java 23, SpringBoot 3.3.4: Logback Setup — Part 3 ](https://arafkarsh.medium.com/java-23-springboot-3-3-4-logback-setup-part-3-c2ffe2d0a358)
+4. Java 23, SpringBoot 3.3.4: AOP Logging — Part 4 Coming Soon
+5. Java 23, SpringBoot 3.3.4: AOP Security — Part 5 Coming Soon
+6. Java 23, SpringBoot 3.3.4: CRUD — Part 6 Coming Soon
+
 ## Microservice Structure
 
 ![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Pkg-Structure.jpg)
