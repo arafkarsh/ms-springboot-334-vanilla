@@ -50,29 +50,35 @@ public class TimeTrackerAspect {
 
     /**
      * Log Message before the Log Execution
+     * For All Classes = "execution(* io.fusion.air.microservice.adapters.controllers.*.*(..))")
+     * With Sub Pkgs = "execution(* io.fusion.air.microservice.adapters.controllers..*.*(..))")
      * @param joinPoint
      */
-    @Before(value = "execution(* io.fusion.air.microservice.adapters.controllers.*.*(..))")
+    @Before(value = "execution(* io.fusion.air.microservice.adapters.controllers..*.*(..))")
     public void logStatementBefore(JoinPoint joinPoint) {
         log.debug("1|TA|TIME=|STATUS=START|CLASS={}",joinPoint);
     }
 
     /**
      * Log Message after the Method Execution
+     * For All Classes = "execution(* io.fusion.air.microservice.adapters.controllers.*.*(..))")
+     * With Sub Pkgs = "execution(* io.fusion.air.microservice.adapters.controllers..*.*(..))")
      * @param joinPoint
      */
-    @After(value = "execution(* io.fusion.air.microservice.adapters.controllers.*.*(..))")
+    @After(value = "execution(* io.fusion.air.microservice.adapters.controllers..*.*(..))")
     public void logStatementAfter(JoinPoint joinPoint) {
         log.debug("9|TA|TIME=|STATUS=END|CLASS={}",joinPoint);
     }
 
     /**
      * Capture Overall Method Execution Time For Controllers
+     * For All Classes = "execution(* io.fusion.air.microservice.adapters.controllers.*.*(..))")
+     * With Sub Pkgs = "execution(* io.fusion.air.microservice.adapters.controllers..*.*(..))")
      * @param joinPoint
      * @return
      * @throws Throwable
      */
-    @Around(value = "execution(* io.fusion.air.microservice.adapters.controllers.*.*(..))")
+    @Around(value = "execution(* io.fusion.air.microservice.adapters.controllers..*.*(..))")
     public Object timeTrackerRest(ProceedingJoinPoint joinPoint) throws Throwable {
         return trackTime("WS", joinPoint);
     }
@@ -83,18 +89,22 @@ public class TimeTrackerAspect {
      * @return
      * @throws Throwable
      */
+    /**
     @Around(value = "execution(* io.fusion.air.microservice.adapters.controllers.secured.*.*(..))")
     public Object timeTrackerRestSecured(ProceedingJoinPoint joinPoint) throws Throwable {
         return trackTime("WS", joinPoint);
     }
+    */
 
     /**
      * Capture Overall Method Execution Time for Business Services
+     * For All Classes = "execution(* io.fusion.air.microservice.adapters.controllers.*.*(..))")
+     * With Sub Pkgs = "execution(* io.fusion.air.microservice.adapters.controllers..*.*(..))")
      * @param joinPoint
      * @return
      * @throws Throwable
      */
-    @Around(value = "execution(* io.fusion.air.microservice.adapters.service.*.*(..))")
+    @Around(value = "execution(* io.fusion.air.microservice.adapters.service..*.*(..))")
     public Object timeTrackerBusinessService(ProceedingJoinPoint joinPoint) throws Throwable {
         return trackTime("BS", joinPoint);
     }
@@ -105,7 +115,7 @@ public class TimeTrackerAspect {
      * @return
      * @throws Throwable
      */
-    @Around(value = "execution(* io.fusion.air.microservice.adapters.repository.*.*(..))")
+    @Around(value = "execution(* io.fusion.air.microservice.adapters.repository..*.*(..))")
     public Object timeTrackerRepository(ProceedingJoinPoint joinPoint) throws Throwable {
         return trackTime("DS", joinPoint);
     }
@@ -116,7 +126,7 @@ public class TimeTrackerAspect {
      * @return
      * @throws Throwable
      */
-    @Around(value = "execution(* io.fusion.air.microservice.adapters.external.*.*(..))")
+    @Around(value = "execution(* io.fusion.air.microservice.adapters.external..*.*(..))")
     public Object timeTrackerExternal(ProceedingJoinPoint joinPoint) throws Throwable {
         return trackTime("ES", joinPoint);
     }
