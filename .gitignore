@@ -2,6 +2,7 @@ HELP.md
 target/
 lib
 tmp/
+java-docs/
 src/docker/*.jar
 src/docker/libs
 src/docker/Dockerfile-r
