@@ -59,7 +59,7 @@ public class TimeTrackerAspect {
      */
     @Before(value = "execution(* io.fusion.air.microservice.adapters.controllers..*.*(..))")
     public void logStatementBefore(JoinPoint joinPoint) {
-        log.debug("1|TA|TIME=|STATUS=START|CLASS={}",joinPoint);
+        log.debug("1|TT|TIME=|STATUS=START|CLASS={}",joinPoint);
     }
 
     /**
@@ -70,7 +70,7 @@ public class TimeTrackerAspect {
      */
     @After(value = "execution(* io.fusion.air.microservice.adapters.controllers..*.*(..))")
     public void logStatementAfter(JoinPoint joinPoint) {
-        log.debug("9|TA|TIME=|STATUS=END|CLASS={}",joinPoint);
+        log.debug("5|TT|TIME=|STATUS=END|CLASS={}",joinPoint);
     }
 
     /**
@@ -83,7 +83,7 @@ public class TimeTrackerAspect {
      */
     @Around(value = "execution(* io.fusion.air.microservice.adapters.controllers..*.*(..))")
     public Object timeTrackerRest(ProceedingJoinPoint joinPoint) throws Throwable {
-        return trackTime("WS", joinPoint);
+        return trackTime(4, "WS", joinPoint);
     }
 
     /**
@@ -96,7 +96,7 @@ public class TimeTrackerAspect {
      */
     @Around(value = "execution(* io.fusion.air.microservice.adapters.service..*.*(..))")
     public Object timeTrackerBusinessService(ProceedingJoinPoint joinPoint) throws Throwable {
-        return trackTime("BS", joinPoint);
+        return trackTime(3, "BS", joinPoint);
     }
 
     /**
@@ -107,7 +107,7 @@ public class TimeTrackerAspect {
      */
     @Around(value = "execution(* io.fusion.air.microservice.adapters.repository..*.*(..))")
     public Object timeTrackerRepository(ProceedingJoinPoint joinPoint) throws Throwable {
-        return trackTime("DS", joinPoint);
+        return trackTime(2, "DS", joinPoint);
     }
 
     /**
@@ -118,7 +118,7 @@ public class TimeTrackerAspect {
      */
     @Around(value = "execution(* io.fusion.air.microservice.adapters.external..*.*(..))")
     public Object timeTrackerExternal(ProceedingJoinPoint joinPoint) throws Throwable {
-        return trackTime("ES", joinPoint);
+        return trackTime(3, "ES", joinPoint);
     }
 
     /**
@@ -128,16 +128,15 @@ public class TimeTrackerAspect {
      * @return
      * @throws Throwable
      */
-    private Object trackTime(String _method, ProceedingJoinPoint joinPoint) throws Throwable {
+    private Object trackTime(int _level, String _method, ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         String status = "STATUS=SUCCESS";
-        try {
-            return joinPoint.proceed();
-        }catch(Throwable e) {
+        try { return joinPoint.proceed(); }
+        catch(Throwable e) {
             status = "STATUS=ERROR:"+e.getMessage();
             throw e;
         } finally {
-            logTime(_method, startTime, status, joinPoint);
+            logTime(_level, _method, startTime, status, joinPoint);
         }
     }
 
@@ -147,9 +146,9 @@ public class TimeTrackerAspect {
      * @param _status
      * @param joinPoint
      */
-    private void logTime(String _method, long _startTime, String _status, ProceedingJoinPoint joinPoint) {
+    private void logTime(int _level, String _method, long _startTime, String _status, ProceedingJoinPoint joinPoint) {
         long timeTaken=System.currentTimeMillis() - _startTime;
-        log.info("3|{}|TIME={} ms|{}|CLASS={}|",_method, timeTaken, _status,joinPoint);
+        log.info("{}|{}|TIME={} ms|{}|CLASS={}|",_level, _method, timeTaken, _status,joinPoint);
     }
 }
 
