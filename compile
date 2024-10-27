@@ -16,12 +16,12 @@ SERVICE=`getServiceName`
 CONTAINER=`getServiceName 4`
 ORG=`getServiceName 1`
 echo "---------------------------------------------------------------------------------------"
-echo "Compiling $ORG/$SERVICE Microservice"
+echo "1. Compiling $ORG/$SERVICE Microservice"
 echo "---------------------------------------------------------------------------------------"
-echo "Changing Logback Log File Name: /tmp/$SERVICE-server.%d{yyyy-MM-dd}.%i.log"
-echo "---------------------------------------------------------------------------------------"
-sed -i -r "s/microservice/$SERVICE/g" src/main/resources/logback.xml
-sed -i -r "s/microservice/$SERVICE/g" src/main/resources/logback-test.xml
+#echo "Changing Logback Log File Name: /tmp/$SERVICE-server.%d{yyyy-MM-dd}.%i.log"
+#echo "---------------------------------------------------------------------------------------"
+#sed -i -r "s/microservice/$SERVICE/g" src/main/resources/logback.xml
+#sed -i -r "s/microservice/$SERVICE/g" src/main/resources/logback-test.xml
 echo "Clean up the target folder: mvn clean"
 echo "---------------------------------------------------------------------------------------"
 mvn clean
@@ -30,7 +30,7 @@ echo "Git Commit Count = "`git rev-list HEAD --count`
 echo "---------------------------------------------------------------------------------------"
 generateBuildNumber $SERVICE
 # -------------------------------------------------------------------------------------------
-echo "Build the $ORG/$SERVICE Microservice : mvn -e package"
+echo "2. Build the $ORG/$SERVICE Microservice : mvn -e package"
 echo "---------------------------------------------------------------------------------------"
 mvn -e package
 mvnCompRV=$?
@@ -38,40 +38,46 @@ mvnCompRV=$?
 if [ $mvnCompRV == 0 ] 
 then
 	echo "---------------------------------------------------------------------------------------"
-	echo "Compiling Service > $ORG/$SERVICE :: SUCCESS"
+	echo "2.1 Compiling Service > $ORG/$SERVICE :: SUCCESS"
 	echo "---------------------------------------------------------------------------------------"
-	echo "Copy the Fat and Thin jar files and the libs to the Docker Directory (src/docker)"
+	echo "2.2 Copy the Fat and Thin jar files and the libs to the Docker Directory (src/docker)"
 	cp target/*service*-spring-boot.jar src/docker/$CONTAINER-spring-boot.jar
-	cp target/*service*?.?.?.jar src/docker/$CONTAINER-thin.jar
+	#cp target/*service*?.?.?.jar src/docker/$CONTAINER-thin.jar
 	#cp target/libs/* src/docker/libs/
-	echo "Copy the application.properties File to the Docker Directory (src/docker)"
+	echo "2.3 Copy the application.properties File to the Docker Directory (src/docker)"
 	cp src/main/resources/application.properties src/docker/
 	cp src/main/resources/application-dev.properties src/docker/
 	cp src/main/resources/application-staging.properties src/docker/
 	cp src/main/resources/application-prod.properties src/docker/
+	echo "2.4 Copy the application.properties Files to current directory."
 	cp src/main/resources/application.properties .
 	cp src/main/resources/application-dev.properties .
 	cp src/main/resources/application-staging.properties .
 	cp src/main/resources/application-prod.properties .
+	echo "2.5 Copy the logback-spring xml Files to current directory."
+	cp src/main/resources/logback-spring.xml .
+	cp src/main/resources/logback-spring-scope.xml .
+	cp src/main/resources/logback-spring-appenders-json.xml .
+	cp src/main/resources/logback-spring-appenders-text.xml .
 	echo "---------------------------------------------------------------------------------------"
-	echo "Building the Container for $ORG/$SERVICE Service ..... "
+	echo "2.6. Building the Container for $ORG/$SERVICE Service ..... "
 	echo "---------------------------------------------------------------------------------------"
 	cd src/docker
 	build
 	echo "---------------------------------------------------------------------------------------"
-	echo "$SERVICE Microservice Build Process Completed Successfully! ........... "
+	echo "3. $SERVICE Microservice Build Process Completed Successfully! ........... "
 	echo "---------------------------------------------------------------------------------------"
-	echo "Start the Service using "
+	echo "3.1 Start the Service using "
 	echo "  run (Run the SpringBoot App)  OR"
 	echo "  cd src/docker"
 	echo "  start (Start the Container)"
-	echo "Then to test it with"
+	echo "3.2 Then to test it with"
 	echo "  test (To Test the SpringBoot App)"
 	echo "---------------------------------------------------------------------------------------"
-	echo "After the Successful build and Startup of the Service, It should show the Build No. & Date"
+	echo "3.3 After the Successful build and Startup of the Service, It should show the Build No. & Date"
 	echo "---------------------------------------------------------------------------------------"
 else
 	echo "---------------------------------------------------------------------------------------"
-	echo "Compiling Service > $ORG/$SERVICE :: FAILED!!!"
+	echo "2.99 Compiling Service > $ORG/$SERVICE :: FAILED!!!"
 	echo "---------------------------------------------------------------------------------------"
 fi

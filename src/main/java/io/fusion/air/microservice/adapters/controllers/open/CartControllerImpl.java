@@ -16,6 +16,7 @@
 package io.fusion.air.microservice.adapters.controllers.open;
 // Custom
 import io.fusion.air.microservice.adapters.logging.MicroMeterCounter;
+import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.entities.order.CartEntity;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.domain.models.order.Cart;
@@ -27,6 +28,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 // Spring
 import org.slf4j.Logger;
@@ -91,6 +93,7 @@ public class CartControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/all")
+	@MicroMeterCounter(endpoint = "/all")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchCarts() throws Exception {
 		log.debug("|"+name()+"|Request to Get Cart For the Customers ");
@@ -115,6 +118,7 @@ public class CartControllerImpl extends AbstractController {
             content = @Content)
     })
 	@GetMapping("/customer/{customerId}")
+	@MicroMeterCounter(endpoint = "/customer")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchCart(@PathVariable("customerId") String customerId) throws Exception {
 		log.debug("|"+name()+"|Request to Get Cart For the Customer "+customerId);
@@ -141,6 +145,7 @@ public class CartControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/customer/{customerId}/price/{price}")
+	@MicroMeterCounter(endpoint = "/customer/price")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchCartForItems(@PathVariable("customerId") String customerId,
 															  @PathVariable("price") BigDecimal price) throws Exception {
@@ -164,6 +169,7 @@ public class CartControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PostMapping("/add")
+	@MicroMeterCounter(endpoint = "/add")
 	public ResponseEntity<StandardResponse> addToCart(@Valid @RequestBody Cart _cart) {
 		log.debug("|"+name()+"|Request to Add Cart Item... "+_cart.getProductName());
 		CartEntity cartItem = cartService.save(_cart);
@@ -184,11 +190,12 @@ public class CartControllerImpl extends AbstractController {
 					description = "Unable to De-Activate the Cart item",
 					content = @Content)
 	})
-	@PutMapping("/deactivate/customer/{customerId}/cartitem/{cartid}")
+	@PutMapping("/deactivate/customer/{customerId}/cartItem/{cartId}")
+	@MicroMeterCounter(endpoint = "/deactivate/customer/cartItem")
 	public ResponseEntity<StandardResponse> deActivateCartItem(@PathVariable("customerId") String customerId,
-									@PathVariable("cartid") UUID _cartid) {
-		log.debug("|"+name()+"|Request to De-Activate the Cart item... "+_cartid);
-		CartEntity product = cartService.deActivateCartItem(customerId, _cartid);
+									@PathVariable("cartId") UUID _cartId) {
+		log.debug("|"+name()+"|Request to De-Activate the Cart item... "+_cartId);
+		CartEntity product = cartService.deActivateCartItem(customerId, _cartId);
 		StandardResponse stdResponse = createSuccessResponse("Cart Item De-Activated");
 		stdResponse.setPayload(product);
 		return ResponseEntity.ok(stdResponse);
@@ -206,11 +213,12 @@ public class CartControllerImpl extends AbstractController {
 					description = "Unable to Activate the Cart item",
 					content = @Content)
 	})
-	@PutMapping("/activate/customer/{customerId}/cartitem/{cartid}")
+	@PutMapping("/activate/customer/{customerId}/cartItem/{cartId}")
+	@MicroMeterCounter(endpoint = "/activate/customer/cartItem")
 	public ResponseEntity<StandardResponse> activateCartItem(@PathVariable("customerId") String customerId,
-															   @PathVariable("cartid") UUID _cartid) {
-		log.debug("|"+name()+"|Request to Activate the Cart item... "+_cartid);
-		CartEntity product = cartService.activateCartItem(customerId, _cartid);
+															   @PathVariable("cartId") UUID _cartId) {
+		log.debug("|"+name()+"|Request to Activate the Cart item... "+_cartId);
+		CartEntity product = cartService.activateCartItem(customerId, _cartId);
 		StandardResponse stdResponse = createSuccessResponse("Cart Item Activated");
 		stdResponse.setPayload(product);
 		return ResponseEntity.ok(stdResponse);
@@ -219,7 +227,8 @@ public class CartControllerImpl extends AbstractController {
 	/**
 	 * Delete the Cart Item
 	 */
-	@Operation(summary = "Delete Cart Item")
+	@AuthorizationRequired(role = "User")
+	@Operation(summary = "Delete Cart Item", security = { @SecurityRequirement(name = "bearer-key") })
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200",
 					description = "Cart Item Deleted",
@@ -228,11 +237,12 @@ public class CartControllerImpl extends AbstractController {
 					description = "Unable to Delete the Cart item",
 					content = @Content)
 	})
-	@DeleteMapping("/delete/customer/{customerId}/cartitem/{cartid}")
+	@DeleteMapping("/delete/customer/{customerId}/cartItem/{cartId}")
+	@MicroMeterCounter(endpoint = "/delete/customer/cartItem")
 	public ResponseEntity<StandardResponse> deleteCartItem(@PathVariable("customerId") String customerId,
-															 @PathVariable("cartid") UUID _cartid) {
-		log.debug("|"+name()+"|Request to Delete the Cart item... "+_cartid);
-		cartService.deleteCartItem(customerId, _cartid);
+															 @PathVariable("cartId") UUID _cartId) {
+		log.debug("|"+name()+"|Request to Delete the Cart item... "+_cartId);
+		cartService.deleteCartItem(customerId, _cartId);
 		StandardResponse stdResponse = createSuccessResponse("Cart Item Deleted");
 		return ResponseEntity.ok(stdResponse);
 	}

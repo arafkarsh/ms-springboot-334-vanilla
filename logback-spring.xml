@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="120 seconds">
+	<include resource="logback-spring-scope.xml"/>
+	<include resource="logback-spring-appenders-text.xml"/>
+	<include resource="logback-spring-appenders-json.xml"/>
+
+	<!-- Define the Conditional Loggers -->
+	<!-- IF The Log Format == JSON -->
+	<if condition='property("LOG_FORMAT").contains("json")'>
+		<then>
+			<root level="INFO">
+				<appender-ref ref="STDOUT_JSON"/>
+				<appender-ref ref="ASYNC_JSON"/>
+			</root>
+			<logger level="info" name="ms-service-info">
+				<appender-ref ref="STDOUT_JSON"/>
+				<appender-ref ref="ASYNC_JSON"/>
+			</logger>
+			<logger level="debug" name="io.fusion.air.microservice.adapters.security">
+				<appender-ref ref="STDOUT_JSON"/>
+				<appender-ref ref="ASYNC_JSON"/>
+			</logger>
+			<logger  level="trace" name="io.fusion.air.microservice.security.JsonWebTokenValidator">
+				<appender-ref ref="STDOUT_JSON"/>
+				<appender-ref ref="ASYNC_JSON"/>
+			</logger>
+		</then>
+		<!-- If the Log Format == PLAIN -->
+		<else>
+			<root level="INFO">
+				<appender-ref ref="STDOUT_TEXT"/>
+				<appender-ref ref="ASYNC_TEXT"/>
+			</root>
+			<logger level="info" name="ms-service-info">
+				<appender-ref ref="STDOUT_TEXT" />
+				<appender-ref ref="ASYNC_TEXT" />
+			</logger>
+			<logger level="debug" name="io.fusion.air.microservice.adapters.security">
+				<appender-ref ref="STDOUT_TEXT" />
+				<appender-ref ref="ASYNC_TEXT" />
+			</logger>
+			<logger  level="trace" name="io.fusion.air.microservice.security.JsonWebTokenValidator">
+				<appender-ref ref="STDOUT_TEXT" />
+				<appender-ref ref="ASYNC_TEXT" />
+			</logger>
+		</else>
+	</if>
+</configuration>

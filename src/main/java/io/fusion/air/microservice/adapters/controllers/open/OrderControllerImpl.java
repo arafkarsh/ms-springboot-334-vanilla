@@ -110,6 +110,7 @@ public class OrderControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/all")
+	@MicroMeterCounter(endpoint = "/all")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchAllOrders() throws Exception {
 		log.debug("|"+name()+"|Request to Get Order For the Customers ");
@@ -134,6 +135,7 @@ public class OrderControllerImpl extends AbstractController {
             content = @Content)
     })
 	@GetMapping("/customer/{customerId}")
+	@MicroMeterCounter(endpoint = "/customer")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchOrder(@PathVariable("customerId") String customerId) throws Exception {
 		log.debug("|"+name()+"|Request to Get Order For the Customer "+customerId);
@@ -156,6 +158,7 @@ public class OrderControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PostMapping("/save")
+	@MicroMeterCounter(endpoint = "/save")
 	public ResponseEntity<StandardResponse> saveOrder(@Valid @RequestBody OrderEntity _order) {
 		log.debug("|"+name()+"|Request to Save Order ... "+_order);
 		OrderEntity order = orderService.save(_order);

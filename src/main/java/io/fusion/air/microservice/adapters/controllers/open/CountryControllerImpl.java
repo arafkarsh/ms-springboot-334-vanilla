@@ -92,6 +92,7 @@ public class CountryControllerImpl extends AbstractController {
             content = @Content)
     })
 	@GetMapping("/geo/page/{page}/size/{size}")
+	@MicroMeterCounter(endpoint = "/geo/page/size")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchCountriesByPageAndSize(@PathVariable String page,
 													@PathVariable("page") int _page,
@@ -119,6 +120,7 @@ public class CountryControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/geo/all/")
+	@MicroMeterCounter(endpoint = "/geo/all")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchAllGeoCountries(HttpServletRequest request,
 														   HttpServletResponse response) throws Exception {
@@ -144,6 +146,7 @@ public class CountryControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/all/")
+	@MicroMeterCounter(endpoint = "/all")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchAlCountries(HttpServletRequest request,
 														   HttpServletResponse response) throws Exception {
