@@ -49,7 +49,7 @@ public class _1_CounterExample {
      * @param meterRegistry
      */
     public _1_CounterExample(MeterRegistry meterRegistry) {
-        this.requestCounter = meterRegistry.counter("counter.example.request.count");
+        this.requestCounter = meterRegistry.counter("fusion.air.example.1.request.count");
     }
 
     public void processRequest() {

@@ -22,7 +22,7 @@ import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.config.ServiceHelp;
 import io.fusion.air.microservice.server.models.EchoData;
 import io.fusion.air.microservice.server.models.EchoResponseData;
-import io.fusion.air.microservice.server.service.*;
+import io.fusion.air.microservice.server.service.examples.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

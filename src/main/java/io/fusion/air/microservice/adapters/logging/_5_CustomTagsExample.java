@@ -49,7 +49,7 @@ public class _5_CustomTagsExample {
      * @param meterRegistry
      */
     public _5_CustomTagsExample(MeterRegistry meterRegistry) {
-        this.taggedCounter = Counter.builder("fusion.air.component.tagged.service.requests")
+        this.taggedCounter = Counter.builder("fusion.air.example.5.tagged.service.requests")
                 .tags("endpoint", "/api/resource", "status", "success")
                 .register(meterRegistry);
     }

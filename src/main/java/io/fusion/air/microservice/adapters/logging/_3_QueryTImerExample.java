@@ -49,7 +49,7 @@ public class _3_QueryTImerExample {
      * @param meterRegistry
      */
     public _3_QueryTImerExample(MeterRegistry meterRegistry) {
-        this.queryTimer = meterRegistry.timer("database_query_timer");
+        this.queryTimer = meterRegistry.timer("fusion.air.example.3.db.query.timer");
     }
 
     public void executeQuery() {

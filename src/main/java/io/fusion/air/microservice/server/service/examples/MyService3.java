@@ -1,4 +1,4 @@
-package io.fusion.air.microservice.server.service;
+package io.fusion.air.microservice.server.service.examples;
 
 import io.fusion.air.microservice.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @date:
  */
 @Component
-public class MyService2 {
+public class MyService3 {
 
     @Autowired
     private EchoService echoService;
@@ -22,8 +22,8 @@ public class MyService2 {
     private EchoAppService echoAppService;
 
     public void printData() {
-        System.out.println("MyService2:Request-Scope: " + Utils.toJsonString(echoService.getEchoData()));
-        System.out.println("MyService2:Session-Scope: " + Utils.toJsonString(echoSessionService.getEchoData()));
-        System.out.println("MyService2:Apps----Scope: " + Utils.toJsonString(echoAppService.getEchoData()));
+        System.out.println("MyService3:Request-Scope: " + Utils.toJsonString(echoService.getEchoData()));
+        System.out.println("MyService3:Session-Scope: " + Utils.toJsonString(echoSessionService.getEchoData()));
+        System.out.println("MyService3:Apps----Scope: " + Utils.toJsonString(echoAppService.getEchoData()));
     }
 }

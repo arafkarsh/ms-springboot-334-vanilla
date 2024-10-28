@@ -52,7 +52,7 @@ public class _2_GaugeMonitorExample {
      * @param meterRegistry
      */
     public _2_GaugeMonitorExample(MeterRegistry meterRegistry) {
-        Gauge.builder("fusion.air.component.queue.size", queue, List::size)
+        Gauge.builder("fusion.air.example.2.queue.size", queue, List::size)
                 .description("Size of the Component Queue")
                 .register(meterRegistry);
     }

@@ -26,8 +26,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import io.fusion.air.microservice.server.config.ConfigMap;
-
 /**
  * Service Configuration
  *
@@ -78,7 +76,7 @@ public class ServiceConfiguration implements Serializable {
 		configMap.setBuildDate( buildDate) ;
 		configMap.setServerVersion( serverVersion);
 		configMap.setServerHost( serverHost) ;
-		configMap.setAppPropertyList( appPropertyList);
+		configMap.setAppPropertyList(appPropertyList);
 		configMap.setAppPropertyMap( appPropertyMap);
 		return configMap;
 	}
@@ -265,17 +263,25 @@ public class ServiceConfiguration implements Serializable {
 	@Value("${spring.codec.max-in-memory-size:3MB}")
 	private String springCodecMaxMemory;
 
-
 	// Get All the System Properties
 	@JsonIgnore
 	@Value("#{systemProperties}")
 	private HashMap<String, String> systemProperties;
-	
+
+	// Property Type - Product
+	@Value("${app.property.product:fusion.air.product}")
+	private String appPropertyProduct;
+
+	// Deployed App Property Product List
+	@JsonIgnore
+	@Value("${app.property.product.list}")
+	private ArrayList<String> appPropertyProductList;
+
 	// Deployed App Property List
 	@JsonIgnore
 	@Value("${app.property.list}")
 	private ArrayList<String> appPropertyList;
-	
+
 	// Deployed App Properties Map
 	@JsonIgnore
 	@Value("#{${app.property.map}}")
@@ -414,7 +420,23 @@ public class ServiceConfiguration implements Serializable {
 	}
 
 	/**
-	 * @return the appPropertyList
+	 * Get Property Product Name
+	 * @return
+	 */
+	public String getAppPropertyProduct() {
+		return appPropertyProduct;
+	}
+
+	/**
+	 * @return the appPropertyProductList
+	 */
+	public ArrayList<String> getAppPropertyProductList() {
+		return appPropertyProductList;
+	}
+
+	/**
+	 * Get Property List
+	 * @return
 	 */
 	public ArrayList<String> getAppPropertyList() {
 		return appPropertyList;

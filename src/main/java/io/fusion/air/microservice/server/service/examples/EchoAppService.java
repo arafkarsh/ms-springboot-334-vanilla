@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.fusion.air.microservice.server.service;
+package io.fusion.air.microservice.server.service.examples;
 
 
 import io.fusion.air.microservice.server.models.EchoResponseData;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.web.context.annotation.ApplicationScope;
 
 /**
  * @author: Araf Karsh Hamid
@@ -26,8 +26,8 @@ import org.springframework.web.context.annotation.SessionScope;
  * @date:
  */
 @Service
-@SessionScope
-public class EchoSessionService {
+@ApplicationScope
+public class EchoAppService {
 
     private EchoResponseData echoData;
 

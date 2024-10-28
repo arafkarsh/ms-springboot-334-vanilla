@@ -104,7 +104,7 @@ public class ServiceHelp {
 		}
 
 		// Property List (Application.properties)
-		ArrayList<String> properties = serviceConfig.getAppPropertyList();
+		ArrayList<String> properties = serviceConfig.getAppPropertyProductList();
 		for(String p: properties) {
 			log.info("|Service Property List = "+p);
 			// System.out.println(LocalDateTime.now()+"|Service Property List = "+p);

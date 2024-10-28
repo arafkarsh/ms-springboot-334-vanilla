@@ -21,6 +21,8 @@ import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.config.ServiceHelp;
 import io.fusion.air.microservice.utils.CPU;
 // Spring
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootVersion;
@@ -60,6 +62,9 @@ public class ServiceEventListener {
 
 	@Autowired
 	private JsonWebTokenKeyManager jsonWebTokenKeyManager;
+
+	@Autowired
+	private  MeterRegistry meterRegistry;
 
 	@Value("${server.token.test}")
 	private boolean serverTokenTest;
@@ -110,6 +115,23 @@ public class ServiceEventListener {
 	}
 
 	/**
+	 * Register the Product API List for Micrometer
+	 */
+	private void registerAPICallsForMicroMeter() {
+		int totalApis = 0;
+		String apiClass = serviceConfig.getAppPropertyProduct();
+		for(String apiName : serviceConfig.getAppPropertyProductList()) {
+			String fullCounterName = apiClass + (apiName.isEmpty() ? "" : apiName.replaceAll("/", "."));
+			// Create and Register the counter
+			Counter counter = Counter
+					.builder(fullCounterName)
+					.register(meterRegistry);
+			totalApis++;
+		}
+		log.info("Total fusion.air.product APIs registered with MicroMeter = "+totalApis);
+	}
+
+	/**
 	 * Shows Logo and Generate Test Tokens
 	 * This method is automatically called by the SpringBoot Application when the Application
 	 * is ready.
@@ -119,6 +141,7 @@ public class ServiceEventListener {
 		log.info("Service is getting ready. Getting the CPU Stats ... ");
 		log.info(CPU.printCpuStats());
 		showLogo();
+		registerAPICallsForMicroMeter();
 		// Initialize the Key Manager
 		jsonWebTokenKeyManager.init(serviceConfig.getTokenType());
 		jsonWebTokenKeyManager.setKeyCloakPublicKey();
@@ -131,6 +154,8 @@ public class ServiceEventListener {
 		// Initialize the KeyCloak Public Key
 		jsonWebToken.setKeyCloakPublicKey();
 	}
+
+
 
 	/**
 	 * ----------------------------------------------------------------------------------------------------------

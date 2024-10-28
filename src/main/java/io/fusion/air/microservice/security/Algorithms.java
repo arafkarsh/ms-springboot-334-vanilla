@@ -74,7 +74,7 @@ public final class Algorithms {
         } catch (Exception ignored) {}
         if(CURRENT_MD_ALGO == null) {
             CURRENT_MD_ALGO = DEFAULT_MD_ALGO;
-            System.out.println("CURRENT_ALGO = "+CURRENT_MD_ALGO);
+            // System.out.println("CURRENT_ALGO = "+CURRENT_MD_ALGO);
         }
     }
 

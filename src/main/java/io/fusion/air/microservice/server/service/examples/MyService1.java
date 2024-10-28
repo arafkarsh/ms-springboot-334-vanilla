@@ -1,4 +1,4 @@
-package io.fusion.air.microservice.server.service;
+package io.fusion.air.microservice.server.service.examples;
 
 import io.fusion.air.microservice.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
