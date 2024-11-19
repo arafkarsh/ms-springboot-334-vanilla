@@ -27,10 +27,12 @@
  */
 package io.fusion.air.microservice.adapters.logging;
 
-import io.micrometer.core.instrument.Meter;
-import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * ms-springboot-334-vanilla / _10_CustomMeterExample
@@ -44,21 +46,42 @@ public class _10_CustomMeterExample {
 
     // @Autowired not required - Constructor based Autowiring
     private final Meter meter;
-    private final TimedObject timedObject;
+
+    private final AtomicInteger successCount = new AtomicInteger(0);
+    private final AtomicInteger failureCount = new AtomicInteger(0);
 
     public _10_CustomMeterExample(MeterRegistry meterRegistry) {
-        timedObject = new TimedObject(30, 6000);
         // Build and register the custom meter
-        /**
-        meter = Meter.builder("fusion.air.example.10.customMeter", Meter.Type.GAUGE,
-                        timedObject, TimedObject::getCustomValue)
-                .description("A custom metric with flexible measurement type")
-                .tags("customMeter", "exampleMeter")
+        meter =  Meter.builder("fusion.air.example.10.customMeter", Meter.Type.OTHER, () -> {
+                    // Create measurements for success and failure counts
+                    return Arrays.asList(
+                            new Measurement(successCount::get, Statistic.COUNT),
+                            new Measurement(failureCount::get, Statistic.COUNT)
+                    ).iterator();
+                })
+                .description("Tracks the total success and failure requests")
+                .tags(Tags.of("operation", "request.processing"))
                 .register(meterRegistry);
-         */
-        meter = null;
     }
 
+    /**
+     * Success Count
+     */
+    public void recordSuccess() {
+        successCount.incrementAndGet();
+    }
+
+    /**
+     * Failure Count
+     */
+    public void recordFailure() {
+        failureCount.incrementAndGet();
+    }
+
+    /**
+     * Test the Code
+     * @param args
+     */
     public static void main (String[] args) {
         // Use a SimpleMeterRegistry for demonstration
         MeterRegistry meterRegistry = new SimpleMeterRegistry();
@@ -67,8 +90,10 @@ public class _10_CustomMeterExample {
 
         // Output initial value of the TimeGauge
         System.out.println("Initial Meter value: " + meterEx.meter.toString() + " ms");
-        // Simulate a change in the tracked object's total time
-        meterEx.timedObject.setTotalTime(6000);
+        // Simulate a change in the tracked object's total
+        for(int x=0; x<10; x++) { meterEx.recordSuccess(); }
+        for(int x=0; x<2; x++) { meterEx.recordFailure(); }
+
         // Output updated value of the TimeGauge
         System.out.println("Updated Meter value: " + meterEx.meter.toString() + " ms");
 
