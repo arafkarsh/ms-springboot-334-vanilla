@@ -27,41 +27,48 @@
  */
 package io.fusion.air.microservice.adapters.logging;
 
-import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.TimeGauge;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
- * ms-springboot-334-vanilla / GaugeMonitorExample 
+ * ms-springboot-334-vanilla / _9_TimeGaugeExample
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:11
+ * @date: 2024-11-18T12:32
  */
 @Component
-public class _2_GaugeMonitorExample {
+public class _9_TimeGaugeExample {
 
     // @Autowired not required - Constructor based Autowiring
-    private final List<String> queue = new CopyOnWriteArrayList<>();
+    private final TimeGauge timeGauge;
+    private final TimedObject timedObject;
 
-    /**
-     * Constructor for Autowiring
-     * @param meterRegistry
-     */
-    public _2_GaugeMonitorExample(MeterRegistry meterRegistry) {
-        Gauge.builder("fusion.air.example.2.qaugeMonitor", queue, List::size)
-                .description("Size of the Component Queue")
+    public _9_TimeGaugeExample(MeterRegistry meterRegistry) {
+        timedObject = new TimedObject(20, 4000);
+        this.timeGauge = TimeGauge.builder("fusion.air.example.9.timerGauge", timedObject, TimeUnit.MILLISECONDS, TimedObject::getTotalTime)
+                .description("Tracks the time spent in a specific state or process")
                 .register(meterRegistry);
     }
 
-    public void addToQueue(String item) {
-        queue.add(item);
-    }
+    public static void main (String[] args) {
+        // Use a SimpleMeterRegistry for demonstration
+        MeterRegistry meterRegistry = new SimpleMeterRegistry();
 
-    public void removeFromQueue(String item) {
-        queue.remove(item);
+        _9_TimeGaugeExample tmEx = new _9_TimeGaugeExample(meterRegistry);
+
+        // Output initial value of the TimeGauge
+        System.out.println("Initial TimeGauge value: " + tmEx.timeGauge.value(TimeUnit.MILLISECONDS) + " ms");
+        // Simulate a change in the tracked object's total time
+        tmEx.timedObject.setTotalTime(6000);
+        // Output updated value of the TimeGauge
+        System.out.println("Updated TimeGauge value: " + tmEx.timeGauge.value(TimeUnit.MILLISECONDS) + " ms");
+
+        // Print all registered meters and their measurements
+        UtilsMeter.printStats(meterRegistry);
     }
 }

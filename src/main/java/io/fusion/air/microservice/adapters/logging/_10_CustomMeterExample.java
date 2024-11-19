@@ -27,41 +27,52 @@
  */
 package io.fusion.air.microservice.adapters.logging;
 
-import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 /**
- * ms-springboot-334-vanilla / GaugeMonitorExample 
+ * ms-springboot-334-vanilla / _10_CustomMeterExample
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:11
+ * @date: 2024-11-18T12:47
  */
 @Component
-public class _2_GaugeMonitorExample {
+public class _10_CustomMeterExample {
 
     // @Autowired not required - Constructor based Autowiring
-    private final List<String> queue = new CopyOnWriteArrayList<>();
+    private final Meter meter;
+    private final TimedObject timedObject;
 
-    /**
-     * Constructor for Autowiring
-     * @param meterRegistry
-     */
-    public _2_GaugeMonitorExample(MeterRegistry meterRegistry) {
-        Gauge.builder("fusion.air.example.2.qaugeMonitor", queue, List::size)
-                .description("Size of the Component Queue")
+    public _10_CustomMeterExample(MeterRegistry meterRegistry) {
+        timedObject = new TimedObject(30, 6000);
+        // Build and register the custom meter
+        /**
+        meter = Meter.builder("fusion.air.example.10.customMeter", Meter.Type.GAUGE,
+                        timedObject, TimedObject::getCustomValue)
+                .description("A custom metric with flexible measurement type")
+                .tags("customMeter", "exampleMeter")
                 .register(meterRegistry);
+         */
+        meter = null;
     }
 
-    public void addToQueue(String item) {
-        queue.add(item);
-    }
+    public static void main (String[] args) {
+        // Use a SimpleMeterRegistry for demonstration
+        MeterRegistry meterRegistry = new SimpleMeterRegistry();
 
-    public void removeFromQueue(String item) {
-        queue.remove(item);
+        _10_CustomMeterExample meterEx = new _10_CustomMeterExample(meterRegistry);
+
+        // Output initial value of the TimeGauge
+        System.out.println("Initial Meter value: " + meterEx.meter.toString() + " ms");
+        // Simulate a change in the tracked object's total time
+        meterEx.timedObject.setTotalTime(6000);
+        // Output updated value of the TimeGauge
+        System.out.println("Updated Meter value: " + meterEx.meter.toString() + " ms");
+
+        // Print all registered meters and their measurements
+        UtilsMeter.printStats(meterRegistry);
     }
 }

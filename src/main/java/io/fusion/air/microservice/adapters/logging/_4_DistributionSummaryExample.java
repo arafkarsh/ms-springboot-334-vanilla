@@ -49,7 +49,7 @@ public class _4_DistributionSummaryExample {
      * @param meterRegistry
      */
     public _4_DistributionSummaryExample(MeterRegistry meterRegistry) {
-        this.payloadSummary = meterRegistry.summary("fusion.air.example.4.api.payload.size");
+        this.payloadSummary = meterRegistry.summary("fusion.air.example.4.distributionSummary");
     }
 
     public void handleRequest(String payload) {

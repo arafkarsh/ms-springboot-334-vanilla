@@ -27,41 +27,29 @@
  */
 package io.fusion.air.microservice.adapters.logging;
 
-import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import io.micrometer.core.instrument.config.MeterFilter;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 /**
- * ms-springboot-334-vanilla / GaugeMonitorExample 
+ * ms-springboot-334-vanilla / _11_MeterFilterExample
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:11
+ * @date: 2024-11-18T17:29
  */
-@Component
-public class _2_GaugeMonitorExample {
+public class _11_MeterFilterExample {
 
-    // @Autowired not required - Constructor based Autowiring
-    private final List<String> queue = new CopyOnWriteArrayList<>();
+    public static void main (String[] args) {
+        // Use a SimpleMeterRegistry for demonstration
+        MeterRegistry meterRegistry = new SimpleMeterRegistry();
+        // change the prefix to fusion instead of jvm and all the fusion metrics will be filtered
+        meterRegistry.config().meterFilter(MeterFilter.denyNameStartsWith("jvm"));
 
-    /**
-     * Constructor for Autowiring
-     * @param meterRegistry
-     */
-    public _2_GaugeMonitorExample(MeterRegistry meterRegistry) {
-        Gauge.builder("fusion.air.example.2.qaugeMonitor", queue, List::size)
-                .description("Size of the Component Queue")
-                .register(meterRegistry);
+        _1_CounterExample ex1Counter = new _1_CounterExample(meterRegistry);
+        _2_GaugeMonitorExample ex2Gauge = new _2_GaugeMonitorExample(meterRegistry);
+
+        // Print all registered meters and their measurements
+        UtilsMeter.printStats(meterRegistry);
     }
-
-    public void addToQueue(String item) {
-        queue.add(item);
-    }
-
-    public void removeFromQueue(String item) {
-        queue.remove(item);
-    }
-}
+ }

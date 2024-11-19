@@ -27,41 +27,31 @@
  */
 package io.fusion.air.microservice.adapters.logging;
 
-import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.FunctionTimer;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
- * ms-springboot-334-vanilla / GaugeMonitorExample 
+ * ms-springboot-334-vanilla / _8_FunctionTimerExample
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:11
+ * @date: 2024-11-18T12:21
  */
 @Component
-public class _2_GaugeMonitorExample {
+public class _8_FunctionTimerExample {
 
     // @Autowired not required - Constructor based Autowiring
-    private final List<String> queue = new CopyOnWriteArrayList<>();
+    private final FunctionTimer functionTimer;
+    private final TimedObject timedObject;
 
-    /**
-     * Constructor for Autowiring
-     * @param meterRegistry
-     */
-    public _2_GaugeMonitorExample(MeterRegistry meterRegistry) {
-        Gauge.builder("fusion.air.example.2.qaugeMonitor", queue, List::size)
-                .description("Size of the Component Queue")
+    public _8_FunctionTimerExample(MeterRegistry meterRegistry) {
+        timedObject = new TimedObject(10, 2000);
+        functionTimer = FunctionTimer.builder("fusion.air.example.8.functionTimer", timedObject,
+                        obj -> obj.getCount(), obj -> obj.getTotalTime(), TimeUnit.MILLISECONDS)
+                .description("Measures the count and duration of events through functions")
                 .register(meterRegistry);
-    }
-
-    public void addToQueue(String item) {
-        queue.add(item);
-    }
-
-    public void removeFromQueue(String item) {
-        queue.remove(item);
     }
 }

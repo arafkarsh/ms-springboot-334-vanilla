@@ -27,41 +27,39 @@
  */
 package io.fusion.air.microservice.adapters.logging;
 
-import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 /**
- * ms-springboot-334-vanilla / GaugeMonitorExample 
+ * ms-springboot-334-vanilla / QueryTImerExample 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:11
+ * @date: 2024-10-08T14:15
  */
 @Component
-public class _2_GaugeMonitorExample {
+public class _3_QueryTimerExample {
 
     // @Autowired not required - Constructor based Autowiring
-    private final List<String> queue = new CopyOnWriteArrayList<>();
+    private final Timer queryTimer;
 
     /**
      * Constructor for Autowiring
      * @param meterRegistry
      */
-    public _2_GaugeMonitorExample(MeterRegistry meterRegistry) {
-        Gauge.builder("fusion.air.example.2.qaugeMonitor", queue, List::size)
-                .description("Size of the Component Queue")
-                .register(meterRegistry);
+    public _3_QueryTimerExample(MeterRegistry meterRegistry) {
+        this.queryTimer = meterRegistry.timer("fusion.air.example.3.queryTimer");
     }
 
-    public void addToQueue(String item) {
-        queue.add(item);
-    }
-
-    public void removeFromQueue(String item) {
-        queue.remove(item);
+    public void executeQuery() {
+        queryTimer.record(() -> {
+            // Simulating query execution
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

@@ -27,39 +27,63 @@
  */
 package io.fusion.air.microservice.adapters.logging;
 
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
-import org.springframework.stereotype.Component;
-
 /**
- * ms-springboot-334-vanilla / QueryTImerExample 
+ * ms-springboot-334-vanilla / TimedObject 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:15
+ * @date: 2024-11-18T12:24
  */
-@Component
-public class _3_QueryTImerExample {
+public class TimedObject {
 
-    // @Autowired not required - Constructor based Autowiring
-    private final Timer queryTimer;
+    private int count = 1;
+    private long totalTime = 100;
 
     /**
-     * Constructor for Autowiring
-     * @param meterRegistry
+     * Create Timed Object with default values
      */
-    public _3_QueryTImerExample(MeterRegistry meterRegistry) {
-        this.queryTimer = meterRegistry.timer("fusion.air.example.3.db.query.timer");
+    public TimedObject() {
     }
 
-    public void executeQuery() {
-        queryTimer.record(() -> {
-            // Simulating query execution
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
+    /**
+     * Creates Timed Object
+     * @param _count
+     * @param _totalTime
+     */
+    public TimedObject(int _count, long _totalTime) {
+        count = _count;
+        totalTime = _totalTime;
+    }
+
+    /**
+     * Get Count
+     * @return
+     */
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int _count) {
+        count = _count;
+    }
+
+    /**
+     * Get Total Time
+     * @return
+     */
+    public long getTotalTime() {
+        return totalTime;
+    }
+
+    public void setTotalTime(long _totalTime) {
+        totalTime = _totalTime;
+    }
+
+    /**
+     * For Custom Metrics
+     * @return
+     */
+    public long getCustomValue() {
+        return totalTime;
     }
 }

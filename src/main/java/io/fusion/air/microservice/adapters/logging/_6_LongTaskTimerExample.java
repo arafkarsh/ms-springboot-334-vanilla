@@ -27,41 +27,39 @@
  */
 package io.fusion.air.microservice.adapters.logging;
 
-import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 /**
- * ms-springboot-334-vanilla / GaugeMonitorExample 
+ * ms-springboot-334-vanilla / _6_LongTaskTimerExample
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:11
+ * @date: 2024-11-18T12:20
  */
 @Component
-public class _2_GaugeMonitorExample {
+public class _6_LongTaskTimerExample {
 
     // @Autowired not required - Constructor based Autowiring
-    private final List<String> queue = new CopyOnWriteArrayList<>();
+    private final LongTaskTimer longTaskTimer;
 
     /**
      * Constructor for Autowiring
      * @param meterRegistry
      */
-    public _2_GaugeMonitorExample(MeterRegistry meterRegistry) {
-        Gauge.builder("fusion.air.example.2.qaugeMonitor", queue, List::size)
-                .description("Size of the Component Queue")
+    public _6_LongTaskTimerExample(MeterRegistry meterRegistry) {
+        this.longTaskTimer = LongTaskTimer.builder("fusion.air.example.6.longTaskTimer")
+                .description("Tracks the duration of long-running tasks")
                 .register(meterRegistry);
     }
 
-    public void addToQueue(String item) {
-        queue.add(item);
-    }
-
-    public void removeFromQueue(String item) {
-        queue.remove(item);
+    public void handleRequest(String payload) {
+        LongTaskTimer.Sample sample = longTaskTimer.start();
+        try {
+            // Simulate long-running task
+        } finally {
+            sample.stop();
+        }
     }
 }

@@ -27,41 +27,27 @@
  */
 package io.fusion.air.microservice.adapters.logging;
 
-import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * ms-springboot-334-vanilla / GaugeMonitorExample 
+ * ms-springboot-334-vanilla / UtilsMeter 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:11
+ * @date: 2024-11-18T17:40
  */
-@Component
-public class _2_GaugeMonitorExample {
-
-    // @Autowired not required - Constructor based Autowiring
-    private final List<String> queue = new CopyOnWriteArrayList<>();
+public class UtilsMeter {
 
     /**
-     * Constructor for Autowiring
+     *  Print all registered meters and their measurements
      * @param meterRegistry
      */
-    public _2_GaugeMonitorExample(MeterRegistry meterRegistry) {
-        Gauge.builder("fusion.air.example.2.qaugeMonitor", queue, List::size)
-                .description("Size of the Component Queue")
-                .register(meterRegistry);
-    }
-
-    public void addToQueue(String item) {
-        queue.add(item);
-    }
-
-    public void removeFromQueue(String item) {
-        queue.remove(item);
+    public static void printStats(MeterRegistry meterRegistry) {
+        // Print all registered meters and their measurements
+        meterRegistry.getMeters().forEach(meter -> {
+            System.out.println("Meter Name: " + meter.getId().getName());
+            meter.measure().forEach(measurement ->
+                    System.out.println("Measurement: " + measurement.getValue() + " " + measurement.getStatistic()));
+        });
     }
 }

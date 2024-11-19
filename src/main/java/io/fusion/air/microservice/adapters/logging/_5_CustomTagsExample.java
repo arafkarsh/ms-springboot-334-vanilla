@@ -49,8 +49,10 @@ public class _5_CustomTagsExample {
      * @param meterRegistry
      */
     public _5_CustomTagsExample(MeterRegistry meterRegistry) {
-        this.taggedCounter = Counter.builder("fusion.air.example.5.tagged.service.requests")
-                .tags("endpoint", "/api/resource", "status", "success")
+        this.taggedCounter = Counter.builder("fusion.air.example.5.customTags")
+                // Tags are Key Value Pairs - Gives different dimensions for the metric
+                .tags("endpoint", "/api/resource")
+                .tags("status", "secured")
                 .register(meterRegistry);
     }
 
