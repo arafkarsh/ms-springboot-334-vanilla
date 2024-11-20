@@ -25,29 +25,65 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging;
-
-import io.micrometer.core.instrument.MeterRegistry;
+package io.fusion.air.microservice.adapters.logging.examples;
 
 /**
- * ms-springboot-334-vanilla / UtilsMeter 
+ * ms-springboot-334-vanilla / TimedObject 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-11-18T17:40
+ * @date: 2024-11-18T12:24
  */
-public class UtilsMeter {
+public class TimedObject {
+
+    private int count = 1;
+    private long totalTime = 100;
 
     /**
-     *  Print all registered meters and their measurements
-     * @param meterRegistry
+     * Create Timed Object with default values
      */
-    public static void printStats(MeterRegistry meterRegistry) {
-        // Print all registered meters and their measurements
-        meterRegistry.getMeters().forEach(meter -> {
-            System.out.println("Meter Name: " + meter.getId().getName());
-            meter.measure().forEach(measurement ->
-                    System.out.println("Measurement: " + measurement.getValue() + " " + measurement.getStatistic()));
-        });
+    public TimedObject() {
+    }
+
+    /**
+     * Creates Timed Object
+     * @param _count
+     * @param _totalTime
+     */
+    public TimedObject(int _count, long _totalTime) {
+        count = _count;
+        totalTime = _totalTime;
+    }
+
+    /**
+     * Get Count
+     * @return
+     */
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int _count) {
+        count = _count;
+    }
+
+    /**
+     * Get Total Time
+     * @return
+     */
+    public long getTotalTime() {
+        return totalTime;
+    }
+
+    public void setTotalTime(long _totalTime) {
+        totalTime = _totalTime;
+    }
+
+    /**
+     * For Custom Metrics
+     * @return
+     */
+    public long getCustomValue() {
+        return totalTime;
     }
 }

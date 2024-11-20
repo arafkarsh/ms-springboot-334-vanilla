@@ -25,41 +25,34 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging;
+package io.fusion.air.microservice.adapters.logging.examples;
 
-import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.stereotype.Component;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 /**
- * ms-springboot-334-vanilla / _6_LongTaskTimerExample
+ * ms-springboot-334-vanilla / _13_SimpleMeterRegistry 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-11-18T12:20
+ * @date: 2024-11-20T12:38
  */
-@Component
-public class _6_LongTaskTimerExample {
+public class _13_SimpleMeterRegistry {
 
-    // @Autowired not required - Constructor based Autowiring
-    private final LongTaskTimer longTaskTimer;
+    public static void main(String[] args) {
+        // Create a SimpleMeterRegistry
+        MeterRegistry simpleRegistry = new SimpleMeterRegistry();
 
-    /**
-     * Constructor for Autowiring
-     * @param meterRegistry
-     */
-    public _6_LongTaskTimerExample(MeterRegistry meterRegistry) {
-        this.longTaskTimer = LongTaskTimer.builder("fusion.air.example.6.longTaskTimer")
-                .description("Tracks the duration of long-running tasks")
-                .register(meterRegistry);
-    }
+        // Create and register a Counter
+        Counter counter = simpleRegistry.counter("fusion.air.example.13.SimpleMeterRegistry", "type", "test");
 
-    public void handleRequest(String payload) {
-        LongTaskTimer.Sample sample = longTaskTimer.start();
-        try {
-            // Simulate long-running task
-        } finally {
-            sample.stop();
-        }
+        // Increment the counter
+        counter.increment();
+        counter.increment();
+        counter.increment(3);
+
+        // Print the current value
+        System.out.println("Name: "+counter.getId().getName()+" Counter Value: " + counter.count());
     }
 }

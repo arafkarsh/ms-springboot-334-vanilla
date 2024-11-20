@@ -25,31 +25,41 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging;
+package io.fusion.air.microservice.adapters.logging.examples;
 
+import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.config.MeterFilter;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import org.springframework.stereotype.Component;
 
 /**
- * ms-springboot-334-vanilla / _11_MeterFilterExample
+ * ms-springboot-334-vanilla / _6_LongTaskTimerExample
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-11-18T17:29
+ * @date: 2024-11-18T12:20
  */
-public class _11_MeterFilterExample {
+@Component
+public class _6_LongTaskTimerExample {
 
-    public static void main (String[] args) {
-        // Use a SimpleMeterRegistry for demonstration
-        MeterRegistry meterRegistry = new SimpleMeterRegistry();
-        // change the prefix to fusion instead of jvm and all the fusion metrics will be filtered
-        meterRegistry.config().meterFilter(MeterFilter.denyNameStartsWith("jvm"));
+    // @Autowired not required - Constructor based Autowiring
+    private final LongTaskTimer longTaskTimer;
 
-        _1_CounterExample ex1Counter = new _1_CounterExample(meterRegistry);
-        _2_GaugeMonitorExample ex2Gauge = new _2_GaugeMonitorExample(meterRegistry);
-
-        // Print all registered meters and their measurements
-        UtilsMeter.printStats(meterRegistry);
+    /**
+     * Constructor for Autowiring
+     * @param meterRegistry
+     */
+    public _6_LongTaskTimerExample(MeterRegistry meterRegistry) {
+        this.longTaskTimer = LongTaskTimer.builder("fusion.air.example.6.longTaskTimer")
+                .description("Tracks the duration of long-running tasks")
+                .register(meterRegistry);
     }
- }
+
+    public void handleRequest(String payload) {
+        LongTaskTimer.Sample sample = longTaskTimer.start();
+        try {
+            // Simulate long-running task
+        } finally {
+            sample.stop();
+        }
+    }
+}

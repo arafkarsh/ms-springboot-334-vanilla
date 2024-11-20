@@ -25,7 +25,7 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging;
+package io.fusion.air.microservice.adapters.logging.examples;
 
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;

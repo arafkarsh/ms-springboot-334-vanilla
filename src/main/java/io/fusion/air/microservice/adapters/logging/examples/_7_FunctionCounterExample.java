@@ -25,50 +25,63 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging;
+package io.fusion.air.microservice.adapters.logging.examples;
 
+import io.micrometer.core.instrument.FunctionCounter;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.TimeGauge;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
 /**
- * ms-springboot-334-vanilla / _9_TimeGaugeExample
+ * ms-springboot-334-vanilla / _7_FunctionCounterExample 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-11-18T12:32
+ * @date: 2024-11-19T10:24
  */
 @Component
-public class _9_TimeGaugeExample {
+public class _7_FunctionCounterExample {
 
-    // @Autowired not required - Constructor based Autowiring
-    private final TimeGauge timeGauge;
-    private final TimedObject timedObject;
+    private final ProcessingQueue processingQueue;
 
-    public _9_TimeGaugeExample(MeterRegistry meterRegistry) {
-        timedObject = new TimedObject(20, 4000);
-        this.timeGauge = TimeGauge.builder("fusion.air.example.9.timerGauge", timedObject, TimeUnit.MILLISECONDS, TimedObject::getTotalTime)
-                .description("Tracks the time spent in a specific state or process")
+    public _7_FunctionCounterExample(MeterRegistry meterRegistry) {
+        // Simulate a processing queue
+        processingQueue = new ProcessingQueue();
+
+        // Create and register a FunctionCounter
+        FunctionCounter.builder("fusion.air.example.7.functionCounter", processingQueue, ProcessingQueue::getItemsProcessed)
+                .description("Tracks the number of items processed from the queue")
+                .tags("queue", "processing")
                 .register(meterRegistry);
     }
 
-    public static void main (String[] args) {
-        // Use a SimpleMeterRegistry for demonstration
+    public static void main(String[] args) {
+        // For testing purposes, use a simple in-memory MeterRegistry
         MeterRegistry meterRegistry = new SimpleMeterRegistry();
 
-        _9_TimeGaugeExample tmEx = new _9_TimeGaugeExample(meterRegistry);
+        // Create an instance of the example
+        _7_FunctionCounterExample example = new _7_FunctionCounterExample(meterRegistry);
 
-        // Output initial value of the TimeGauge
-        System.out.println("Initial TimeGauge value: " + tmEx.timeGauge.value(TimeUnit.MILLISECONDS) + " ms");
-        // Simulate a change in the tracked object's total time
-        tmEx.timedObject.setTotalTime(6000);
-        // Output updated value of the TimeGauge
-        System.out.println("Updated TimeGauge value: " + tmEx.timeGauge.value(TimeUnit.MILLISECONDS) + " ms");
+        // Simulate processing items
+        example.processingQueue.processItem();
+        example.processingQueue.processItem();
+        example.processingQueue.processItem();
 
-        // Print all registered meters and their measurements
-        UtilsMeter.printStats(meterRegistry);
+        // Access and print the FunctionCounter value
+        double itemsProcessed = meterRegistry.get("fusion.air.example.7.functionCounter").functionCounter().count();
+        System.out.println("Items processed: " + itemsProcessed);
+    }
+}
+
+// Simulated queue for processing items
+class ProcessingQueue {
+    private long itemsProcessed = 0;
+
+    public void processItem() {
+        itemsProcessed++;
+    }
+
+    public long getItemsProcessed() {
+        return itemsProcessed;
     }
 }

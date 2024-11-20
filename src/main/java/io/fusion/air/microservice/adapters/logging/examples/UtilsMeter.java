@@ -25,38 +25,29 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging;
+package io.fusion.air.microservice.adapters.logging.examples;
 
-import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.stereotype.Component;
 
 /**
- * ms-springboot-334-vanilla / _5_CustomTagsExample 
+ * ms-springboot-334-vanilla / UtilsMeter 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:22
+ * @date: 2024-11-18T17:40
  */
-@Component
-public class _5_CustomTagsExample {
-
-    // @Autowired not required - Constructor based Autowiring
-    private final Counter taggedCounter;
+public class UtilsMeter {
 
     /**
-     * Constructor for Autowiring
+     *  Print all registered meters and their measurements
      * @param meterRegistry
      */
-    public _5_CustomTagsExample(MeterRegistry meterRegistry) {
-        this.taggedCounter = Counter.builder("fusion.air.example.5.customTags")
-                // Tags are Key Value Pairs - Gives different dimensions for the metric
-                .tags("endpoint", "/api/resource")
-                .tags("status", "secured")
-                .register(meterRegistry);
-    }
-
-    public void processTaggedRequest() {
-        taggedCounter.increment();
+    public static void printStats(MeterRegistry meterRegistry) {
+        // Print all registered meters and their measurements
+        meterRegistry.getMeters().forEach(meter -> {
+            System.out.println("Meter Name: " + meter.getId().getName());
+            meter.measure().forEach(measurement ->
+                    System.out.println("Measurement: " + measurement.getValue() + " " + measurement.getStatistic()));
+        });
     }
 }

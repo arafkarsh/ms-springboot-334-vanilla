@@ -25,48 +25,45 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging;
+package io.fusion.air.microservice.adapters.logging.examples;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.micrometer.prometheusmetrics.PrometheusConfig;
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 
 /**
- * ms-springboot-334-vanilla / _14_CompositeMeterRegistry 
+ * ms-springboot-334-vanilla / _15_GlobalRegistryExample 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-11-20T12:48
+ * @date: 2024-11-20T16:15
  */
-public class _14_CompositeMeterRegistry {
+public class _15_GlobalRegistryExample {
 
     public static void main(String[] args) {
-        // Create a CompositeMeterRegistry
-        CompositeMeterRegistry compositeRegistry = new CompositeMeterRegistry();
+        // Access the global registry via the Metrics class
+        MeterRegistry globalRegistry = Metrics.globalRegistry;
 
-        // Add a SimpleMeterRegistry (for local testing)
+        // Create and add a SimpleMeterRegistry
         SimpleMeterRegistry simpleRegistry = new SimpleMeterRegistry();
-        compositeRegistry.add(simpleRegistry);
+        Metrics.globalRegistry.add(simpleRegistry);  // OR Metrics.addRegistry(simpleRegistry);
 
-        // Add a PrometheusMeterRegistry (for Prometheus integration)
+        // Create and add a PrometheusMeterRegistry
         PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-        compositeRegistry.add(prometheusRegistry);
+        Metrics.globalRegistry.add(prometheusRegistry);  // OR Metrics.addRegistry(prometheusRegistry);
 
-        // Create and register a Counter
-        Counter counter = compositeRegistry.counter("fusion.air.example.14.CompositeMeterRegistry", "type", "test");
+        // Register a metric with the global registry
+        Metrics.counter("fusion.air.example.15.GlobalRegistry", "type", "test").increment();
 
-        // Increment the counter
-        counter.increment();
-        counter.increment();
-        counter.increment(5);
+        // Print the metrics in SimpleMeterRegistry
+        System.out.println("Metrics in SimpleMeterRegistry:");
+        simpleRegistry.getMeters().forEach(meter -> System.out.println(meter.getId()));
 
-        // Print the current value from SimpleMeterRegistry
-        System.out.println("Name: "+counter.getId().getName()+" Counter Value: " + counter.count());
-
-        // Print the metrics output from PrometheusMeterRegistry
-        System.out.println("\nMetrics in Prometheus Format:");
+        // Print the metrics in PrometheusMeterRegistry
+        System.out.println("\nMetrics in PrometheusMeterRegistry:");
         System.out.println(prometheusRegistry.scrape());
+
     }
 }

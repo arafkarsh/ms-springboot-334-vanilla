@@ -25,33 +25,34 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging;
+package io.fusion.air.microservice.adapters.logging.examples;
 
-import io.micrometer.core.instrument.FunctionTimer;
+import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
 /**
- * ms-springboot-334-vanilla / _8_FunctionTimerExample
+ * ms-springboot-334-vanilla / _4_DistributionSummaryExample 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-11-18T12:21
+ * @date: 2024-10-08T14:20
  */
 @Component
-public class _8_FunctionTimerExample {
+public class _4_DistributionSummaryExample {
 
     // @Autowired not required - Constructor based Autowiring
-    private final FunctionTimer functionTimer;
-    private final TimedObject timedObject;
+    private final DistributionSummary payloadSummary;
 
-    public _8_FunctionTimerExample(MeterRegistry meterRegistry) {
-        timedObject = new TimedObject(10, 2000);
-        functionTimer = FunctionTimer.builder("fusion.air.example.8.functionTimer", timedObject,
-                        obj -> obj.getCount(), obj -> obj.getTotalTime(), TimeUnit.MILLISECONDS)
-                .description("Measures the count and duration of events through functions")
-                .register(meterRegistry);
+    /**
+     * Constructor for Autowiring
+     * @param meterRegistry
+     */
+    public _4_DistributionSummaryExample(MeterRegistry meterRegistry) {
+        this.payloadSummary = meterRegistry.summary("fusion.air.example.4.distributionSummary");
+    }
+
+    public void handleRequest(String payload) {
+        payloadSummary.record(payload.length());
     }
 }

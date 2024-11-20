@@ -25,65 +25,43 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging;
+package io.fusion.air.microservice.adapters.logging.examples;
+
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * ms-springboot-334-vanilla / TimedObject 
+ * ms-springboot-334-vanilla / GaugeMonitorExample 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-11-18T12:24
+ * @date: 2024-10-08T14:11
  */
-public class TimedObject {
+@Component
+public class _2_GaugeMonitorExample {
 
-    private int count = 1;
-    private long totalTime = 100;
-
-    /**
-     * Create Timed Object with default values
-     */
-    public TimedObject() {
-    }
+    // @Autowired not required - Constructor based Autowiring
+    private final List<String> queue = new CopyOnWriteArrayList<>();
 
     /**
-     * Creates Timed Object
-     * @param _count
-     * @param _totalTime
+     * Constructor for Autowiring
+     * @param meterRegistry
      */
-    public TimedObject(int _count, long _totalTime) {
-        count = _count;
-        totalTime = _totalTime;
+    public _2_GaugeMonitorExample(MeterRegistry meterRegistry) {
+        Gauge.builder("fusion.air.example.2.qaugeMonitor", queue, List::size)
+                .description("Size of the Component Queue")
+                .register(meterRegistry);
     }
 
-    /**
-     * Get Count
-     * @return
-     */
-    public int getCount() {
-        return count;
+    public void addToQueue(String item) {
+        queue.add(item);
     }
 
-    public void setCount(int _count) {
-        count = _count;
-    }
-
-    /**
-     * Get Total Time
-     * @return
-     */
-    public long getTotalTime() {
-        return totalTime;
-    }
-
-    public void setTotalTime(long _totalTime) {
-        totalTime = _totalTime;
-    }
-
-    /**
-     * For Custom Metrics
-     * @return
-     */
-    public long getCustomValue() {
-        return totalTime;
+    public void removeFromQueue(String item) {
+        queue.remove(item);
     }
 }

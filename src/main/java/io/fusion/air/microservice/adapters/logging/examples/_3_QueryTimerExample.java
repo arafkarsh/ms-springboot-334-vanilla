@@ -25,36 +25,41 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging;
+package io.fusion.air.microservice.adapters.logging.examples;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Timer;
 import org.springframework.stereotype.Component;
 
 /**
- * ms-springboot-334-vanilla / CounterExample 
+ * ms-springboot-334-vanilla / QueryTImerExample 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:17
+ * @date: 2024-10-08T14:15
  */
 @Component
-public class _1_CounterExample {
+public class _3_QueryTimerExample {
 
     // @Autowired not required - Constructor based Autowiring
-    private final Counter requestCounter;
+    private final Timer queryTimer;
 
     /**
      * Constructor for Autowiring
      * @param meterRegistry
      */
-    public _1_CounterExample(MeterRegistry meterRegistry) {
-        this.requestCounter = meterRegistry.counter("fusion.air.example.1.counters");
+    public _3_QueryTimerExample(MeterRegistry meterRegistry) {
+        this.queryTimer = meterRegistry.timer("fusion.air.example.3.queryTimer");
     }
 
-    public void processRequest() {
-        // Business logic
-        requestCounter.increment();
-        // Increment the counter whenever a request is processed
+    public void executeQuery() {
+        queryTimer.record(() -> {
+            // Simulating query execution
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
