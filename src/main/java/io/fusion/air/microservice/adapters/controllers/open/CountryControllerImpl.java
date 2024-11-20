@@ -15,7 +15,7 @@
  */
 package io.fusion.air.microservice.adapters.controllers.open;
 // Custom
-import io.fusion.air.microservice.adapters.logging.MicroMeterCounter;
+import io.fusion.air.microservice.adapters.logging.MetricsCounter;
 import io.fusion.air.microservice.domain.entities.order.CountryEntity;
 import io.fusion.air.microservice.domain.entities.order.CountryGeoEntity;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
@@ -63,7 +63,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/country")
 @RequestScope
-@MicroMeterCounter(name = "fusion.air.country")
+@MetricsCounter(name = "fusion.air.country")
 @Tag(name = "Country API", description = "Spring Examples with Pagination")
 public class CountryControllerImpl extends AbstractController {
 
@@ -92,7 +92,7 @@ public class CountryControllerImpl extends AbstractController {
             content = @Content)
     })
 	@GetMapping("/geo/page/{page}/size/{size}")
-	@MicroMeterCounter(endpoint = "/geo/page/size")
+	@MetricsCounter(endpoint = "/geo/page/size")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchCountriesByPageAndSize(@PathVariable String page,
 													@PathVariable("page") int _page,
@@ -120,7 +120,7 @@ public class CountryControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/geo/all/")
-	@MicroMeterCounter(endpoint = "/geo/all")
+	@MetricsCounter(endpoint = "/geo/all")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchAllGeoCountries(HttpServletRequest request,
 														   HttpServletResponse response) throws Exception {
@@ -146,7 +146,7 @@ public class CountryControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/all/")
-	@MicroMeterCounter(endpoint = "/all")
+	@MetricsCounter(endpoint = "/all")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchAlCountries(HttpServletRequest request,
 														   HttpServletResponse response) throws Exception {

@@ -33,7 +33,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * ms-springboot-334-vanilla / MicroMeterCounter 
+ * ms-springboot-334-vanilla / MetricsCounter
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
@@ -41,7 +41,8 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE}) // Apply to both methods and classes
-public @interface MicroMeterCounter {
+public @interface MetricsCounter {
     String name() default "";       // Optional, can be inherited from class level
     String endpoint() default "";   // Endpoint is still optional
+    String[] tags() default {};       // Add Tags for the Counter
 }

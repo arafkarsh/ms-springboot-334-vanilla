@@ -15,10 +15,9 @@
  */
 package io.fusion.air.microservice.adapters.controllers.open;
 // Custom
-import io.fusion.air.microservice.adapters.logging.MicroMeterCounter;
+import io.fusion.air.microservice.adapters.logging.MetricsCounter;
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.entities.order.ProductEntity;
-import io.fusion.air.microservice.domain.exceptions.*;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.domain.models.order.Product;
 import io.fusion.air.microservice.domain.ports.services.ProductService;
@@ -35,7 +34,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -71,7 +69,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/product")
 @RequestScope
-@MicroMeterCounter(name = "fusion.air.product")
+@MetricsCounter(name = "fusion.air.product")
 @Tag(name = "Product API", description = "Search Products, Create Products, Activate / DeActivate, Delete & Update Product")
 public class ProductControllerImpl extends AbstractController {
 
@@ -107,7 +105,7 @@ public class ProductControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PostMapping("/create")
-	@MicroMeterCounter(endpoint = "/create")
+	@MetricsCounter(endpoint = "/create")
 	public ResponseEntity<StandardResponse> createProduct(@Valid @RequestBody Product _product) {
 		log.debug("|"+name()+"|Request to Create Product... "+_product);
 		ProductEntity prodEntity = productServiceImpl.createProduct(_product);
@@ -131,7 +129,7 @@ public class ProductControllerImpl extends AbstractController {
             content = @Content)
     })
 	@GetMapping("/status/{productId}")
-	@MicroMeterCounter(endpoint = "/status")
+	@MetricsCounter(endpoint = "/status")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> getProductStatus(@PathVariable("productId") UUID _productId,
 														HttpServletRequest request,
@@ -158,7 +156,7 @@ public class ProductControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/all/")
-	@MicroMeterCounter(endpoint = "/all")
+	@MetricsCounter(endpoint = "/all")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> getAllProducts(HttpServletRequest request,
 														   HttpServletResponse response) throws Exception {
@@ -175,7 +173,7 @@ public class ProductControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/all/secured/")
-	@MicroMeterCounter(endpoint = "/all/secured")
+	@MetricsCounter(endpoint = "/all/secured")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> getAllProductsSecured(HttpServletRequest request,
 														   HttpServletResponse response) throws Exception {
@@ -214,7 +212,7 @@ public class ProductControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/search/product/{productName}")
-	@MicroMeterCounter(endpoint = "/search/product")
+	@MetricsCounter(endpoint = "/search/product")
 	public ResponseEntity<StandardResponse> searchProductsByName(
 			@PathVariable("productName")
 			@NotBlank(message = "The Product Name is  required.")
@@ -240,7 +238,7 @@ public class ProductControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/search/price/{price}")
-	@MicroMeterCounter(endpoint = "/search/price")
+	@MetricsCounter(endpoint = "/search/price")
 	public ResponseEntity<StandardResponse> searchProductsByPrice(@PathVariable("price") BigDecimal _price) {
 		log.debug("|"+name()+"|Request to Search the Product By Price... "+_price);
 		List<ProductEntity> products = productServiceImpl.fetchProductsByPriceGreaterThan(_price);
@@ -262,7 +260,7 @@ public class ProductControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/search/active/")
-	@MicroMeterCounter(endpoint = "/search/active")
+	@MetricsCounter(endpoint = "/search/active")
 	public ResponseEntity<StandardResponse> searchActiveProducts() {
 		log.debug("|"+name()+"|Request to Search the Active Products ... ");
 		List<ProductEntity> products = productServiceImpl.fetchActiveProducts();
@@ -285,7 +283,7 @@ public class ProductControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PutMapping("/deactivate/{productId}")
-	@MicroMeterCounter(endpoint = "/deactivate")
+	@MetricsCounter(endpoint = "/deactivate")
 	public ResponseEntity<StandardResponse> deActivateProduct(@PathVariable("productId") UUID _productId) {
 		log.debug("|"+name()+"|Request to De-Activate the Product... "+_productId);
 		ProductEntity product = productServiceImpl.deActivateProduct(_productId);
@@ -308,7 +306,7 @@ public class ProductControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PutMapping("/activate/{productId}")
-	@MicroMeterCounter(endpoint = "/activate")
+	@MetricsCounter(endpoint = "/activate")
 	public ResponseEntity<StandardResponse> activateProduct(@PathVariable("productId") UUID _productId) {
 		log.debug("|"+name()+"|Request to Activate the Product... "+_productId);
 		ProductEntity product = productServiceImpl.activateProduct(_productId);
@@ -331,7 +329,7 @@ public class ProductControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PutMapping("/update/")
-	@MicroMeterCounter(endpoint = "/update")
+	@MetricsCounter(endpoint = "/update")
 	public ResponseEntity<StandardResponse> updateProduct(@Valid @RequestBody ProductEntity _product) {
 		log.debug("|"+name()+"|Request to Update Product Details... "+_product);
 		ProductEntity prodEntity = productServiceImpl.updateProduct(_product);
@@ -353,7 +351,7 @@ public class ProductControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PutMapping("/update/price")
-	@MicroMeterCounter(endpoint = "/update/price")
+	@MetricsCounter(endpoint = "/update/price")
 	public ResponseEntity<StandardResponse> updatePrice(@Valid @RequestBody ProductEntity _product) {
 		log.debug("|"+name()+"|Request to Update Product Price... ["+_product);
 		ProductEntity prodEntity = productServiceImpl.updatePrice(_product);
@@ -375,7 +373,7 @@ public class ProductControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PutMapping("/update/details")
-	@MicroMeterCounter(endpoint = "/update/details")
+	@MetricsCounter(endpoint = "/update/details")
 	public ResponseEntity<StandardResponse> updateProductDetails(@Valid @RequestBody ProductEntity _product) {
 		log.debug("|"+name()+"|Request to Update Product Details... "+_product);
 		ProductEntity prodEntity = productServiceImpl.updateProductDetails(_product);
@@ -398,7 +396,7 @@ public class ProductControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@DeleteMapping("/{productId}")
-	@MicroMeterCounter(endpoint = "/delete")
+	@MetricsCounter(endpoint = "/delete")
 	public ResponseEntity<StandardResponse> deleteProduct(@PathVariable("productId") UUID _productId) {
 		log.debug("|"+name()+"|Request to Delete Product... "+_productId);
 		productServiceImpl.deleteProduct(_productId);

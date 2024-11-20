@@ -15,7 +15,7 @@
  */
 package io.fusion.air.microservice.adapters.controllers.secured;
 // Custom
-import io.fusion.air.microservice.adapters.logging.MicroMeterCounter;
+import io.fusion.air.microservice.adapters.logging.MetricsCounter;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.domain.models.order.PaymentDetails;
 import io.fusion.air.microservice.domain.models.order.PaymentStatus;
@@ -61,7 +61,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/payment")
 @RequestScope
-@MicroMeterCounter(name = "fusion.air.payment")
+@MetricsCounter(name = "fusion.air.payment")
 @Tag(name = "Secured Payments API", description = "")
 public class PaymentControllerImpl extends AbstractController {
 
@@ -87,7 +87,7 @@ public class PaymentControllerImpl extends AbstractController {
             content = @Content)
     })
 	@GetMapping("/status/{referenceNo}")
-	@MicroMeterCounter(endpoint = "/status")
+	@MetricsCounter(endpoint = "/status")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> getStatus(@PathVariable("referenceNo") String _referenceNo,
 														HttpServletRequest request) throws Exception {
@@ -115,7 +115,7 @@ public class PaymentControllerImpl extends AbstractController {
             content = @Content)
     })
     @PostMapping("/processPayments")
-	@MicroMeterCounter(endpoint = "/processPayments")
+	@MetricsCounter(endpoint = "/processPayments")
 	public ResponseEntity<StandardResponse> processPayments(@Valid @RequestBody PaymentDetails _payDetails) {
 		log.debug("|"+name()+"|Request to process payments... ");
 		StandardResponse stdResponse = createSuccessResponse("Processing Success!");
@@ -143,7 +143,7 @@ public class PaymentControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@DeleteMapping("/cancel/{referenceNo}")
-	@MicroMeterCounter(endpoint = "/cancel")
+	@MetricsCounter(endpoint = "/cancel")
 	public ResponseEntity<StandardResponse> cancel(@PathVariable("referenceNo") String _referenceNo) {
 		log.debug("|"+name()+"|Request to Cancel the payments... ");
 		StandardResponse stdResponse = createSuccessResponse("Cancelled!");
@@ -167,7 +167,7 @@ public class PaymentControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PutMapping("/update/{referenceNo}")
-	@MicroMeterCounter(endpoint = "/update")
+	@MetricsCounter(endpoint = "/update")
 	public ResponseEntity<StandardResponse> updatePayment(@PathVariable("referenceNo") String _referenceNo) {
 		log.debug("|"+name()+"|Request to Update Payment... "+_referenceNo);
 		StandardResponse stdResponse = createSuccessResponse("Updated!");

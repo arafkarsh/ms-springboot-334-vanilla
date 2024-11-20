@@ -15,7 +15,7 @@
  */
 package io.fusion.air.microservice.adapters.controllers.open;
 // Custom
-import io.fusion.air.microservice.adapters.logging.MicroMeterCounter;
+import io.fusion.air.microservice.adapters.logging.MetricsCounter;
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.entities.order.CartEntity;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
@@ -63,7 +63,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/cart")
 @RequestScope
-@MicroMeterCounter(name = "fusion.air.cart")
+@MetricsCounter(name = "fusion.air.cart")
 @Tag(name = "Cart API", description = "CRUD Operations for Cart, Cart Items, Add to Cart, Delete item...")
 public class CartControllerImpl extends AbstractController {
 
@@ -93,7 +93,7 @@ public class CartControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/all")
-	@MicroMeterCounter(endpoint = "/all")
+	@MetricsCounter(endpoint = "/all", tags = {"layer", "ws", "public", "yes"})
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchCarts() throws Exception {
 		log.debug("|"+name()+"|Request to Get Cart For the Customers ");
@@ -118,7 +118,7 @@ public class CartControllerImpl extends AbstractController {
             content = @Content)
     })
 	@GetMapping("/customer/{customerId}")
-	@MicroMeterCounter(endpoint = "/customer")
+	@MetricsCounter(endpoint = "/customer", tags = {"layer", "ws", "public", "yes"})
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchCart(@PathVariable("customerId") String customerId) throws Exception {
 		log.debug("|"+name()+"|Request to Get Cart For the Customer "+customerId);
@@ -145,7 +145,7 @@ public class CartControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/customer/{customerId}/price/{price}")
-	@MicroMeterCounter(endpoint = "/customer/price")
+	@MetricsCounter(endpoint = "/customer/price", tags = {"layer", "ws", "public", "yes"})
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchCartForItems(@PathVariable("customerId") String customerId,
 															  @PathVariable("price") BigDecimal price) throws Exception {
@@ -169,7 +169,7 @@ public class CartControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PostMapping("/add")
-	@MicroMeterCounter(endpoint = "/add")
+	@MetricsCounter(endpoint = "/add", tags = {"layer", "ws", "public", "yes"})
 	public ResponseEntity<StandardResponse> addToCart(@Valid @RequestBody Cart _cart) {
 		log.debug("|"+name()+"|Request to Add Cart Item... "+_cart.getProductName());
 		CartEntity cartItem = cartService.save(_cart);
@@ -191,7 +191,7 @@ public class CartControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PutMapping("/deactivate/customer/{customerId}/cartItem/{cartId}")
-	@MicroMeterCounter(endpoint = "/deactivate/customer/cartItem")
+	@MetricsCounter(endpoint = "/deactivate/customer/cartItem", tags = {"layer", "ws", "public", "yes"})
 	public ResponseEntity<StandardResponse> deActivateCartItem(@PathVariable("customerId") String customerId,
 									@PathVariable("cartId") UUID _cartId) {
 		log.debug("|"+name()+"|Request to De-Activate the Cart item... "+_cartId);
@@ -214,7 +214,7 @@ public class CartControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PutMapping("/activate/customer/{customerId}/cartItem/{cartId}")
-	@MicroMeterCounter(endpoint = "/activate/customer/cartItem")
+	@MetricsCounter(endpoint = "/activate/customer/cartItem", tags = {"layer", "ws", "public", "yes"})
 	public ResponseEntity<StandardResponse> activateCartItem(@PathVariable("customerId") String customerId,
 															   @PathVariable("cartId") UUID _cartId) {
 		log.debug("|"+name()+"|Request to Activate the Cart item... "+_cartId);
@@ -238,7 +238,7 @@ public class CartControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@DeleteMapping("/delete/customer/{customerId}/cartItem/{cartId}")
-	@MicroMeterCounter(endpoint = "/delete/customer/cartItem")
+	@MetricsCounter(endpoint = "/delete/customer/cartItem", tags = {"layer", "ws", "public", "no"})
 	public ResponseEntity<StandardResponse> deleteCartItem(@PathVariable("customerId") String customerId,
 															 @PathVariable("cartId") UUID _cartId) {
 		log.debug("|"+name()+"|Request to Delete the Cart item... "+_cartId);

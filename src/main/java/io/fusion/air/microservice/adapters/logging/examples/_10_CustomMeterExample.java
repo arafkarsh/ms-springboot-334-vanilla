@@ -55,12 +55,12 @@ public class _10_CustomMeterExample {
         meter =  Meter.builder("fusion.air.example.10.customMeter", Meter.Type.OTHER, () -> {
                     // Create measurements for success and failure counts
                     return Arrays.asList(
-                            new Measurement(successCount::get, Statistic.COUNT),
+                            // new Measurement(successCount::get, Statistic.COUNT),
                             new Measurement(failureCount::get, Statistic.COUNT)
                     ).iterator();
                 })
                 .description("Tracks the total success and failure requests")
-                .tags(Tags.of("operation", "request.processing"))
+                // .tags(Tags.of("ops", "fusion.request.processing"))
                 .register(meterRegistry);
     }
 

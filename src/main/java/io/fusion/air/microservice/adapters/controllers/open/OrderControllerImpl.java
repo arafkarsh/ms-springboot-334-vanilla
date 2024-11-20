@@ -15,7 +15,7 @@
  */
 package io.fusion.air.microservice.adapters.controllers.open;
 //  Custom
-import io.fusion.air.microservice.adapters.logging.MicroMeterCounter;
+import io.fusion.air.microservice.adapters.logging.MetricsCounter;
 import io.fusion.air.microservice.domain.entities.order.OrderEntity;
 import io.fusion.air.microservice.domain.exceptions.BusinessServiceException;
 import io.fusion.air.microservice.domain.exceptions.ControllerException;
@@ -38,7 +38,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 // Spring
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -71,7 +70,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/order")
 @RequestScope
-@MicroMeterCounter(name = "fusion.air.order")
+@MetricsCounter(name = "fusion.air.order")
 @Tag(name = "Order API", description = "To Manage (Add/Update/Delete/Search) Order CRUD Operations")
 public class OrderControllerImpl extends AbstractController {
 
@@ -110,7 +109,7 @@ public class OrderControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/all")
-	@MicroMeterCounter(endpoint = "/all")
+	@MetricsCounter(endpoint = "/all")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchAllOrders() throws Exception {
 		log.debug("|"+name()+"|Request to Get Order For the Customers ");
@@ -135,7 +134,7 @@ public class OrderControllerImpl extends AbstractController {
             content = @Content)
     })
 	@GetMapping("/customer/{customerId}")
-	@MicroMeterCounter(endpoint = "/customer")
+	@MetricsCounter(endpoint = "/customer")
 	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchOrder(@PathVariable("customerId") String customerId) throws Exception {
 		log.debug("|"+name()+"|Request to Get Order For the Customer "+customerId);
@@ -158,7 +157,7 @@ public class OrderControllerImpl extends AbstractController {
 					content = @Content)
 	})
 	@PostMapping("/save")
-	@MicroMeterCounter(endpoint = "/save")
+	@MetricsCounter(endpoint = "/save")
 	public ResponseEntity<StandardResponse> saveOrder(@Valid @RequestBody OrderEntity _order) {
 		log.debug("|"+name()+"|Request to Save Order ... "+_order);
 		OrderEntity order = orderService.save(_order);
@@ -198,7 +197,7 @@ public class OrderControllerImpl extends AbstractController {
 			}
 	)
 	@PostMapping("/processPayments")
-	@MicroMeterCounter(endpoint = "/processPayments")
+	@MetricsCounter(endpoint = "/processPayments")
 	public ResponseEntity<StandardResponse> processPayments(@RequestBody PaymentDetails _payDetails) {
 		log.debug("|"+name()+"|Request to process Payments... "+_payDetails);
 		if(_payDetails != null) {

@@ -36,7 +36,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.reflect.MethodSignature;
 
 /**
- * ms-springboot-334-vanilla / MicroMeterCounterAspect 
+ * ms-springboot-334-vanilla / MetricsAspect
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
@@ -44,11 +44,11 @@ import org.aspectj.lang.reflect.MethodSignature;
  */
 @Aspect
 @Component
-public class MicroMeterCounterAspect {
+public class MetricsAspect {
 
     private final MeterRegistry meterRegistry;
 
-    public MicroMeterCounterAspect(MeterRegistry meterRegistry) {
+    public MetricsAspect(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
     }
 
@@ -58,22 +58,22 @@ public class MicroMeterCounterAspect {
 
         // Check for class-level annotation first
         Class<?> targetClass = signature.getDeclaringType();
-        MicroMeterCounter classAnnotation = targetClass.getAnnotation(MicroMeterCounter.class);
+        MetricsCounter counterClass = targetClass.getAnnotation(MetricsCounter.class);
 
         // Check for method-level annotation
-        MicroMeterCounter methodAnnotation = signature.getMethod().getAnnotation(MicroMeterCounter.class);
+        MetricsCounter counterMethod = signature.getMethod().getAnnotation(MetricsCounter.class);
 
         String name = "";
         String endpoint = "";
 
         // Inherit the name from the class-level annotation if not provided at the method level
-        if (methodAnnotation != null) {
-            name = methodAnnotation.name().isEmpty() && classAnnotation != null ? classAnnotation.name() : methodAnnotation.name();
-            endpoint = methodAnnotation.endpoint();  // Use method endpoint
-        } else if (classAnnotation != null) {
+        if (counterMethod != null) {
+            name = counterMethod.name().isEmpty() && counterClass != null ? counterClass.name() : counterMethod.name();
+            endpoint = counterMethod.endpoint();  // Use method endpoint
+        } else if (counterClass != null) {
             // If method annotation doesn't exist, fallback to class-level name
-            name = classAnnotation.name();
-            endpoint = classAnnotation.endpoint(); // Optional default endpoint
+            name = counterClass.name();
+            endpoint = counterClass.endpoint(); // Optional default endpoint
         } else {
             // No annotation, proceed without tracking
             return joinPoint.proceed();
@@ -81,11 +81,12 @@ public class MicroMeterCounterAspect {
 
         // Build the counter name dynamically, including the endpoint if provided
         String fullCounterName = name + (endpoint.isEmpty() ? "" : endpoint.replaceAll("/", "."));
-
+        String[] tags = (counterMethod != null && counterMethod.tags() != null) ? counterMethod.tags() : new String[0];;
         // Create and increment the counter
         Counter counter = Counter
-                                    .builder(fullCounterName)
-                                    .register(meterRegistry);
+                        .builder(fullCounterName)
+                        .tags(tags)
+                        .register(meterRegistry);
         counter.increment();
 
         return joinPoint.proceed(); // Proceed with the method execution

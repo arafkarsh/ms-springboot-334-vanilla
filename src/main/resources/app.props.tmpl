@@ -111,12 +111,15 @@ logging.file.total-size-cap=3GB
 # ------------------------------------------------------------------------
 # Enable exposure of specific actuator endpoints (health, metrics, prometheus)
 management.endpoints.web.exposure.include=health,metrics,prometheus,info
-# Enable Spring Boot Actuator
+# Enable Spring Boot Actuator Endpoints
 management.endpoint.health.enabled=true
 management.endpoint.metrics.enabled=true
-# Enable Prometheus Metrics
 management.endpoint.prometheus.enabled=true
+# Enable Metrics
 management.metrics.export.prometheus.enabled=true
+management.metrics.enable.jvm=false
+management.metrics.enable.jvm.gc=false
+management.metrics.enable.datasource=false
 # =======================================================================
 # Database Properties
 # =======================================================================
