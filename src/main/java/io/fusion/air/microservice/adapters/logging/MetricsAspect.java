@@ -52,43 +52,60 @@ public class MetricsAspect {
         this.meterRegistry = meterRegistry;
     }
 
-    @Around("execution(* *(..)) && @within(io.fusion.air.microservice.adapters.logging.MicroMeterCounter) || @annotation(io.fusion.air.microservice.adapters.logging.MicroMeterCounter)")
+    // @Around("execution(* *(..)) && @within(io.fusion.air.microservice.adapters.logging.MetricsCounter) || @annotation(io.fusion.air.microservice.adapters.logging.MetricsCounter)")
+    @Around("@annotation(io.fusion.air.microservice.adapters.logging.MetricsCounter)")
     public Object trackCounter(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-
         // Check for class-level annotation first
         Class<?> targetClass = signature.getDeclaringType();
         MetricsCounter counterClass = targetClass.getAnnotation(MetricsCounter.class);
-
         // Check for method-level annotation
         MetricsCounter counterMethod = signature.getMethod().getAnnotation(MetricsCounter.class);
 
-        String name = "";
-        String endpoint = "";
-
-        // Inherit the name from the class-level annotation if not provided at the method level
-        if (counterMethod != null) {
-            name = counterMethod.name().isEmpty() && counterClass != null ? counterClass.name() : counterMethod.name();
-            endpoint = counterMethod.endpoint();  // Use method endpoint
-        } else if (counterClass != null) {
-            // If method annotation doesn't exist, fallback to class-level name
+        String metricName = "METRIC-NAME-NOT-DEFINED";
+        String name = "CLASS.NAME.NOT.DEFINED";
+        String endPoint = "ENDPOINT.NOT.DEFINED";
+        String[] tags = null;
+        // Extract Class Name and Method Name
+        if (counterClass != null && counterClass.name() != null) {
             name = counterClass.name();
-            endpoint = counterClass.endpoint(); // Optional default endpoint
+        }
+        if (counterMethod != null) {
+            if(counterMethod.endpoint() != null) {
+                endPoint = counterMethod.endpoint();  // Use method endpoint
+            }
+            endPoint = endPoint.replaceAll("/", ".");
+            metricName = name + endPoint;
+            tags = counterMethod.tags();
         } else {
             // No annotation, proceed without tracking
             return joinPoint.proceed();
         }
-
-        // Build the counter name dynamically, including the endpoint if provided
-        String fullCounterName = name + (endpoint.isEmpty() ? "" : endpoint.replaceAll("/", "."));
-        String[] tags = (counterMethod != null && counterMethod.tags() != null) ? counterMethod.tags() : new String[0];;
-        // Create and increment the counter
-        Counter counter = Counter
-                        .builder(fullCounterName)
-                        .tags(tags)
-                        .register(meterRegistry);
-        counter.increment();
+        // Get Counter and Increment the Counter
+        getCounter(metricName, tags).increment();
 
         return joinPoint.proceed(); // Proceed with the method execution
+    }
+
+    private Counter getCounter(String name, String[] tags) {
+        // Retrieve or create the counter
+        Counter counter = null;
+        if(tags != null) {
+            counter = meterRegistry.find(name).tags(tags).counter();
+            if (counter == null) {
+                // System.out.println("<><> >> Adding Metrics: "+fullCounterName+" <> Tags # = "+tags.length);
+                counter = Counter.builder(name)
+                        .tags(tags)
+                        .register(meterRegistry);
+            }
+        } else {
+            counter = meterRegistry.find(name).counter();
+            if (counter == null) {
+                // System.out.println("<><> >> Adding Metrics: "+fullCounterName+" <> Tags # = "+tags.length);
+                counter = Counter.builder(name)
+                        .register(meterRegistry);
+            }
+        }
+        return counter;
     }
 }

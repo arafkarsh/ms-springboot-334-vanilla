@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
  * @version: 0.1
  * @date: 2024-11-18T17:36
  */
-@Component
+// @Component
 public class _12_PercentileHistogramExample {
 
     // @Autowired not required - Constructor based Autowiring

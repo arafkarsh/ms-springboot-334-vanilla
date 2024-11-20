@@ -141,7 +141,8 @@ public class ServiceEventListener {
 		log.info("Service is getting ready. Getting the CPU Stats ... ");
 		log.info(CPU.printCpuStats());
 		showLogo();
-		registerAPICallsForMicroMeter();
+		// Register the APIs with Micrometer
+		// registerAPICallsForMicroMeter();
 		// Initialize the Key Manager
 		jsonWebTokenKeyManager.init(serviceConfig.getTokenType());
 		jsonWebTokenKeyManager.setKeyCloakPublicKey();

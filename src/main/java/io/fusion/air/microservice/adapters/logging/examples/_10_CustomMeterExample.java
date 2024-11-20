@@ -60,7 +60,8 @@ public class _10_CustomMeterExample {
                     ).iterator();
                 })
                 .description("Tracks the total success and failure requests")
-                // .tags(Tags.of("ops", "fusion.request.processing"))
+                // With Multiple Measurements adding tags will create a runtime error > Duplicate Tags
+                .tags(Tags.of("ops", "fusion.request.processing"))
                 .register(meterRegistry);
     }
 
