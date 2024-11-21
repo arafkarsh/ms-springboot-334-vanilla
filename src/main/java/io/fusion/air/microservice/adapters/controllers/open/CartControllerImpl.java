@@ -16,6 +16,7 @@
 package io.fusion.air.microservice.adapters.controllers.open;
 // Custom
 import io.fusion.air.microservice.adapters.logging.MetricsCounter;
+import io.fusion.air.microservice.adapters.logging.MetricsPath;
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.entities.order.CartEntity;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
@@ -63,7 +64,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/cart")
 @RequestScope
-@MetricsCounter(name = "fusion.air.cart")
+@MetricsPath(name = "fusion.air.cart")
 @Tag(name = "Cart API", description = "CRUD Operations for Cart, Cart Items, Add to Cart, Delete item...")
 public class CartControllerImpl extends AbstractController {
 

@@ -16,6 +16,7 @@
 package io.fusion.air.microservice.adapters.controllers.open;
 // Custom
 import io.fusion.air.microservice.adapters.logging.MetricsCounter;
+import io.fusion.air.microservice.adapters.logging.MetricsPath;
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.entities.order.ProductEntity;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
@@ -69,7 +70,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/product")
 @RequestScope
-@MetricsCounter(name = "fusion.air.product")
+@MetricsPath(name = "fusion.air.product")
 @Tag(name = "Product API", description = "Search Products, Create Products, Activate / DeActivate, Delete & Update Product")
 public class ProductControllerImpl extends AbstractController {
 

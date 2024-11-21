@@ -16,6 +16,7 @@
 package io.fusion.air.microservice.adapters.controllers.secured;
 // Custom
 import io.fusion.air.microservice.adapters.logging.MetricsCounter;
+import io.fusion.air.microservice.adapters.logging.MetricsPath;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.domain.models.order.PaymentDetails;
 import io.fusion.air.microservice.domain.models.order.PaymentStatus;
@@ -61,7 +62,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/payment")
 @RequestScope
-@MetricsCounter(name = "fusion.air.payment")
+@MetricsPath(name = "fusion.air.payment")
 @Tag(name = "Secured Payments API", description = "")
 public class PaymentControllerImpl extends AbstractController {
 

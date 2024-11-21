@@ -16,6 +16,7 @@
 package io.fusion.air.microservice.adapters.controllers.open;
 // Custom
 import io.fusion.air.microservice.adapters.logging.MetricsCounter;
+import io.fusion.air.microservice.adapters.logging.MetricsPath;
 import io.fusion.air.microservice.domain.entities.order.CountryEntity;
 import io.fusion.air.microservice.domain.entities.order.CountryGeoEntity;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
@@ -63,7 +64,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/country")
 @RequestScope
-@MetricsCounter(name = "fusion.air.country")
+@MetricsPath(name = "fusion.air.country")
 @Tag(name = "Country API", description = "Spring Examples with Pagination")
 public class CountryControllerImpl extends AbstractController {
 

@@ -33,6 +33,8 @@ import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
+
 /**
  * ms-springboot-334-vanilla / _12_PercentileHistogramExample
  *
@@ -63,6 +65,17 @@ public class _12_PercentileHistogramExample {
                 .register(meterRegistry);
     }
 
+    public void record(int diff) {
+        timerWithPercentiles.record(() -> {
+            // Simulate an operation whose duration is being measured
+            try {
+                Thread.sleep(100+diff);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
     public void printStats() {
         // Print all registered meters and their measurements
         UtilsMeter.printStats(meterRegistry);
@@ -73,6 +86,14 @@ public class _12_PercentileHistogramExample {
         MeterRegistry meterRegistry = new SimpleMeterRegistry();
 
         _12_PercentileHistogramExample ex = new _12_PercentileHistogramExample(meterRegistry);
+        for(int x=0; x<10; x++) {
+            ex.record(getRandomNumber(0, 10) * 10 );
+        }
         ex.printStats();
+    }
+
+    public static int getRandomNumber(int min, int max) {
+        Random random = new Random();
+        return random.nextInt(max - min + 1) + min; // Generate random number between min and max
     }
 }

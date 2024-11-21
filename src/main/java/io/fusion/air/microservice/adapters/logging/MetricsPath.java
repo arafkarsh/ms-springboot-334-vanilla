@@ -41,8 +41,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE}) // Apply to both methods and classes
-public @interface MetricsCounter {
-    String name() default "";       // Optional, can be extracted from MetricPath
-    String endpoint();                // Endpoint is Mandatory
-    String[] tags() default {};       // Add Tags for the Counter
+public @interface MetricsPath {
+    String name();       // Metric Path Name
 }

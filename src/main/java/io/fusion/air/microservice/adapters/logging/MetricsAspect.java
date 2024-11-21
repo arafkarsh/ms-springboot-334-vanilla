@@ -58,7 +58,7 @@ public class MetricsAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         // Check for class-level annotation first
         Class<?> targetClass = signature.getDeclaringType();
-        MetricsCounter counterClass = targetClass.getAnnotation(MetricsCounter.class);
+        MetricsPath counterClass = targetClass.getAnnotation(MetricsPath.class);
         // Check for method-level annotation
         MetricsCounter counterMethod = signature.getMethod().getAnnotation(MetricsCounter.class);
 

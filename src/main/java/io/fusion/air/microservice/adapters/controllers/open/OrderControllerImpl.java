@@ -16,6 +16,7 @@
 package io.fusion.air.microservice.adapters.controllers.open;
 //  Custom
 import io.fusion.air.microservice.adapters.logging.MetricsCounter;
+import io.fusion.air.microservice.adapters.logging.MetricsPath;
 import io.fusion.air.microservice.domain.entities.order.OrderEntity;
 import io.fusion.air.microservice.domain.exceptions.BusinessServiceException;
 import io.fusion.air.microservice.domain.exceptions.ControllerException;
@@ -70,7 +71,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/order")
 @RequestScope
-@MetricsCounter(name = "fusion.air.order")
+@MetricsPath(name = "fusion.air.order")
 @Tag(name = "Order API", description = "To Manage (Add/Update/Delete/Search) Order CRUD Operations")
 public class OrderControllerImpl extends AbstractController {
 
