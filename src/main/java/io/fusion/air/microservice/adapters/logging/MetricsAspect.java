@@ -55,6 +55,7 @@ public class MetricsAspect {
     // @Around("execution(* *(..)) && @within(io.fusion.air.microservice.adapters.logging.MetricsCounter) || @annotation(io.fusion.air.microservice.adapters.logging.MetricsCounter)")
     @Around("@annotation(io.fusion.air.microservice.adapters.logging.MetricsCounter)")
     public Object trackCounter(ProceedingJoinPoint joinPoint) throws Throwable {
+        /**
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         // Check for class-level annotation first
         Class<?> targetClass = signature.getDeclaringType();
@@ -81,10 +82,46 @@ public class MetricsAspect {
             // No annotation, proceed without tracking
             return joinPoint.proceed();
         }
+         */
+        MetricModel metricModel = getMetricModel(joinPoint);
+        if(metricModel == null) {
+            return joinPoint.proceed();
+        }
         // Get Counter and Increment the Counter
-        getCounter(metricName, tags).increment();
-
+        getCounter(metricModel.getMetricName(), metricModel.getMetricTags()).increment();
         return joinPoint.proceed(); // Proceed with the method execution
+    }
+
+    /**
+     * Get the Metric Data from the Function
+     * @param joinPoint
+     * @return
+     */
+    private MetricModel getMetricModel(ProceedingJoinPoint joinPoint) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        // Check for class-level annotation first
+        Class<?> targetClass = signature.getDeclaringType();
+        MetricsPath metricClass = targetClass.getAnnotation(MetricsPath.class);
+        // Check for method-level annotation
+        MetricsCounter metricFunction = signature.getMethod().getAnnotation(MetricsCounter.class);
+
+        String metricName = "METRIC-NAME-NOT-DEFINED";
+        String name = "METRICS.PATH.NOT.DEFINED.";
+        String endPoint = "METRICS.FUNCTION.NOT.DEFINED";
+        String[] tags = null;
+        // Extract Class Name and Method Name
+        if (metricClass != null && metricClass.name() != null) {
+            name = metricClass.name();
+        }
+        if (metricFunction != null) {
+            endPoint = metricFunction.endpoint().replaceAll("/", ".");  // Use method endpoint
+            metricName = name + endPoint;
+            tags = metricFunction.tags();
+        } else {
+            // No annotation, proceed without tracking
+            return null;
+        }
+        return new MetricModel(name, endPoint, "", tags, metricName);
     }
 
     private Counter getCounter(String name, String[] tags) {

@@ -33,14 +33,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * ms-springboot-334-vanilla / MetricsCounter
+ * ms-springboot-334-vanilla / MetricsFunction
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
  * @date: 2024-10-08T12:03
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE}) // Apply to both methods and classes
+@Target({ElementType.METHOD})
 public @interface MetricsCounter {
     String name() default "";       // Optional, can be extracted from MetricPath
     String endpoint();                // Endpoint is Mandatory

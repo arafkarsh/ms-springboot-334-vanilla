@@ -40,7 +40,9 @@ import java.lang.annotation.Target;
  * @date: 2024-10-08T12:03
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE}) // Apply to both methods and classes
-public @interface MetricsPath {
-    String name();       // Name is Mandatory
+@Target({ElementType.METHOD})
+public @interface MetricsCounterOld {
+    String description() default "";       //
+    // String endpoint();                // Endpoint is Mandatory
+    // String[] tags() default {};       // Add Tags for the Counter
 }
