@@ -64,7 +64,6 @@ public class MetricsAspect {
     public Object trackCounter(ProceedingJoinPoint joinPoint) throws Throwable {
         System.out.println("Pass 0");
         MetricModel metricModel = counterHandler.getMetricModel(joinPoint);
-        // MetricModel metricModel = getMetricModel(joinPoint);
 
         if(metricModel == null) {
             System.out.println("Pass 4... Counter Skipped");
@@ -72,71 +71,7 @@ public class MetricsAspect {
         }
         // Get Counter and Increment the Counter
         counterHandler.getCounter(metricModel.getMetricName(), metricModel.getMetricTags(), meterRegistry).increment();
-        // getCounter(metricModel.getMetricName(), metricModel.getMetricTags(), meterRegistry).increment();
         System.out.println("Pass 4... Counter Incremented");
         return joinPoint.proceed(); // Proceed with the method execution
-    }
-
-    /**
-     * Get the Metric Data from the Function
-     * @param joinPoint
-     * @return
-     */
-    private MetricModel getMetricModel(ProceedingJoinPoint joinPoint) {
-        System.out.println("< Pass 1");
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        // Check for class-level annotation first
-        Class<?> targetClass = signature.getDeclaringType();
-        MetricsPath metricClass = targetClass.getAnnotation(MetricsPath.class);
-        // Check for method-level annotation
-        MetricsCounter metricFunction = signature.getMethod().getAnnotation(MetricsCounter.class);
-
-        String metricName = "METRIC-NAME-NOT-DEFINED";
-        String name = "METRICS.PATH.NOT.DEFINED.";
-        String endPoint = "METRICS.FUNCTION.NOT.DEFINED";
-        String[] tags = null;
-        // Extract Class Name and Method Name
-        if (metricClass != null) {
-            name = metricClass.name();
-            System.out.println("< Pass 2.1 - MetricsPath: "+name);
-        }
-        if (metricFunction != null) {
-            if(metricFunction.name() != null && !metricFunction.name().trim().isEmpty()) {
-                name = metricFunction.name();
-                System.out.println("< Pass 2.2 - Name: "+name);
-            }
-            endPoint = metricFunction.endpoint().replaceAll("/", ".");  // Use method endpoint
-            metricName = name + endPoint;
-            tags = metricFunction.tags();
-            System.out.println("< Pass 2.3 - Register / Increment");
-        } else {
-            System.out.println("< Pass 3.1 - Skip");
-            // No annotation, proceed without tracking
-            return null;
-        }
-        System.out.println("< Pass 3.1 - Return Model");
-        return new MetricModel(name, endPoint, "", tags, metricName);
-    }
-
-    private Counter getCounter(String name, String[] tags, MeterRegistry meterRegistry) {
-        // Retrieve or create the counter
-        Counter counter = null;
-        if(tags != null) {
-            counter = meterRegistry.find(name).tags(tags).counter();
-            if (counter == null) {
-                System.out.println("< Pass 3.2 - Adding Metrics: "+name+" <> Tags # = "+tags.length);
-                counter = Counter.builder(name)
-                        .tags(tags)
-                        .register(meterRegistry);
-            }
-        } else {
-            counter = meterRegistry.find(name).counter();
-            if (counter == null) {
-                System.out.println("< Pass 3.2 - Adding Metrics: "+name+" <> Tags # = []");
-                counter = Counter.builder(name)
-                        .register(meterRegistry);
-            }
-        }
-        return counter;
     }
 }
