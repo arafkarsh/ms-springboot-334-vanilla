@@ -29,61 +29,27 @@ package io.fusion.air.microservice.adapters.logging;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.aspectj.lang.annotation.Aspect;
-import org.springframework.stereotype.Component;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.stereotype.Component;
 
 /**
- * ms-springboot-334-vanilla / MetricsAspect
+ * ms-springboot-334-vanilla / MetricsCounterHandler 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T12:05
+ * @date: 2024-11-21T13:27
  */
-@Aspect
 @Component
-public class MetricsAspect {
-
-    private final MeterRegistry meterRegistry;
-    private final MetricsCounterHandler counterHandler;
-
-    /**
-     * Metrics Aspect Constructor
-     * @param meterRegistry
-     * @param counterHandler
-     */
-    public MetricsAspect(MeterRegistry meterRegistry, MetricsCounterHandler counterHandler) {
-        this.meterRegistry = meterRegistry;
-        this.counterHandler = counterHandler;
-    }
-
-    // @Around("execution(* *(..)) && @within(io.fusion.air.microservice.adapters.logging.MetricsCounter) || @annotation(io.fusion.air.microservice.adapters.logging.MetricsCounter)")
-    @Around("@annotation(io.fusion.air.microservice.adapters.logging.MetricsCounter)")
-    public Object trackCounter(ProceedingJoinPoint joinPoint) throws Throwable {
-        System.out.println("Pass 0");
-        MetricModel metricModel = counterHandler.getMetricModel(joinPoint);
-        // MetricModel metricModel = getMetricModel(joinPoint);
-
-        if(metricModel == null) {
-            System.out.println("Pass 4... Counter Skipped");
-            return joinPoint.proceed();
-        }
-        // Get Counter and Increment the Counter
-        counterHandler.getCounter(metricModel.getMetricName(), metricModel.getMetricTags(), meterRegistry).increment();
-        // getCounter(metricModel.getMetricName(), metricModel.getMetricTags(), meterRegistry).increment();
-        System.out.println("Pass 4... Counter Incremented");
-        return joinPoint.proceed(); // Proceed with the method execution
-    }
+public class MetricsCounterHandler {
 
     /**
      * Get the Metric Data from the Function
      * @param joinPoint
      * @return
      */
-    private MetricModel getMetricModel(ProceedingJoinPoint joinPoint) {
-        System.out.println("< Pass 1");
+    public MetricModel getMetricModel(ProceedingJoinPoint joinPoint) {
+        System.out.println("Pass 1");
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         // Check for class-level annotation first
         Class<?> targetClass = signature.getDeclaringType();
@@ -98,33 +64,33 @@ public class MetricsAspect {
         // Extract Class Name and Method Name
         if (metricClass != null) {
             name = metricClass.name();
-            System.out.println("< Pass 2.1 - MetricsPath: "+name);
+            System.out.println("Pass 2.1 - MetricsPath: "+name);
         }
         if (metricFunction != null) {
             if(metricFunction.name() != null && !metricFunction.name().trim().isEmpty()) {
                 name = metricFunction.name();
-                System.out.println("< Pass 2.2 - Name: "+name);
+                System.out.println("Pass 2.2 - Name: "+name);
             }
             endPoint = metricFunction.endpoint().replaceAll("/", ".");  // Use method endpoint
             metricName = name + endPoint;
             tags = metricFunction.tags();
-            System.out.println("< Pass 2.3 - Register / Increment");
+            System.out.println("Pass 2.3 - Register / Increment");
         } else {
-            System.out.println("< Pass 3.1 - Skip");
+            System.out.println("Pass 3.1 - Skip");
             // No annotation, proceed without tracking
             return null;
         }
-        System.out.println("< Pass 3.1 - Return Model");
+        System.out.println("Pass 3.1 - Return Model");
         return new MetricModel(name, endPoint, "", tags, metricName);
     }
 
-    private Counter getCounter(String name, String[] tags, MeterRegistry meterRegistry) {
+    public Counter getCounter(String name, String[] tags, MeterRegistry meterRegistry) {
         // Retrieve or create the counter
         Counter counter = null;
         if(tags != null) {
             counter = meterRegistry.find(name).tags(tags).counter();
             if (counter == null) {
-                System.out.println("< Pass 3.2 - Adding Metrics: "+name+" <> Tags # = "+tags.length);
+                System.out.println("Pass 3.2 - Adding Metrics: "+name+" <> Tags # = "+tags.length);
                 counter = Counter.builder(name)
                         .tags(tags)
                         .register(meterRegistry);
@@ -132,7 +98,7 @@ public class MetricsAspect {
         } else {
             counter = meterRegistry.find(name).counter();
             if (counter == null) {
-                System.out.println("< Pass 3.2 - Adding Metrics: "+name+" <> Tags # = []");
+                System.out.println("Pass 3.2 - Adding Metrics: "+name+" <> Tags # = []");
                 counter = Counter.builder(name)
                         .register(meterRegistry);
             }
