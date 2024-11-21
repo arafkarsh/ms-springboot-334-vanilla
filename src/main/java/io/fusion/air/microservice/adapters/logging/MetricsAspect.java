@@ -62,16 +62,12 @@ public class MetricsAspect {
     // @Around("execution(* *(..)) && @within(io.fusion.air.microservice.adapters.logging.MetricsCounter) || @annotation(io.fusion.air.microservice.adapters.logging.MetricsCounter)")
     @Around("@annotation(io.fusion.air.microservice.adapters.logging.MetricsCounter)")
     public Object trackCounter(ProceedingJoinPoint joinPoint) throws Throwable {
-        System.out.println("Pass 0");
         MetricModel metricModel = counterHandler.getMetricModel(joinPoint);
-
         if(metricModel == null) {
-            System.out.println("Pass 4... Counter Skipped");
             return joinPoint.proceed();
         }
         // Get Counter and Increment the Counter
         counterHandler.getCounter(metricModel.getMetricName(), metricModel.getMetricTags(), meterRegistry).increment();
-        System.out.println("Pass 4... Counter Incremented");
         return joinPoint.proceed(); // Proceed with the method execution
     }
 }
