@@ -57,7 +57,7 @@ public class MetricsAspect {
         this.counterHandler = counterHandler;
     }
 
-    // @Around("execution(* *(..)) && @within(io.fusion.air.microservice.adapters.logging.MetricsCounter) || @annotation(io.fusion.air.microservice.adapters.logging.MetricsCounter)")
+    // @Around("execution(* *(..)) && @within(MetricsCounter) || @annotation(MetricsCounter)")
     // Full Path is required ONLY if the Annotation is in a different package (than the Aspect).
     @Around("@annotation(MetricsCounter)")
     public Object trackCounter(ProceedingJoinPoint joinPoint) throws Throwable {
