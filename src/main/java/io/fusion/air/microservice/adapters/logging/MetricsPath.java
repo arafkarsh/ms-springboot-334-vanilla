@@ -40,7 +40,7 @@ import java.lang.annotation.Target;
  * @date: 2024-10-08T12:03
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE}) // Apply to both methods and classes
+@Target({ElementType.TYPE})
 public @interface MetricsPath {
     String name();       // Name is Mandatory
 }

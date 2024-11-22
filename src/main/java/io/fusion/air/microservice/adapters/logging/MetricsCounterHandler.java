@@ -44,7 +44,7 @@ import org.springframework.stereotype.Component;
 public class MetricsCounterHandler {
 
     /**
-     * Get the Metric Data from the Function
+     * Get the Metric Meta-Data from the Annotations
      * @param joinPoint
      * @return
      */
@@ -78,13 +78,20 @@ public class MetricsCounterHandler {
         return new MetricModel(name, endPoint, "", tags, metricName);
     }
 
+    /**
+     * Create a Counter If it doesn't Exist or Retrieve the Counter based on Metric Name and Tags
+     * @param name
+     * @param tags
+     * @param meterRegistry
+     * @return
+     */
     public Counter getCounter(String name, String[] tags, MeterRegistry meterRegistry) {
         // Retrieve or create the counter
         Counter counter = null;
         if(tags != null) {
             counter = meterRegistry.find(name).tags(tags).counter();
             if (counter == null) {
-                // System.out.println("Pass 3.2 - Adding Metrics: "+name+" <> Tags # = "+tags.length);
+                // Create Counter if Not Found
                 counter = Counter.builder(name)
                         .tags(tags)
                         .register(meterRegistry);
@@ -92,7 +99,7 @@ public class MetricsCounterHandler {
         } else {
             counter = meterRegistry.find(name).counter();
             if (counter == null) {
-                // System.out.println("Pass 3.2 - Adding Metrics: "+name+" <> Tags # = []");
+                // Create Counter if Not Found
                 counter = Counter.builder(name)
                         .register(meterRegistry);
             }
