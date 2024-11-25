@@ -25,33 +25,29 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging.examples;
+package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
-import io.micrometer.core.instrument.FunctionTimer;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.stereotype.Component;
-
-import java.util.concurrent.TimeUnit;
 
 /**
- * ms-springboot-334-vanilla / _8_FunctionTimerExample
+ * ms-springboot-334-vanilla / UtilsMeter 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-11-18T12:21
+ * @date: 2024-11-18T17:40
  */
-@Component
-public class _8_FunctionTimerExample {
+public class UtilsMeter {
 
-    // @Autowired not required - Constructor based Autowiring
-    private final FunctionTimer functionTimer;
-    private final TimedObject timedObject;
-
-    public _8_FunctionTimerExample(MeterRegistry meterRegistry) {
-        timedObject = new TimedObject(10, 2000);
-        functionTimer = FunctionTimer.builder("fusion.air.example.8.functionTimer", timedObject,
-                        obj -> obj.getCount(), obj -> obj.getTotalTime(), TimeUnit.MILLISECONDS)
-                .description("Measures the count and duration of events through functions")
-                .register(meterRegistry);
+    /**
+     *  Print all registered meters and their measurements
+     * @param meterRegistry
+     */
+    public static void printStats(MeterRegistry meterRegistry) {
+        // Print all registered meters and their measurements
+        meterRegistry.getMeters().forEach(meter -> {
+            System.out.println("Meter Name: " + meter.getId().getName());
+            meter.measure().forEach(measurement ->
+                    System.out.println("Measurement: " + measurement.getValue() + " " + measurement.getStatistic()));
+        });
     }
 }

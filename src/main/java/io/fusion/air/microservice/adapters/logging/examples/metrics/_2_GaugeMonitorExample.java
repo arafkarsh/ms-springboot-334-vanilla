@@ -25,38 +25,43 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging.examples;
+package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
-import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
- * ms-springboot-334-vanilla / _5_CustomTagsExample 
+ * ms-springboot-334-vanilla / GaugeMonitorExample 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:22
+ * @date: 2024-10-08T14:11
  */
 @Component
-public class _5_CustomTagsExample {
+public class _2_GaugeMonitorExample {
 
     // @Autowired not required - Constructor based Autowiring
-    private final Counter taggedCounter;
+    private final List<String> queue = new CopyOnWriteArrayList<>();
 
     /**
      * Constructor for Autowiring
      * @param meterRegistry
      */
-    public _5_CustomTagsExample(MeterRegistry meterRegistry) {
-        this.taggedCounter = Counter.builder("fusion.air.example.5.customTags")
-                // Tags are Key Value Pairs - Gives different dimensions for the metric
-                .tags("endpoint", "/api/resource")
-                .tags("status", "secured")
+    public _2_GaugeMonitorExample(MeterRegistry meterRegistry) {
+        Gauge.builder("fusion.air.example.2.qaugeMonitor", queue, List::size)
+                .description("Size of the Component Queue")
                 .register(meterRegistry);
     }
 
-    public void processTaggedRequest() {
-        taggedCounter.increment();
+    public void addToQueue(String item) {
+        queue.add(item);
+    }
+
+    public void removeFromQueue(String item) {
+        queue.remove(item);
     }
 }

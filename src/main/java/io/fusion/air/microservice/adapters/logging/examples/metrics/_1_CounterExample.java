@@ -25,43 +25,36 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging.examples;
+package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
-import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Counter;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 /**
- * ms-springboot-334-vanilla / GaugeMonitorExample 
+ * ms-springboot-334-vanilla / CounterExample 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:11
+ * @date: 2024-10-08T14:17
  */
 @Component
-public class _2_GaugeMonitorExample {
+public class _1_CounterExample {
 
     // @Autowired not required - Constructor based Autowiring
-    private final List<String> queue = new CopyOnWriteArrayList<>();
+    private final Counter requestCounter;
 
     /**
      * Constructor for Autowiring
      * @param meterRegistry
      */
-    public _2_GaugeMonitorExample(MeterRegistry meterRegistry) {
-        Gauge.builder("fusion.air.example.2.qaugeMonitor", queue, List::size)
-                .description("Size of the Component Queue")
-                .register(meterRegistry);
+    public _1_CounterExample(MeterRegistry meterRegistry) {
+        this.requestCounter = meterRegistry.counter("fusion.air.example.1.counters");
     }
 
-    public void addToQueue(String item) {
-        queue.add(item);
-    }
-
-    public void removeFromQueue(String item) {
-        queue.remove(item);
+    public void processRequest() {
+        // Business logic
+        requestCounter.increment();
+        // Increment the counter whenever a request is processed
     }
 }

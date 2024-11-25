@@ -25,41 +25,33 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging.examples;
+package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
+import io.micrometer.core.instrument.FunctionTimer;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.TimeUnit;
+
 /**
- * ms-springboot-334-vanilla / QueryTImerExample 
+ * ms-springboot-334-vanilla / _8_FunctionTimerExample
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:15
+ * @date: 2024-11-18T12:21
  */
 @Component
-public class _3_QueryTimerExample {
+public class _8_FunctionTimerExample {
 
     // @Autowired not required - Constructor based Autowiring
-    private final Timer queryTimer;
+    private final FunctionTimer functionTimer;
+    private final TimedObject timedObject;
 
-    /**
-     * Constructor for Autowiring
-     * @param meterRegistry
-     */
-    public _3_QueryTimerExample(MeterRegistry meterRegistry) {
-        this.queryTimer = meterRegistry.timer("fusion.air.example.3.queryTimer");
-    }
-
-    public void executeQuery() {
-        queryTimer.record(() -> {
-            // Simulating query execution
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
+    public _8_FunctionTimerExample(MeterRegistry meterRegistry) {
+        timedObject = new TimedObject(10, 2000);
+        functionTimer = FunctionTimer.builder("fusion.air.example.8.functionTimer", timedObject,
+                        obj -> obj.getCount(), obj -> obj.getTotalTime(), TimeUnit.MILLISECONDS)
+                .description("Measures the count and duration of events through functions")
+                .register(meterRegistry);
     }
 }

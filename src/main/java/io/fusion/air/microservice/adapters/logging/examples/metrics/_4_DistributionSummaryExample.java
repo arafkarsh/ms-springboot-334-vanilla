@@ -25,34 +25,34 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging.examples;
+package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
-import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import org.springframework.stereotype.Component;
 
 /**
- * ms-springboot-334-vanilla / _13_SimpleMeterRegistry 
+ * ms-springboot-334-vanilla / _4_DistributionSummaryExample 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-11-20T12:38
+ * @date: 2024-10-08T14:20
  */
-public class _13_SimpleMeterRegistry {
+@Component
+public class _4_DistributionSummaryExample {
 
-    public static void main(String[] args) {
-        // Create a SimpleMeterRegistry
-        MeterRegistry simpleRegistry = new SimpleMeterRegistry();
+    // @Autowired not required - Constructor based Autowiring
+    private final DistributionSummary payloadSummary;
 
-        // Create and register a Counter
-        Counter counter = simpleRegistry.counter("fusion.air.example.13.SimpleMeterRegistry", "type", "test");
+    /**
+     * Constructor for Autowiring
+     * @param meterRegistry
+     */
+    public _4_DistributionSummaryExample(MeterRegistry meterRegistry) {
+        this.payloadSummary = meterRegistry.summary("fusion.air.example.4.distributionSummary");
+    }
 
-        // Increment the counter
-        counter.increment();
-        counter.increment();
-        counter.increment(3);
-
-        // Print the current value
-        System.out.println("Name: "+counter.getId().getName()+" Counter Value: " + counter.count());
+    public void handleRequest(String payload) {
+        payloadSummary.record(payload.length());
     }
 }

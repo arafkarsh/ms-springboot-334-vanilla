@@ -25,31 +25,38 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging.examples;
+package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.config.MeterFilter;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import org.springframework.stereotype.Component;
 
 /**
- * ms-springboot-334-vanilla / _11_MeterFilterExample
+ * ms-springboot-334-vanilla / _5_CustomTagsExample 
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-11-18T17:29
+ * @date: 2024-10-08T14:22
  */
-public class _11_MeterFilterExample {
+@Component
+public class _5_CustomTagsExample {
 
-    public static void main (String[] args) {
-        // Use a SimpleMeterRegistry for demonstration
-        MeterRegistry meterRegistry = new SimpleMeterRegistry();
-        // change the prefix to fusion instead of jvm and all the fusion metrics will be filtered
-        meterRegistry.config().meterFilter(MeterFilter.denyNameStartsWith("jvm"));
+    // @Autowired not required - Constructor based Autowiring
+    private final Counter taggedCounter;
 
-        _1_CounterExample ex1Counter = new _1_CounterExample(meterRegistry);
-        _2_GaugeMonitorExample ex2Gauge = new _2_GaugeMonitorExample(meterRegistry);
-
-        // Print all registered meters and their measurements
-        UtilsMeter.printStats(meterRegistry);
+    /**
+     * Constructor for Autowiring
+     * @param meterRegistry
+     */
+    public _5_CustomTagsExample(MeterRegistry meterRegistry) {
+        this.taggedCounter = Counter.builder("fusion.air.example.5.customTags")
+                // Tags are Key Value Pairs - Gives different dimensions for the metric
+                .tags("endpoint", "/api/resource")
+                .tags("status", "secured")
+                .register(meterRegistry);
     }
- }
+
+    public void processTaggedRequest() {
+        taggedCounter.increment();
+    }
+}

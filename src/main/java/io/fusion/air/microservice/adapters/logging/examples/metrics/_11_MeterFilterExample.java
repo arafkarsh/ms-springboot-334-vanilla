@@ -25,36 +25,31 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging.examples;
+package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Counter;
-import org.springframework.stereotype.Component;
+import io.micrometer.core.instrument.config.MeterFilter;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 /**
- * ms-springboot-334-vanilla / CounterExample 
+ * ms-springboot-334-vanilla / _11_MeterFilterExample
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-10-08T14:17
+ * @date: 2024-11-18T17:29
  */
-@Component
-public class _1_CounterExample {
+public class _11_MeterFilterExample {
 
-    // @Autowired not required - Constructor based Autowiring
-    private final Counter requestCounter;
+    public static void main (String[] args) {
+        // Use a SimpleMeterRegistry for demonstration
+        MeterRegistry meterRegistry = new SimpleMeterRegistry();
+        // change the prefix to fusion instead of jvm and all the fusion metrics will be filtered
+        meterRegistry.config().meterFilter(MeterFilter.denyNameStartsWith("jvm"));
 
-    /**
-     * Constructor for Autowiring
-     * @param meterRegistry
-     */
-    public _1_CounterExample(MeterRegistry meterRegistry) {
-        this.requestCounter = meterRegistry.counter("fusion.air.example.1.counters");
+        _1_CounterExample ex1Counter = new _1_CounterExample(meterRegistry);
+        _2_GaugeMonitorExample ex2Gauge = new _2_GaugeMonitorExample(meterRegistry);
+
+        // Print all registered meters and their measurements
+        UtilsMeter.printStats(meterRegistry);
     }
-
-    public void processRequest() {
-        // Business logic
-        requestCounter.increment();
-        // Increment the counter whenever a request is processed
-    }
-}
+ }

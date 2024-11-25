@@ -76,7 +76,7 @@ app.property.product.list=/create, /status, /all/secured, /search/product, /sear
 app.property.list=element1, element2, element3
 app.property.map={key1:'val1', key2 : 'val2', key3 : 'val3'}
 # ------------------------------------------------------------------------
-# Log Details
+# Logging / Events: LogBack Setup / File Roll Over,
 # ------------------------------------------------------------------------
 # Log Groups
 logging.group.tomcat=org.apache.catalina, org.apache.coyote, org.apache.tomcat
@@ -107,7 +107,7 @@ logging.file.max-size=10MB
 logging.file.max-history=100
 logging.file.total-size-cap=3GB
 # ------------------------------------------------------------------------
-# MicroMetrics / Prometheus / Actuator
+# Metrics: Micrometer / Prometheus / Actuator /
 # ------------------------------------------------------------------------
 # Enable exposure of specific actuator endpoints (health, metrics, prometheus)
 management.endpoints.web.exposure.include=health,metrics,prometheus,info
@@ -120,6 +120,15 @@ management.metrics.export.prometheus.enabled=true
 management.metrics.enable.jvm=false
 management.metrics.enable.jvm.gc=false
 management.metrics.enable.datasource=false
+# ------------------------------------------------------------------------
+# Tracing: Open Telemetry / Micrometer
+# ------------------------------------------------------------------------
+# OpenTelemetry Tracing Configuration
+otel.traces.exporter=otlp
+otel.exporter.otlp.endpoint=http://localhost:4317
+otel.exporter.otlp.protocol=grpc
+otel.traces.sampler=parentbased_always_on
+otel.metrics.exporter=none
 # =======================================================================
 # Database Properties
 # =======================================================================

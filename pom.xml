@@ -37,12 +37,13 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<!-- Logging ======================================================= -->
+		<!-- Logging/Metrics/Tracing ======================================= -->
 		<slf4j.version>2.0.16</slf4j.version>
 		<logback.version>1.5.8</logback.version>
 		<logstash.version>8.0</logstash.version>
 		<janino.version>3.1.12</janino.version>
-		<micrometer.version>1.13.5</micrometer.version>
+		<micrometer.version>1.14.1</micrometer.version>
+		<opentelemetry.version>1.44.1</opentelemetry.version>
 
 		<!-- Utilities ===================================================== -->
 		<google.guava.version>33.3.1-jre</google.guava.version>
@@ -141,6 +142,22 @@
 			<artifactId>micrometer-registry-prometheus</artifactId>
 			<version>${micrometer.version}</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-otlp -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-otlp</artifactId>
+			<version>${micrometer.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-api -->
+		<!--
+		<dependency>
+			<groupId>io.opentelemetry</groupId>
+			<artifactId>opentelemetry-api</artifactId>
+			<version>{opentelemetry.version}</version>
+		</dependency>
+		-->
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
 		<dependency>

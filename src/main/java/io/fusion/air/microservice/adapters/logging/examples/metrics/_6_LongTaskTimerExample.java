@@ -25,29 +25,41 @@
  * under the terms of the Apache 2 License version 2.0
  * as published by the Apache Software Foundation.
  */
-package io.fusion.air.microservice.adapters.logging.examples;
+package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
+import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.stereotype.Component;
 
 /**
- * ms-springboot-334-vanilla / UtilsMeter 
+ * ms-springboot-334-vanilla / _6_LongTaskTimerExample
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-11-18T17:40
+ * @date: 2024-11-18T12:20
  */
-public class UtilsMeter {
+@Component
+public class _6_LongTaskTimerExample {
+
+    // @Autowired not required - Constructor based Autowiring
+    private final LongTaskTimer longTaskTimer;
 
     /**
-     *  Print all registered meters and their measurements
+     * Constructor for Autowiring
      * @param meterRegistry
      */
-    public static void printStats(MeterRegistry meterRegistry) {
-        // Print all registered meters and their measurements
-        meterRegistry.getMeters().forEach(meter -> {
-            System.out.println("Meter Name: " + meter.getId().getName());
-            meter.measure().forEach(measurement ->
-                    System.out.println("Measurement: " + measurement.getValue() + " " + measurement.getStatistic()));
-        });
+    public _6_LongTaskTimerExample(MeterRegistry meterRegistry) {
+        this.longTaskTimer = LongTaskTimer.builder("fusion.air.example.6.longTaskTimer")
+                .description("Tracks the duration of long-running tasks")
+                .register(meterRegistry);
+    }
+
+    public void handleRequest(String payload) {
+        LongTaskTimer.Sample sample = longTaskTimer.start();
+        try {
+            // Simulate long-running task
+        } finally {
+            sample.stop();
+        }
     }
 }
