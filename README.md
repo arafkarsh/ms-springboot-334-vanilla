@@ -77,11 +77,18 @@ Without generated application.properties file the service will NOT be running. T
 
 If you dont encrypt the password with your Encryption Key it will throw an exception saying unable to decrypt the password.
 Here are the steps to encrypt the password.
+
 Run the follwing command line option
 ```
 $ source encrypt your-db-password your-encrypton-key
 ```
 ![Passowrd-Gen](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Password-Gen.jpg)
+
+Your encryption key will be set in the following Environment variable. SpringBoot Will automatically 
+pickup the encryption key from this environment variable. 
+```
+JASYPT_ENCRYPTOR_PASSWORD=your-encrypton-key
+```
 
 Update the property file in the local file
 ```
