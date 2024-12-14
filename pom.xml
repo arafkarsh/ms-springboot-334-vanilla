@@ -43,6 +43,7 @@
 		<logstash.version>8.0</logstash.version>
 		<janino.version>3.1.12</janino.version>
 		<micrometer.version>1.14.1</micrometer.version>
+		<micrometer.tracing.version>1.4.0</micrometer.tracing.version>
 		<opentelemetry.version>1.44.1</opentelemetry.version>
 
 		<!-- Utilities ===================================================== -->
@@ -54,6 +55,8 @@
 		<!-- Security JWT ================================================== -->
 		<jwt.api.version>0.12.6</jwt.api.version>
 		<bouncycastle.version>1.78.1</bouncycastle.version>
+		<jasypt.springboot.version>3.0.5</jasypt.springboot.version>
+		<jasypt.version>1.9.3</jasypt.version>
 
 		<!-- Jakarta EE ========================================= ========== -->
 		<javax.bean.validation.version>2.0.1.Final</javax.bean.validation.version>
@@ -143,27 +146,65 @@
 			<version>${micrometer.version}</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+
+		<!-- ================================================================= -->
+		<!-- Tracing: Open Telemetry                                                      -->
+		<!-- ================================================================= -->
+		<!--
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing-bom</artifactId>
+			<version>${micrometer.version}</version>
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
+		-->
+		<!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-tracing -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing</artifactId>
+			<version>${micrometer.tracing.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-tracing-bridge-otel -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing-bridge-otel</artifactId>
+			<version>${micrometer.tracing.version}</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-otlp -->
+
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-otlp</artifactId>
 			<version>${micrometer.version}</version>
 		</dependency>
 
+
+		<!-- === ONLY if OpenTelemetry Custom Trace/Span Usage ================ -->
 		<!-- https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-api -->
-		<!--
 		<dependency>
 			<groupId>io.opentelemetry</groupId>
 			<artifactId>opentelemetry-api</artifactId>
-			<version>{opentelemetry.version}</version>
+			<version>${opentelemetry.version}</version>
 		</dependency>
-		-->
 
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-			<version>${spring.boot.version}</version>
+			<groupId>io.opentelemetry</groupId>
+			<artifactId>opentelemetry-sdk</artifactId>
+			<version>${opentelemetry.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.opentelemetry</groupId>
+			<artifactId>opentelemetry-exporter-otlp</artifactId>
+			<version>${opentelemetry.version}</version>
 		</dependency>
 
 		<!-- ================================================================= -->
@@ -499,13 +540,27 @@
            Password: will be printed in the console.
            -->
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
+	   <dependency>
+		   <groupId>org.springframework.boot</groupId>
+		   <artifactId>spring-boot-starter-security</artifactId>
+		   <version>${spring.boot.version}</version>
+	   </dependency>
 
-           <dependency>
-               <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter-security</artifactId>
-               <version>${spring.boot.version}</version>
-           </dependency>
-		<!-- -->
+		<!-- https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter -->
+		<dependency>
+			<groupId>com.github.ulisesbocchio</groupId>
+			<artifactId>jasypt-spring-boot-starter</artifactId>
+			<version>${jasypt.springboot.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.jasypt/jasypt -->
+		<!-- This is ONLY require to generate the Encrypted Passwords -->
+		<dependency>
+			<groupId>org.jasypt</groupId>
+			<artifactId>jasypt</artifactId>
+			<version>${jasypt.version}</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-tomcat -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

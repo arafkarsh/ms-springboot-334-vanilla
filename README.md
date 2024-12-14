@@ -4,9 +4,15 @@
 1. [Java 23, SpringBoot 3.3.4 & Jakarta 10 — Part 1](https://arafkarsh.medium.com/java-23-springboot-3-3-4-jakarta-10-125bc815d6c1)
 2. [Java 23, SpringBoot 3.3.4: AOP Exception Handling — Part 2](https://arafkarsh.medium.com/java-23-springboot-3-3-4-aop-exception-handling-part-2-e6adc86c8a26)
 3. [Java 23, SpringBoot 3.3.4: Logback Setup — Part 3 ](https://arafkarsh.medium.com/java-23-springboot-3-3-4-logback-setup-part-3-c2ffe2d0a358)
-4. Java 23, SpringBoot 3.3.4: AOP Logging — Part 4 Coming Soon
-5. Java 23, SpringBoot 3.3.4: AOP Security — Part 5 Coming Soon
-6. Java 23, SpringBoot 3.3.4: CRUD — Part 6 Coming Soon
+4. [Java 23, SpringBoot 3.3.4: Log/Events: API Flow & Logging — Part 4](https://arafkarsh.medium.com/java-23-springboot-3-3-4-api-flow-logging-part-4-1000546bcd62)
+5. [Java 23, SpringBoot 3.3.4: Metrics: Micrometer, Prometheus, Actuator — Part 5](https://arafkarsh.medium.com/java-23-springboot-3-3-4-metrics-micrometer-prometheus-actuator-part-5-f67f0581815c)
+6. [Java 23, SpringBoot 3.3.4: Metrics: Micrometer & AOP — Part 6](https://arafkarsh.medium.com/java-23-springboot-3-3-4-metrics-micrometer-aop-part-6-808dcb97dcb7)
+7. [Java 23, SpringBoot 3.3.4: Tracing: OpenTelemetry — Part 7](https://arafkarsh.medium.com/java-23-springboot-3-3-4-tracing-opentelemetry-part-7-937df4867c9c)
+8. [Java 23, SpringBoot 3.3.4: Tracing: OpenTelemetry In Action — Part 8 Coming Soon
+9. [Java 23, SpringBoot 3.3.4: Filters: Security, Log — Part 9 Coming Soon
+10. [Java 23, SpringBoot 3.3.4: AOP: Spring Security — Part 10 Coming Soon
+11. [Java 23, SpringBoot 3.3.4: CRUD — Part 11 Coming Soon
+12. [Java 23, SpringBoot 3.3.4: CRUD Queries & Page Sort — Part 12 Coming Soon
 
 ## Microservice Structure
 
@@ -49,7 +55,7 @@
 ###  Step 1.2 - Compile (Once your code is ready) 
 
 #### 1.2.1 Compile the Code
-Run the "compile" from ms-springboot-334-vanilla
+Execute the "compile" from ms-springboot-334-vanilla
 1. compile OR ./compile (Runs in Linux and Mac OS)
 2. mvn clean; mvn -e package; (All Platforms)
 3. Use the IDE Compile options
@@ -67,20 +73,48 @@ Without generated application.properties file the service will NOT be running. T
 
 ###  Step 1.3 - Run
 
-#### 1.3.0 Spring Profiles
+#### 1.3.1 Encrypt the Database passwords for H2 and PostgreSQL 
+
+If you dont encrypt the password with your Encryption Key it will throw an exception saying unable to decrypt the password.
+Here are the steps to encrypt the password.
+Run the follwing command line option
+```
+$ source encrypt your-db-password your-encrypton-key
+```
+![Passowrd-Gen](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Password-Gen.jpg)
+
+Update the property file in the local file
+```
+spring.datasource.password=ENC(nVbJiaCKFpu9jrA6loumjQ==)
+```
+AND
+the property template in src/main/resources/app.props.tmpl
+```
+spring.datasource.password=ENC(nVbJiaCKFpu9jrA6loumjQ==)
+```
+AND 
+the property files for 
+- dev src/main/resources/application-dev.properties
+- staging src/main/resources/application-staging.properties 
+- prod src/main/resources/application-prod.properties
+```
+spring.datasource.password=ENC(DyVRFCywSjsP9NVhPMCDaQ==)
+```
+
+#### 1.3.2 Spring Profiles
 
 1. dev (Development Mode)
 2. staging (Staging Mode)
 3. prod (Production Mode)
 
-#### 1.3.1 Start the Service
+#### 1.3.3 Start the Service
 1. run OR ./run (Runs in Linux or Mac OS)
    1.1 run OR run dev
    1.2 run staging   
    1.3 run prod
 2. mvn spring-boot:run (All Platforms)
 
-#### 1.3.2 Test the Service 
+#### 1.3.4 Test the Service 
 1. test OR ./test (Runs in Linux or Mac OS)
 2. Execute the curl commands directly (from the test script)
 

@@ -1,0 +1,30 @@
+#!/bin/sh
+# -------------------------------------------------------------------------------------------
+# @author: Araf Karsh Hamid
+# -------------------------------------------------------------------------------------------
+jasypt=libs/jasypt-1.9.3.jar
+# Name of the environment variable
+ENV_VAR="JASYPT_ENCRYPTOR_PASSWORD"
+
+# For Java 17+
+echo Using Java 17+ Comptible code
+java -cp $jasypt src/main/java/io/fusion/water/order/security/Encrypt17.java $1 $2
+
+# For Java 23
+#echo Java 23 Comptible Code
+#java --enable-preview -cp $jasypt Encrypt.java $1 $2
+
+# Check if the second argument ($2) is provided and valid (not empty)
+if [ -n "$2" ]; then
+  # Check if the environment variable is set
+  if [ -z "${!ENV_VAR}" ]; then
+      echo "Environment variable $ENV_VAR is not set."
+       echo "Setting it to: $2"
+      export $ENV_VAR="$2"
+  else
+      echo "Environment variable $ENV_VAR is already set"
+  fi
+fi
+
+
+
