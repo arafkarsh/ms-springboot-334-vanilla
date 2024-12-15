@@ -64,7 +64,6 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @version 1.0
  * 
  */
-@CrossOrigin
 @Configuration
 @Validated // This enables validation for method parameters
 @RestController

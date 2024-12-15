@@ -19,6 +19,7 @@ package io.fusion.air.microservice;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.controllers.HealthController;
 // Spring Framework
+import io.fusion.air.microservice.utils.Utils;
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -126,7 +127,7 @@ public class ServiceBootStrap {
 			}
 			log.info("Booting MicroService ..... ... Startup completed!");
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug(Utils.getStackTraceAsString(e));
 		}
 	}
 

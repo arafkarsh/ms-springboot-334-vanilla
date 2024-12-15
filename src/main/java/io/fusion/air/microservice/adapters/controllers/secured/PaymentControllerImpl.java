@@ -56,7 +56,6 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @version 1.0
  * 
  */
-@CrossOrigin
 @Configuration
 @RestController
 // "/ms-vanilla/api/v1"

@@ -16,6 +16,8 @@
 
 package io.fusion.air.microservice.utils;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -587,6 +589,17 @@ public final class Utils {
 		for(int x=0; x<10; x++) {
 			System.out.println(x+" UUID = "+UUID.randomUUID());
 		}
+	}
+
+	/**
+	 * Returns Stack Trace as a String
+	 * @param e
+	 * @return
+	 */
+	public static String getStackTraceAsString(Throwable e) {
+		StringWriter stringWriter = new StringWriter();
+		e.printStackTrace(new PrintWriter(stringWriter));
+		return stringWriter.toString();
 	}
 
 	/**

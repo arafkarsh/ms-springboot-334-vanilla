@@ -25,6 +25,7 @@ import io.fusion.air.microservice.domain.ports.services.ProductService;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.controllers.AbstractController;
 // Swagger
+import io.fusion.air.microservice.utils.Utils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -63,7 +64,6 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @version 1.0
  * 
  */
-@CrossOrigin
 @Configuration
 @Validated // This enables validation for method parameters
 @RestController
@@ -419,7 +419,9 @@ public class ProductControllerImpl extends AbstractController {
 		try {
 			productServiceImpl.createProductsEntity(productList);
 			productList = productServiceImpl.getAllProduct();
-		} catch (Exception ignored) { ignored.printStackTrace();}
+		} catch (Exception ignored) {
+			log.debug(Utils.getStackTraceAsString(ignored));
+		}
 		return productList;
 	}
  }
