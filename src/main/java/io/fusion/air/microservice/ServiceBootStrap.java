@@ -34,7 +34,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,8 +53,6 @@ import io.swagger.v3.oas.models.servers.Server;
 // Java
 import java.util.*;
 import jakarta.annotation.PostConstruct;
-// import javax.servlet.MultipartConfigElement;
-// import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import static java.lang.invoke.MethodHandles.lookup;
@@ -86,14 +83,18 @@ public class ServiceBootStrap {
 	private static final Logger log = getLogger(lookup().lookupClass());
 
 	// All CAPS Words will be replaced using data from application.properties
-	private final String title = "<h1>Welcome to MICRO service<h1/>"
+	private final static String title = "<h1>Welcome to MICRO service<h1/>"
 			+"<h3>Copyright (c) COMPANY, 2022</h3>"
 			+"<h5>Build No: BN :: Build Date: BD :: </h5>";
 
 	private static ConfigurableApplicationContext context;
 
-	@Autowired
-	private ServiceConfiguration serviceConfig;
+	// Autowired using Constructor Injection
+	private final ServiceConfiguration serviceConfig;
+
+	public ServiceBootStrap(ServiceConfiguration _serviceConfig) {
+		serviceConfig = _serviceConfig;
+	}
 
 	// Get the Service Name from the properties file
 	@Value("${service.name:NameNotDefined}")
@@ -122,7 +123,7 @@ public class ServiceBootStrap {
 			// Set a default profile if no other profile is specified
 			ConfigurableEnvironment environment = context.getEnvironment();
 			if (environment.getActiveProfiles().length == 0) {
-				log.info("Profile is missing, so defaulting to "+ activeProfile +" Profile!");
+				log.info("Profile is missing, so defaulting to {} Profile!", activeProfile);
 				environment.addActiveProfile(activeProfile);
 			}
 			log.info("Booting MicroService ..... ... Startup completed!");
@@ -154,11 +155,11 @@ public class ServiceBootStrap {
 	 */
 	@PostConstruct
 	public void configure() {
+		log.debug("For Future Usage..");
 	}
 
 	@Bean
-	public WebMvcConfigurer corsConfigurer()
-	{
+	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
@@ -173,12 +174,12 @@ public class ServiceBootStrap {
 	 */
 	@GetMapping("/root")
 	public String home(HttpServletRequest request) {
-		log.info("Request to Home Page of Service... "+printRequestURI(request));
+		log.info("Request to Home Page of Service...{} ", printRequestURI(request));
 		return (serviceConfig == null) ? this.title :
-				this.title.replaceAll("MICRO", serviceConfig.getServiceName())
-						.replaceAll("COMPANY", serviceConfig.getServiceOrg())
-						.replaceAll("BN", "" + serviceConfig.getBuildNumber())
-						.replaceAll("BD", serviceConfig.getBuildDate());
+				this.title.replace("MICRO", serviceConfig.getServiceName())
+						.replace("COMPANY", serviceConfig.getServiceOrg())
+						.replace("BN", "" + serviceConfig.getBuildNumber())
+						.replace("BD", serviceConfig.getBuildDate());
 	}
 
 	/**
@@ -196,7 +197,7 @@ public class ServiceBootStrap {
 			sb.append(req[x]).append("|");
 		}
 		sb.append("\n");
-		log.info("HttpServletRequest: ["+sb.toString()+"]");
+		log.info("HttpServletRequest: [ {} ]",sb.toString());
 		return sb.toString();
 	}
 
@@ -256,7 +257,6 @@ public class ServiceBootStrap {
 	 */
 	@Bean
 	public GroupedOpenApi configPublicApi() {
-		// System.out.println;
 		return GroupedOpenApi.builder()
 				.group(serviceConfig.getServiceName()+"-service-config")
 				.pathsToMatch(serviceConfig.getServiceApiPath()+"/config/**")

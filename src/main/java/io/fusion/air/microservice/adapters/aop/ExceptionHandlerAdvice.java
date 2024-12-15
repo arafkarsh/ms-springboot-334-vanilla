@@ -21,8 +21,6 @@ import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.utils.Utils;
 // Spring
-import org.checkerframework.common.returnsreceiver.qual.This;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -111,44 +109,44 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
     /**
      * Build Error Response Entity
-     * @param _ex
-     * @param _headers
-     * @param _status
-     * @param _request
+     * @param ex
+     * @param headers
+     * @param status
+     * @param request
      * @return
      */
-    private ResponseEntity<Object> createErrorResponse(Exception _ex,
-                                                       HttpHeaders _headers,
-                                                       HttpStatus _status,
-                                                       WebRequest _request) {
-        return createErrorResponse(_ex, _ex.getMessage(), "599",_headers, _status, _request);
+    private ResponseEntity<Object> createErrorResponse(Exception ex,
+                                                       HttpHeaders headers,
+                                                       HttpStatus status,
+                                                       WebRequest request) {
+        return createErrorResponse(ex, ex.getMessage(), "599", headers,  status, request);
     }
 
     /**
      * Build Error Response Entity
-     * @param _ase
-     * @param _errorCode
-     * @param _request
+     * @param ase
+     * @param errorCode
+     * @param request
      * @return
      */
-    private ResponseEntity<Object> createErrorResponse(AbstractServiceException _ase,
-                                                       String _errorCode,
-                                                       WebRequest _request) {
-        return createErrorResponse(_ase, _ase.getMessage(), _errorCode, null, _ase.getHttpStatus(), _request);
+    private ResponseEntity<Object> createErrorResponse(AbstractServiceException ase,
+                                                       String errorCode,
+                                                       WebRequest request) {
+        return createErrorResponse(ase, ase.getMessage(), errorCode, null, ase.getHttpStatus(), request);
     }
     /**
      * Build Error Response Entity
-     * @param _ase
-     * @param _errorCode
-     * @param _headers
-     * @param _request
+     * @param ase
+     * @param errorCode
+     * @param headers
+     * @param request
      * @return
      */
-    private ResponseEntity<Object> createErrorResponse(AbstractServiceException _ase,
-                                                       String _errorCode,
-                                                       HttpHeaders _headers,
-                                                       WebRequest _request) {
-        return createErrorResponse(_ase, _ase.getMessage(), _errorCode, _headers, _ase.getHttpStatus(), _request);
+    private ResponseEntity<Object> createErrorResponse(AbstractServiceException ase,
+                                                       String errorCode,
+                                                       HttpHeaders headers,
+                                                       WebRequest request) {
+        return createErrorResponse(ase, ase.getMessage(), errorCode, headers, ase.getHttpStatus(), request);
     }
 
     /**
