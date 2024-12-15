@@ -132,15 +132,32 @@ Following three property files are critical (to be used with Spring Profiles)
 3. prod (Production Mode)
 
 #### 1.4.2 - Start the Service
-1. run OR ./run (Runs in Linux or Mac OS)
-- 1.1 run OR run dev
-- 1.2 run staging   
-- 1.3 run prod
-2. mvn spring-boot:run (All Platforms)
-3. Microsoft Windows 
-- 3.1 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=dev  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
-- 3.2 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=staging  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
-- 3.3 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=prod  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
+1. Linux or Mac OS - Profiles (dev, staging, or prod)
+```aiignore
+run 
+```
+```aiignore
+run prod 
+```
+
+2. All Platforms - Profiles (dev, staging, or prod)
+```aiignore
+ mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+3. Microsoft Windows
+- 3.1 Profile = Development
+```aiignore
+java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=dev  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
+```
+- 3.2 Profile = Staging
+```aiignore
+java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=staging  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
+```
+- 3.3 Profile = Production
+```aiignore
+java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=prod  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
+```
 
 #### 1.4.3 - Test the Service 
 1. test OR ./test (Runs in Linux or Mac OS)
