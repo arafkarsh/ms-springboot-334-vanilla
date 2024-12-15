@@ -27,7 +27,6 @@ import io.fusion.air.microservice.utils.Utils;
 // Spring
 import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
@@ -57,14 +56,26 @@ public class OrderServiceImpl implements OrderService {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
 
-    @Autowired
-    private OrderPagingRepository orderPagingRepository;
+    // Autowired using Constructor
+    private final OrderPagingRepository orderPagingRepository;
 
-    @Autowired
-    private OrderRepository orderRepository;
+    // Autowired using Constructor
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    private MeterRegistry meterRegistry;
+    // Autowired using Constructor
+    private final MeterRegistry meterRegistry;
+
+    /**
+     * Autowiring through the Constructor
+     * @param orderPagingRepo
+     * @param orderRepo
+     * @param meterReg
+     */
+    public OrderServiceImpl(OrderPagingRepository orderPagingRepo, OrderRepository orderRepo, MeterRegistry meterReg) {
+        orderPagingRepository = orderPagingRepo;
+        orderRepository = orderRepo;
+        meterRegistry = meterReg;
+    }
 
     /**
      * ONLY FOR TESTING PURPOSE
@@ -72,7 +83,6 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    @Transactional(readOnly = true)
     public List<OrderEntity> findAll() {
         return (List<OrderEntity>) orderRepository.findAll();
     }
@@ -84,7 +94,6 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    @Transactional(readOnly = true)
     public List<OrderEntity> findByCustomerId(String customerId) {
         return orderPagingRepository.findByCustomerId(customerId);
     }
@@ -97,13 +106,12 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    @Transactional(readOnly = true)
     public Optional<OrderEntity> findById(String customerId, String orderId) {
         Optional<OrderEntity> o = orderPagingRepository.findByCustomerIdAndOrderId(customerId, Utils.getUUID(orderId));
         if(o.isPresent()) {
             return o;
         }
-        throw new DataNotFoundException("Order Not Found for OrderId="+orderId);
+        throw new DataNotFoundException("Order Not Found for OrderId "+orderId);
     }
 
     /**
@@ -114,7 +122,6 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    @Transactional(readOnly = true)
     public Optional<OrderEntity> findById(String customerId, UUID orderId) {
         Optional<OrderEntity> o = orderPagingRepository.findByCustomerIdAndOrderId(customerId, orderId);
         if(o.isPresent()) {
@@ -150,7 +157,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderEntity resetOrder(String customerId, String orderId) {
         Optional<OrderEntity> orderOpt = findById( customerId,  orderId);
-        log.info("Reset Order ID = "+orderId);
+        log.info("Reset Order ID = {} ", orderId);
         if(orderOpt.isPresent()) {
             OrderEntity order = orderOpt.get();
             order.resetOrderState();
@@ -169,8 +176,7 @@ public class OrderServiceImpl implements OrderService {
      */
     public OrderEntity processCreditApproval(String customerId, String orderId) {
         Optional<OrderEntity> orderOpt = findById( customerId,  orderId);
-        log.info("[1] Process Order ID = "+orderId);
-        // orderStateMachineService.creditCheckRequest(orderOpt.get());
+        log.info("[1] Process Order ID = {} ",orderId);
         return orderOpt.get();
     }
 
@@ -202,13 +208,9 @@ public class OrderServiceImpl implements OrderService {
             throw new BusinessServiceException("Invalid Event for OrderProcessing!");
         }
         Optional<OrderEntity> orderOpt = findById( customerId,  orderId);
-        log.info("Handle Event "+orderEvent+" For Order ID = "+orderId);
-        System.out.println("--------------------------------------------------------------------------------------------------");
-        System.out.println("(1) INCOMING EVENT == (OrderServiceImpl) === ["+orderEvent.name()+"] ======= >> OrderID = "+orderId);
-        System.out.println("--------------------------------------------------------------------------------------------------");
-
-        OrderEntity order = orderOpt.get();
-        return order;
+        log.info("Handle Event {} For Order ID = {} ", orderEvent, orderId);
+        log.info("(1) INCOMING EVENT == (OrderServiceImpl) === [ {} ] ======= >> OrderID = {} ", orderEvent.name(),orderId);
+        return orderOpt.get();
     }
 
     /**
@@ -219,8 +221,7 @@ public class OrderServiceImpl implements OrderService {
      */
     public OrderEntity processPaymentRequest(String customerId, String orderId) {
         Optional<OrderEntity> orderOpt = findById( customerId,  orderId);
-        log.info("Process Order ID = "+orderId);
-        // orderStateMachineService.paymentInit(orderOpt.get());
+        log.info("Process Order ID = {} ", orderId);
         return orderOpt.get();
     }
 }

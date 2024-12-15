@@ -118,7 +118,6 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    @Transactional(readOnly = true)
     public Optional<CartEntity> findById(UUID itemId, String customerId) {
         return cartRepository.findByuuidAndCustomerId(itemId, customerId);
     }
@@ -130,7 +129,6 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    @Transactional(readOnly = true)
     public List<CartEntity> fetchProductsByPriceGreaterThan(String customerId, BigDecimal price) {
         return cartRepository.fetchProductsByPriceGreaterThan(customerId, price);
     }
@@ -141,7 +139,6 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    @Transactional(readOnly = true)
     public List<CartEntity> fetchActiveItems(String customerId) {
         return cartRepository.fetchActiveItems(customerId);
     }
@@ -153,7 +150,6 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    @Transactional(readOnly = true)
     public List<CartEntity> findByItemNameContains(String customerId, String name) {
         return cartRepository.findByCustomerIdAndProductNameContains(customerId, name);
     }
@@ -180,6 +176,7 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
+    @Transactional
     public CartEntity deActivateCartItem(String customerId, UUID cartItemUUID) {
         Optional<CartEntity> cartItem = findById(cartItemUUID,customerId);
         if(cartItem.isPresent()) {
@@ -197,6 +194,7 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
+    @Transactional
     public CartEntity activateCartItem(String customerId, UUID cartItemUUID) {
         Optional<CartEntity> cartItem = findById(cartItemUUID,customerId);
         if(cartItem.isPresent()) {
@@ -212,6 +210,7 @@ public class CartServiceImpl implements CartService {
      * @param cartItemUUID
      */
     @Override
+    @Transactional
     public void deleteCartItem(String customerId, UUID cartItemUUID) {
         Optional<CartEntity> cartItem = findById(cartItemUUID,customerId);
         if(cartItem.isPresent()) {

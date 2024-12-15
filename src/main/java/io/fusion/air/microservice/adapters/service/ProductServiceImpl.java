@@ -22,7 +22,6 @@ import io.fusion.air.microservice.domain.exceptions.DataNotFoundException;
 import io.fusion.air.microservice.domain.models.order.Product;
 import io.fusion.air.microservice.domain.ports.services.ProductService;
 // Spring
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
@@ -63,12 +62,12 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Constructor for Autowiring
-     * @param _productRepository
+     * @param productRepo
      * @param meterRegistry
      */
-    public ProductServiceImpl(ProductRepository _productRepository,
+    public ProductServiceImpl(ProductRepository productRepo,
                               MeterRegistry meterRegistry) {
-        productRepository = _productRepository;
+        productRepository = productRepo;
         queryTimer = meterRegistry.timer("fusion.air.product.query");
     }
 
@@ -83,19 +82,16 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<ProductEntity> getAllProduct() {
-        return queryTimer.record(() -> {
-            return this.productRepository.findAll();
-        });
-        // return this.productRepository.findAll();
+        return queryTimer.record(() -> productRepository.findAll());
     }
 
     /**
      * Search for the Product By the Product Names Like 'name'
-     * @param _name
+     * @param prodName
      * @return
      */
-    public List<ProductEntity> fetchProductsByName(String _name) {
-        String name = _name != null ? _name.trim() : "%";
+    public List<ProductEntity> fetchProductsByName(String prodName) {
+        String name = prodName != null ? prodName.trim() : "%";
         List<ProductEntity> products = productRepository.findByProductNameContains(name);
         return checkProducts(products, name);
     }
@@ -125,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     private List<ProductEntity> checkProducts(List<ProductEntity> products, Object search) {
-        if(products == null || products.size() == 0) {
+        if(products == null || products.isEmpty()) {
             throw new DataNotFoundException("No Data Found for the Search Query = ["+search+"]");
         }
         return products;
@@ -142,6 +138,7 @@ public class ProductServiceImpl implements ProductService {
         if(productDb.isPresent()) {
             return productDb.get();
         }
+        log.debug("Data Not Found for Product ID {} ",productId);
         throw new DataNotFoundException("Data not found with id : " + productId);
     }
 
@@ -150,8 +147,9 @@ public class ProductServiceImpl implements ProductService {
      * @param product
      * @return
      */
+    @Transactional(rollbackFor = { SQLException.class })
     public ProductEntity createProduct(Product product) {
-        return createProduct(new ProductEntity(product));
+        return productRepository.save(new ProductEntity(product));
     }
 
     /**
@@ -171,12 +169,13 @@ public class ProductServiceImpl implements ProductService {
      * @param products
      * @return
      */
+    @Transactional(rollbackFor = { SQLException.class })
     public List<ProductEntity> createProducts(List<Product> products) {
-        List<ProductEntity> productList = new ArrayList<ProductEntity>();
+        List<ProductEntity> productList = new ArrayList<>();
         for(Product p : products) {
             productList.add(new ProductEntity(p));
         }
-        return createProductsEntity(productList);
+        return productRepository.saveAll(productList);
     }
 
     /**
@@ -234,13 +233,13 @@ public class ProductServiceImpl implements ProductService {
     /**
      * De Activate Product
      *
-     * @param _productId
+     * @param productId
      * @return
      */
     @Override
     @Transactional(rollbackFor = { SQLException.class })
-    public ProductEntity deActivateProduct(UUID _productId) {
-        ProductEntity product = getProductById(_productId);
+    public ProductEntity deActivateProduct(UUID productId) {
+        ProductEntity product = getProductById(productId);
         product.deActivateProduct();
         productRepository.saveAndFlush(product);
         return product;
@@ -249,13 +248,13 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Activate Product
      *
-     * @param _productId
+     * @param productUUID
      * @return
      */
     @Override
     @Transactional(rollbackFor = { SQLException.class })
-    public ProductEntity activateProduct(UUID _productId) {
-        ProductEntity product = getProductById(_productId);
+    public ProductEntity activateProduct(UUID productUUID) {
+        ProductEntity product = getProductById(productUUID);
         product.activateProduct();
         productRepository.saveAndFlush(product);
         return product;
@@ -263,12 +262,12 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Delete the product
-     * @param _productId
+     * @param productUUID
      */
     @Override
     @Transactional(rollbackFor = { SQLException.class })
-    public void deleteProduct(UUID _productId) {
-        ProductEntity product = getProductById(_productId);
+    public void deleteProduct(UUID productUUID) {
+        ProductEntity product = getProductById(productUUID);
         productRepository.delete(product);
     }
 }
