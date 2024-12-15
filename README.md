@@ -133,9 +133,9 @@ Following three property files are critical (to be used with Spring Profiles)
 
 #### 1.4.2 - Start the Service
 1. run OR ./run (Runs in Linux or Mac OS)
-   1.1 run OR run dev
-   1.2 run staging   
-   1.3 run prod
+- 1.1 run OR run dev
+- 1.2 run staging   
+- 1.3 run prod
 2. mvn spring-boot:run (All Platforms)
 
 #### 1.4.3 - Test the Service 
