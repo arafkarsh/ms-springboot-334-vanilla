@@ -13,7 +13,6 @@
 				<threadName />
 				<logLevel />
 				<message />
-				<!-- <context /> -->
 				<mdc />
 				<stackTrace />
 			</providers>

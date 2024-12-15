@@ -30,43 +30,46 @@ import org.jasypt.iv.RandomIvGenerator;
 import org.jasypt.salt.RandomSaltGenerator;
 import org.jasypt.salt.ZeroSaltGenerator;
 /**
- * Text Encryptor for Encrypting Sensitive Data
+ * Text Decryptor for Decrypting Sensitive Data
  * This code requires Java 23+
  * It's a preview feature in Java 23
- * Usage: java --enable-preview -cp libs/jasypt-1.9.3.jar Encrypt.java <text_to_encrypt> <encryption_key>
+ * Usage: java --enable-preview java -cp libs/jasypt-1.9.3.jar Decrypt.java <encrypted_text>
  *
  * @author arafkarsh
  * @version 1.0
  *
  */
 void main(String... args) {
-	println("Text Encryptor using Jasypt Encryption Library (v1.9.3)");
+    println("Text Decryptor using Jasypt Encryption Library (v1.9.3)");
     println("-------------------------------------------------------");
     var argsLength = args.length;
-    if (argsLength != 2) {
-        // "Usage: java --enable-preview -cp libs/jasypt-1.9.3.jar Encrypt.java <text_to_encrypt> <encryption_key>";
-        println("Usage: source encrypt text_to_encrypt encryption_key");
+    if (argsLength != 1) {
+        // "Usage: java --enable-preview java -cp libs/jasypt-1.9.3.jar Decrypt.java <encrypted_text>";
+        println("Usage: source decrypt encrypted_text");
         System.exit(1);
     }
-    var textToEncrypt = args[0];    // Input text to encrypt
-    var masterPassword = args[1];  // Master password for encryption
+    var testToDecrypt = args[0];    // Input text to encrypt
+    // Master password for Decryption
+    var masterPassword = System.getenv("JASYPT_ENCRYPTOR_PASSWORD");
+    if(masterPassword == null) {
+        println("Encryption Key is missing in Env var > JASYPT_ENCRYPTOR_PASSWORD!");
+        return;
+    }
 
-    // Create and configure the encryptor
-    var encryptor = new StandardPBEStringEncryptor();
-    encryptor.setPassword(masterPassword);
+    // Create and configure the decryptor
+    var decryptor = new StandardPBEStringEncryptor();
+    decryptor.setPassword(masterPassword);
     // Use an AES-based PBE algorithm - PBEWithHmacSHA512AndAES_256
     String algo = "PBEWithHmacSHA512AndAES_256";
-    encryptor.setAlgorithm(algo);
-    // Add Random IV and Salt
-    encryptor.setIvGenerator(new RandomIvGenerator());
-    encryptor.setSaltGenerator(new RandomSaltGenerator());
+    decryptor.setAlgorithm(algo);
     println("Algorithm Used : "+algo);
-    // Encrypt the text
-    var encryptedText = encryptor.encrypt(textToEncrypt);
-    println("Text to Encrypt: "+ textToEncrypt);
-    println("Encrypted Text : "+ encryptedText);
-    // Decrypt the text
-    var decryptedText = encryptor.decrypt(encryptedText);
+    // Add Randomness to the Decryption
+    decryptor.setIvGenerator(new RandomIvGenerator());
+    decryptor.setSaltGenerator(new RandomSaltGenerator());
+    // Decrypt Text
+    println("Encrypted Text : "+ testToDecrypt);
+    var decryptedText = decryptor.decrypt(testToDecrypt);
     println("Decrypted Text : "+ decryptedText);
     println("-------------------------------------------------------");
+
 }

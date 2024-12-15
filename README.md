@@ -92,21 +92,23 @@ JASYPT_ENCRYPTOR_PASSWORD=your-encrypton-key
 
 Update the property file in the local file
 ```
-spring.datasource.password=ENC(nVbJiaCKFpu9jrA6loumjQ==)
+spring.datasource.password=ENC(kkthRIyJ7ogLJP8PThfXjqko33snTUa9lY1GkyFpzr7KFRVhRVXLOMwNSIzr4EjFGAOWLhWTH5cAWzRzAfs33g==)
 ```
 AND
-the property template in src/main/resources/app.props.tmpl
+- the property template in src/main/resources/app.props.tmpl
+- dev src/main/resources/application-dev.properties
 ```
-spring.datasource.password=ENC(nVbJiaCKFpu9jrA6loumjQ==)
+spring.datasource.password=ENC(kkthRIyJ7ogLJP8PThfXjqko33snTUa9lY1GkyFpzr7KFRVhRVXLOMwNSIzr4EjFGAOWLhWTH5cAWzRzAfs33g==)
 ```
 AND 
 the property files for 
-- dev src/main/resources/application-dev.properties
 - staging src/main/resources/application-staging.properties 
 - prod src/main/resources/application-prod.properties
 ```
-spring.datasource.password=ENC(DyVRFCywSjsP9NVhPMCDaQ==)
+spring.datasource.password=ENC(/J0gRHIdlhBHFwpNo3a+1q3+8Uig5+uSNQHO/lCGOrfg/e8Wt2o3v1eC4TaquaDVGREOEFphpw1B84lOtxgeIA==)
 ```
+![Passowrd-Van](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/ms-vanilla-encrypt.jpg)
+
 
 #### 1.3.2 Spring Profiles
 

@@ -1,0 +1,15 @@
+#!/bin/sh
+# -------------------------------------------------------------------------------------------
+# @author: Araf Karsh Hamid
+# -------------------------------------------------------------------------------------------
+jasypt=libs/jasypt-1.9.3.jar
+# Name of the environment variable
+ENV_VAR="JASYPT_ENCRYPTOR_PASSWORD"
+
+# For Java 17+
+echo Using Java 17+ Comptible code for Decryption
+java -cp $jasypt src/main/java/io/fusion/air/microservice/security/Decrypt17.java $1 $2
+
+# For Java 23
+#echo Java 23 Comptible Code
+#java --enable-preview -cp $jasypt Decrypt.java $1 $2

@@ -28,40 +28,49 @@
 package io.fusion.air.microservice.security;
 
 // Jasypt
-
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.jasypt.iv.RandomIvGenerator;
+import org.jasypt.salt.RandomSaltGenerator;
 import org.jasypt.salt.ZeroSaltGenerator;
 
 import static java.lang.System.out;
 
 /**
- * ms-test-quickstart / Encrypt
+ * Text Encryptor for Encrypting Sensitive Data
+ * This code requires Java 17+
+ * Usage: java -cp libs/jasypt-1.9.3.jar src/main/java/io/fusion/air/microservice/security/Encrypt17.jav <text_to_encrypt> <encryption_key>
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
  * @date: 2024-12-14T11:27
  */
 public class Encrypt17 {
+
     public static void main(String[] args) {
         out.println("Text Encryptor using Jasypt Encryption Library (v1.9.3)");
         out.println("-------------------------------------------------------");
-        var argsLength = args.length;
-        if (argsLength != 2) {
-            // println("Usage: java io.fusion.water.order.security.Encrypt17 <password_to_encrypt> <encryption_key>");
-            out.println("Usage: source encrypt password_to_encrypt encryption_key");
-            System.exit(1);
-        }
+        doEncryptionAES(args);
+    }
 
+    /**
+     * Do Encryption with Standard PBEWithMD5AndDES Algorithm
+     * @param args
+     */
+    private static void doEncryption(String[] args) {
+        if(!validateInputs(args)) {
+            return;
+        }
         var textToEncrypt = args[0];    // Input text to encrypt
         var masterPassword = args[1];  // Master password for encryption
 
         // Create and configure the encryptor
         var encryptor = new StandardPBEStringEncryptor();
         encryptor.setPassword(masterPassword);
-        encryptor.setAlgorithm("PBEWithMD5AndDES");
+        // Set the Algo and Zero Salt
+        String algo = "PBEWithMD5AndDES";
+        encryptor.setAlgorithm(algo);
         encryptor.setSaltGenerator(new ZeroSaltGenerator()); // Fixed salt for consistent output
-
-        out.println("Algorithm Used : PBEWithMD5AndDES");
+        out.println("Algorithm Used : "+algo);
         // Encrypt the text
         var encryptedText = encryptor.encrypt(textToEncrypt);
         out.println("Text to Encrypt: "+ textToEncrypt);
@@ -70,5 +79,52 @@ public class Encrypt17 {
         var decryptedText = encryptor.decrypt(encryptedText);
         out.println("Decrypted Text : "+ decryptedText);
         out.println("-------------------------------------------------------");
+    }
+
+    /**
+     * Do Encryption using AES Algorithm - PBEWithHmacSHA512AndAES_256
+     * @param args
+     */
+    private static void doEncryptionAES(String[] args) {
+        if(!validateInputs(args)) {
+            return;
+        }
+        var textToEncrypt = args[0];    // Input text to encrypt
+        var masterPassword = args[1];  // Master password for encryption
+
+        // Create and configure the encryptor
+        var encryptor = new StandardPBEStringEncryptor();
+        encryptor.setPassword(masterPassword);
+
+        // Use an AES-based PBE algorithm - PBEWithHmacSHA512AndAES_256
+        String algo = "PBEWithHmacSHA512AndAES_256";
+        encryptor.setAlgorithm(algo);
+        //  Add Random IV and Salt
+        encryptor.setIvGenerator(new RandomIvGenerator());
+        encryptor.setSaltGenerator(new RandomSaltGenerator());
+
+        out.println("Algorithm Used : "+algo);
+        // Encrypt the text
+        var encryptedText = encryptor.encrypt(textToEncrypt);
+        out.println("Text to Encrypt: "+ textToEncrypt);
+        out.println("Encrypted Text : "+ encryptedText);
+        // Decrypt the text
+        var decryptedText = encryptor.decrypt(encryptedText);
+        out.println("Decrypted Text : "+ decryptedText);
+        out.println("-------------------------------------------------------");
+    }
+
+    /**
+     * Validate the Inputs
+     * @param args
+     * @return
+     */
+    private static boolean validateInputs(String[] args) {
+        if (args.length != 2) {
+            // "Usage: java -cp libs/jasypt-1.9.3.jar src/main/java/io/fusion/air/microservice/security/Encrypt17.java <text_to_encrypt> <encryption_key>");
+            out.println("Usage: source encrypt text_to_encrypt encryption_key");
+            return false;
+        }
+        return true;
     }
 }

@@ -54,7 +54,7 @@
 
 		<!-- Security JWT ================================================== -->
 		<jwt.api.version>0.12.6</jwt.api.version>
-		<bouncycastle.version>1.78.1</bouncycastle.version>
+		<bouncycastle.version>1.79</bouncycastle.version>
 		<jasypt.springboot.version>3.0.5</jasypt.springboot.version>
 		<jasypt.version>1.9.3</jasypt.version>
 
