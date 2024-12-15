@@ -90,6 +90,12 @@ the property files for
 ```
 spring.datasource.password=ENC(/J0gRHIdlhBHFwpNo3a+1q3+8Uig5+uSNQHO/lCGOrfg/e8Wt2o3v1eC4TaquaDVGREOEFphpw1B84lOtxgeIA==)
 ```
+#### 1.2.3 - Generating the Encrypted Text from REST Endpoint
+
+You can use the following REST Endpoint to encrypt the sensitive data. This will work only after setting
+the environment variable JASYPT_ENCRYPTOR_PASSWORD and creating the first DB password
+using the command line options.
+
 ![Passowrd-Van](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/ms-vanilla-encrypt.jpg)
 
 ###  Step 1.3 - Compile (Once your code is ready)
