@@ -137,6 +137,12 @@ Following three property files are critical (to be used with Spring Profiles)
 run 
 ```
 ```aiignore
+run dev 
+```
+```aiignore
+run staging 
+```
+```aiignore
 run prod 
 ```
 
@@ -144,17 +150,23 @@ run prod
 ```aiignore
  mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
+```aiignore
+ mvn spring-boot:run -Dspring-boot.run.profiles=staging
+```
+```aiignore
+ mvn spring-boot:run -Dspring-boot.run.profiles=prod
+```
 
 3. Microsoft Windows
-- 3.1 Profile = Development
+Profile = Development
 ```aiignore
 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=dev  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
 ```
-- 3.2 Profile = Staging
+Profile = Staging
 ```aiignore
 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=staging  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
 ```
-- 3.3 Profile = Production
+Profile = Production
 ```aiignore
 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=prod  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
 ```
