@@ -137,6 +137,10 @@ Following three property files are critical (to be used with Spring Profiles)
 - 1.2 run staging   
 - 1.3 run prod
 2. mvn spring-boot:run (All Platforms)
+3. Microsoft Windows 
+- 3.1 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=dev  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
+- 3.2 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=staging  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
+- 3.3 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=prod  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
 
 #### 1.4.3 - Test the Service 
 1. test OR ./test (Runs in Linux or Mac OS)
