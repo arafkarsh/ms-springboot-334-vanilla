@@ -69,13 +69,19 @@ public class CountryControllerImpl extends AbstractController {
 
 	// Set Logger -> Lookup will automatically determine the class name.
 	private static final Logger log = getLogger(lookup().lookupClass());
-	
-	@Autowired
-	private ServiceConfiguration serviceConfig;
-	private String serviceName;
 
-	@Autowired
+	// Autowired using the Constructor
 	private CountryService countryService;
+
+	private static final String DATA_FETCH = "Data Fetch Success!";
+
+	/**
+	 * Autowired using the Constructor
+	 * @param countrySvc
+	 */
+	public CountryControllerImpl(CountryService countrySvc) {
+		countryService = countrySvc;
+	}
 
 	/**
 	 * GET Method Call to Get All the Geo Countries with Page and Size
@@ -94,13 +100,12 @@ public class CountryControllerImpl extends AbstractController {
 	@GetMapping("/geo/page/{page}/size/{size}")
 	@MetricsCounter(endpoint = "/geo/page/size")
 	@ResponseBody
-	public ResponseEntity<StandardResponse> fetchCountriesByPageAndSize(@PathVariable String page,
-													@PathVariable("page") int _page,
-													@PathVariable("size") int _size) throws Exception {
-		log.debug("|"+name()+"|Request to Get All Countries by page no "+_page+" & Size = "+_size);
+	public ResponseEntity<StandardResponse> fetchCountriesByPageAndSize(@PathVariable("page") int page,
+													@PathVariable("size") int size) throws Exception {
+		log.debug("|"+name()+"|Request to Get All Countries by page no {} & Size =  {}", page, size);
 
-		Page<CountryGeoEntity> countries = countryService.getAllGeoCountries(_page, _size);
-		StandardResponse stdResponse = createSuccessResponse("Data Fetch Success!");
+		Page<CountryGeoEntity> countries = countryService.getAllGeoCountries(page, size);
+		StandardResponse stdResponse = createSuccessResponse(DATA_FETCH);
 		stdResponse.setPayload(countries);
 		return ResponseEntity.ok(stdResponse);
 	}
@@ -126,7 +131,7 @@ public class CountryControllerImpl extends AbstractController {
 														   HttpServletResponse response) throws Exception {
 		log.debug("|"+name()+"|Request to get All Countries ... ");
 		Page<CountryGeoEntity> countries = countryService.getAllGeoCountries();
-		StandardResponse stdResponse = createSuccessResponse("Data Fetch Success!");
+		StandardResponse stdResponse = createSuccessResponse(DATA_FETCH);
 		stdResponse.setPayload(countries);
 		return ResponseEntity.ok(stdResponse);
 	}
@@ -152,7 +157,7 @@ public class CountryControllerImpl extends AbstractController {
 														   HttpServletResponse response) throws Exception {
 		log.debug("|"+name()+"|Request to get All Countries ... ");
 		List<CountryEntity> countries = countryService.getAllCountries();
-		StandardResponse stdResponse = createSuccessResponse("Data Fetch Success!");
+		StandardResponse stdResponse = createSuccessResponse(DATA_FETCH);
 		stdResponse.setPayload(countries);
 		return ResponseEntity.ok(stdResponse);
 	}

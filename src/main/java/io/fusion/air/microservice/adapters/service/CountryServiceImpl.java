@@ -38,11 +38,16 @@ import java.util.List;
 @RequestScope
 public class CountryServiceImpl implements CountryService {
 
-    @Autowired
-    CountryRepository countryRepositoryImpl;
+    // Autowired using Constructor
+    private final CountryRepository countryRepositoryImpl;
 
-    @Autowired
-    private CountryGeoRepository countryGeoRepositoryImpl;
+    // Autowired using Constructor
+    private final CountryGeoRepository countryGeoRepositoryImpl;
+
+    public CountryServiceImpl(CountryRepository countryRepo, CountryGeoRepository countryGeoRepo) {
+        countryRepositoryImpl = countryRepo;
+        countryGeoRepositoryImpl = countryGeoRepo;
+    }
 
     @Override
     public List<CountryEntity> getAllCountries() {

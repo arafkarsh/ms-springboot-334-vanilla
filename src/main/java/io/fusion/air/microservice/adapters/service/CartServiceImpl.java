@@ -15,17 +15,18 @@
  */
 package io.fusion.air.microservice.adapters.service;
 
+// Custom
 import io.fusion.air.microservice.adapters.repository.CartRepository;
 import io.fusion.air.microservice.domain.entities.order.CartEntity;
 import io.fusion.air.microservice.domain.exceptions.DataNotFoundException;
 import io.fusion.air.microservice.domain.models.order.Cart;
 import io.fusion.air.microservice.domain.ports.services.CartService;
 import io.fusion.air.microservice.utils.Utils;
-import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
+// Spring
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+// Other
+import io.micrometer.core.instrument.MeterRegistry;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -62,11 +63,21 @@ import java.util.UUID;
 @Service
 public class CartServiceImpl implements CartService {
 
-    @Autowired
-    private CartRepository cartRepository;
+    // Autowired using the Constructor
+    private final CartRepository cartRepository;
 
-    @Autowired
-    private MeterRegistry meterRegistry;
+    // Autowired using the Constructor
+    private final MeterRegistry meterRegistry;
+
+    /**
+     * Autowired using the Constructor
+     * @param cartRepo
+     * @param meterReg
+     */
+    public CartServiceImpl(CartRepository cartRepo, MeterRegistry meterReg) {
+        cartRepository = cartRepo;
+        meterRegistry = meterReg;
+    }
 
     /**
      * ONLY FOR TESTING PURPOSE
@@ -150,13 +161,13 @@ public class CartServiceImpl implements CartService {
     /**
      * Save the Cart
      *
-     * @param _cart
+     * @param cartModel
      * @return
      */
     @Override
     @Transactional
-    public CartEntity save(Cart _cart) {
-        CartEntity cart = new CartEntity(_cart);
+    public CartEntity save(Cart cartModel) {
+        CartEntity cart = new CartEntity(cartModel);
         meterRegistry.counter("cart.saved", "status", "Cart Saved!").increment();
         return cartRepository.save(cart);
     }
@@ -164,13 +175,13 @@ public class CartServiceImpl implements CartService {
     /**
      * De Activate the Cart item
      *
-     * @param _customerId
-     * @param _cartItem
+     * @param customerId
+     * @param cartItemUUID
      * @return
      */
     @Override
-    public CartEntity deActivateCartItem(String _customerId, UUID _cartItem) {
-        Optional<CartEntity> cartItem = findById(_cartItem,_customerId);
+    public CartEntity deActivateCartItem(String customerId, UUID cartItemUUID) {
+        Optional<CartEntity> cartItem = findById(cartItemUUID,customerId);
         if(cartItem.isPresent()) {
             cartItem.get().deActivate();
             cartRepository.saveAndFlush(cartItem.get());
@@ -181,13 +192,13 @@ public class CartServiceImpl implements CartService {
 
     /**
      * Activate the Cart item
-     * @param _customerId
-     * @param _cartItem
+     * @param customerId
+     * @param cartItemUUID
      * @return
      */
     @Override
-    public CartEntity activateCartItem(String _customerId, UUID _cartItem) {
-        Optional<CartEntity> cartItem = findById(_cartItem,_customerId);
+    public CartEntity activateCartItem(String customerId, UUID cartItemUUID) {
+        Optional<CartEntity> cartItem = findById(cartItemUUID,customerId);
         if(cartItem.isPresent()) {
             cartItem.get().activate();
             cartRepository.saveAndFlush(cartItem.get());
@@ -197,12 +208,12 @@ public class CartServiceImpl implements CartService {
 
     /**
      * Delete the Cart item (Permanently Deletes the Item)
-     * @param _customerId
-     * @param _cartItem
+     * @param customerId
+     * @param cartItemUUID
      */
     @Override
-    public void deleteCartItem(String _customerId, UUID _cartItem) {
-        Optional<CartEntity> cartItem = findById(_cartItem,_customerId);
+    public void deleteCartItem(String customerId, UUID cartItemUUID) {
+        Optional<CartEntity> cartItem = findById(cartItemUUID,customerId);
         if(cartItem.isPresent()) {
             cartRepository.delete(cartItem.get());
         }

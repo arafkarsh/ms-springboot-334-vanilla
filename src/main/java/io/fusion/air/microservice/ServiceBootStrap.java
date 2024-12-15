@@ -162,7 +162,7 @@ public class ServiceBootStrap {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("*");
+				registry.addMapping("/**").allowedOrigins("host*");
 			}
 		};
 	}
@@ -305,7 +305,7 @@ public class ServiceBootStrap {
 	 * @return
 	 */
 	private List<Server> getServers() {
-		List<Server> serverList = new ArrayList<Server>();
+		List<Server> serverList = new ArrayList<>();
 
 		Server dev = new Server();
 		dev.setUrl(serviceConfig.getServerHostDev());

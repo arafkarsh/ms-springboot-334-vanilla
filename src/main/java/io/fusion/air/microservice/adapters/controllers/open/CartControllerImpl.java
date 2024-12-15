@@ -70,13 +70,24 @@ public class CartControllerImpl extends AbstractController {
 	// Set Logger -> Lookup will automatically determine the class name.
 	private static final Logger log = getLogger(lookup().lookupClass());
 	
-	@Autowired
+	// Autowired using the Constructor
 	private ServiceConfiguration serviceConfig;
 	private String serviceName;
 
-	@Autowired
+	// Autowired using the Constructor
 	private CartService cartService;
 
+	private static final String CART_RETRIEVED = "Cart Retrieved. Items =  ";
+
+	/**
+	 * Autowired using the Constructor
+	 * @param serviceCfg
+	 * @param cartSvc
+	 */
+	public CartControllerImpl(ServiceConfiguration serviceCfg, CartService cartSvc) {
+		serviceConfig = serviceCfg;
+		cartService = cartSvc;
+	}
 
 	/**
 	 * GET Method Call to ALL CARTS
@@ -98,7 +109,7 @@ public class CartControllerImpl extends AbstractController {
 	public ResponseEntity<StandardResponse> fetchCarts() throws Exception {
 		log.debug("|"+name()+"|Request to Get Cart For the Customers ");
 		List<CartEntity> cart = cartService.findAll();
-		StandardResponse stdResponse = createSuccessResponse("Cart Retrieved. Items =  "+cart.size());
+		StandardResponse stdResponse = createSuccessResponse(CART_RETRIEVED+cart.size());
 		stdResponse.setPayload(cart);
 		return ResponseEntity.ok(stdResponse);
 	}
@@ -123,7 +134,7 @@ public class CartControllerImpl extends AbstractController {
 	public ResponseEntity<StandardResponse> fetchCart(@PathVariable("customerId") String customerId) throws Exception {
 		log.debug("|"+name()+"|Request to Get Cart For the Customer "+customerId);
 		List<CartEntity> cart = cartService.findByCustomerId(customerId);
-		StandardResponse stdResponse = createSuccessResponse("Cart Retrieved. Items =  "+cart.size());
+		StandardResponse stdResponse = createSuccessResponse(CART_RETRIEVED+cart.size());
 		stdResponse.setPayload(cart);
 		return ResponseEntity.ok(stdResponse);
 	}
@@ -151,7 +162,7 @@ public class CartControllerImpl extends AbstractController {
 															  @PathVariable("price") BigDecimal price) throws Exception {
 		log.debug("|"+name()+"|Request to Get Cart For the Customer "+customerId);
 		List<CartEntity> cart = cartService.fetchProductsByPriceGreaterThan(customerId, price);
-		StandardResponse stdResponse = createSuccessResponse("Cart Retrieved. Items =  "+cart.size());
+		StandardResponse stdResponse = createSuccessResponse(CART_RETRIEVED+cart.size());
 		stdResponse.setPayload(cart);
 		return ResponseEntity.ok(stdResponse);
 	}
@@ -193,9 +204,9 @@ public class CartControllerImpl extends AbstractController {
 	@PutMapping("/deactivate/customer/{customerId}/cartItem/{cartId}")
 	@MetricsCounter(endpoint = "/deactivate/customer/cartItem", tags = {"layer", "ws", "public", "yes"})
 	public ResponseEntity<StandardResponse> deActivateCartItem(@PathVariable("customerId") String customerId,
-									@PathVariable("cartId") UUID _cartId) {
-		log.debug("|"+name()+"|Request to De-Activate the Cart item... "+_cartId);
-		CartEntity product = cartService.deActivateCartItem(customerId, _cartId);
+									@PathVariable("cartId") UUID cartId) {
+		log.debug("|"+name()+"|Request to De-Activate the Cart item... "+cartId);
+		CartEntity product = cartService.deActivateCartItem(customerId, cartId);
 		StandardResponse stdResponse = createSuccessResponse("Cart Item De-Activated");
 		stdResponse.setPayload(product);
 		return ResponseEntity.ok(stdResponse);
@@ -216,9 +227,9 @@ public class CartControllerImpl extends AbstractController {
 	@PutMapping("/activate/customer/{customerId}/cartItem/{cartId}")
 	@MetricsCounter(endpoint = "/activate/customer/cartItem", tags = {"layer", "ws", "public", "yes"})
 	public ResponseEntity<StandardResponse> activateCartItem(@PathVariable("customerId") String customerId,
-															   @PathVariable("cartId") UUID _cartId) {
-		log.debug("|"+name()+"|Request to Activate the Cart item... "+_cartId);
-		CartEntity product = cartService.activateCartItem(customerId, _cartId);
+															   @PathVariable("cartId") UUID cartId) {
+		log.debug("|"+name()+"|Request to Activate the Cart item... "+cartId);
+		CartEntity product = cartService.activateCartItem(customerId, cartId);
 		StandardResponse stdResponse = createSuccessResponse("Cart Item Activated");
 		stdResponse.setPayload(product);
 		return ResponseEntity.ok(stdResponse);
@@ -240,9 +251,9 @@ public class CartControllerImpl extends AbstractController {
 	@DeleteMapping("/delete/customer/{customerId}/cartItem/{cartId}")
 	@MetricsCounter(endpoint = "/delete/customer/cartItem", tags = {"layer", "ws", "public", "no"})
 	public ResponseEntity<StandardResponse> deleteCartItem(@PathVariable("customerId") String customerId,
-															 @PathVariable("cartId") UUID _cartId) {
-		log.debug("|"+name()+"|Request to Delete the Cart item... "+_cartId);
-		cartService.deleteCartItem(customerId, _cartId);
+															 @PathVariable("cartId") UUID cartId) {
+		log.debug("|"+name()+"|Request to Delete the Cart item... "+cartId);
+		cartService.deleteCartItem(customerId, cartId);
 		StandardResponse stdResponse = createSuccessResponse("Cart Item Deleted");
 		return ResponseEntity.ok(stdResponse);
 	}
