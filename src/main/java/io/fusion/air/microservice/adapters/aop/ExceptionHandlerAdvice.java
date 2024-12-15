@@ -62,10 +62,10 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
     /**
      * Constructor for Autowiring
-     * @param _serviceConfig
+     * @param serviceConfig
      */
-    public ExceptionHandlerAdvice(ServiceConfiguration _serviceConfig) {
-        serviceConfig = _serviceConfig;
+    public ExceptionHandlerAdvice(ServiceConfiguration serviceConfig) {
+        this.serviceConfig = serviceConfig;
     }
 
     /**
@@ -96,15 +96,15 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
     /**
      * Build Error Response Entity
-     * @param _ex
-     * @param _status
-     * @param _request
+     * @param ex
+     * @param status
+     * @param request
      * @return
      */
-    private ResponseEntity<Object> createErrorResponse(Exception _ex,
-                                                       HttpStatus _status,
-                                                       WebRequest _request) {
-        return createErrorResponse(_ex, _ex.getMessage(), "599",null, _status, _request);
+    private ResponseEntity<Object> createErrorResponse(Exception ex,
+                                                       HttpStatus status,
+                                                       WebRequest request) {
+        return createErrorResponse(ex, ex.getMessage(), "599",null, status, request);
     }
 
     /**

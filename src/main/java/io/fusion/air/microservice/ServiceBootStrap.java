@@ -16,12 +16,10 @@
 package io.fusion.air.microservice;
 
 // Custom
-import io.fusion.air.microservice.adapters.aop.ExceptionHandlerAdvice;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.controllers.HealthController;
 // Spring Framework
 import org.springdoc.core.GroupedOpenApi;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.CommandLineRunner;
@@ -83,7 +81,7 @@ public class ServiceBootStrap {
 	private static final Logger log = getLogger(lookup().lookupClass());
 
 	// All CAPS Words will be replaced using data from application.properties
-	private final static String title = "<h1>Welcome to MICRO service<h1/>"
+	private  static final String title = "<h1>Welcome to MICRO service<h1/>"
 			+"<h3>Copyright (c) COMPANY, 2022</h3>"
 			+"<h5>Build No: BN :: Build Date: BD :: </h5>";
 
@@ -92,8 +90,8 @@ public class ServiceBootStrap {
 	// Autowired using Constructor Injection
 	private final ServiceConfiguration serviceConfig;
 
-	public ServiceBootStrap(ServiceConfiguration _serviceConfig) {
-		serviceConfig = _serviceConfig;
+	public ServiceBootStrap(ServiceConfiguration serviceConfig) {
+		this.serviceConfig = serviceConfig;
 	}
 
 	// Get the Service Name from the properties file
@@ -174,9 +172,10 @@ public class ServiceBootStrap {
 	 */
 	@GetMapping("/root")
 	public String home(HttpServletRequest request) {
-		log.info("Request to Home Page of Service...{} ", printRequestURI(request));
-		return (serviceConfig == null) ? this.title :
-				this.title.replace("MICRO", serviceConfig.getServiceName())
+		String result = printRequestURI(request);
+		log.info("Request to Home Page of Service...{} ",  result);
+		return (serviceConfig == null) ? title :
+				title.replace("MICRO", serviceConfig.getServiceName())
 						.replace("COMPANY", serviceConfig.getServiceOrg())
 						.replace("BN", "" + serviceConfig.getBuildNumber())
 						.replace("BD", serviceConfig.getBuildDate());
@@ -197,8 +196,9 @@ public class ServiceBootStrap {
 			sb.append(req[x]).append("|");
 		}
 		sb.append("\n");
-		log.info("HttpServletRequest: [ {} ]",sb.toString());
-		return sb.toString();
+		String result = sb.toString();
+		log.info("HttpServletRequest: [ {} ]", result);
+		return result;
 	}
 
 	/**
