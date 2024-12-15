@@ -286,63 +286,63 @@ public class SecureData {
 
     public static void testEncryptAESWithMD() {
         String rawData  = "0123456789";
-        String secret   = "eHEZ92vvd7jMqit6lkWa1sp7z6FpdVHRfRX8gZlslkw=";
-        String rdEncrypt = SecureData.encrypt(rawData, secret);
-        String rdDecrypt = SecureData.decrypt(rdEncrypt, secret);
-        printResult(1, rawData,  secret,  Algorithms.AES_CBC_PKCS5Padding,  Algorithms.SHA_512, Algorithms.AES, rdEncrypt,  rdDecrypt);
+        String encKey   = "eHEZ92vvd7jMqit6lkWa1sp7z6FpdVHRfRX8gZlslkw=";
+        String rdEncrypt = SecureData.encrypt(rawData, encKey);
+        String rdDecrypt = SecureData.decrypt(rdEncrypt, encKey);
+        printResult(1, rawData,  encKey,  Algorithms.AES_CBC_PKCS5Padding,  Algorithms.SHA_512, Algorithms.AES, rdEncrypt,  rdDecrypt);
     }
 
     public static void testEncryptAES() {
         String rawData  = "0123456789";
-        String secret   = "eHEZ92vvd7jMqit6lkWa1sp7z6FpdVHRfRX8gZlslkw=";
-        String rdEncrypt = SecureData.encryptAES(rawData, secret);
-        String rdDecrypt = SecureData.decryptAES(rdEncrypt, secret);
-        printResult(2, rawData,  secret,  Algorithms.AES_CBC_PKCS5Padding,  "", Algorithms.AES, rdEncrypt,  rdDecrypt);
+        String encKey   = "eHEZ92vvd7jMqit6lkWa1sp7z6FpdVHRfRX8gZlslkw=";
+        String rdEncrypt = SecureData.encryptAES(rawData, encKey);
+        String rdDecrypt = SecureData.decryptAES(rdEncrypt, encKey);
+        printResult(2, rawData,  encKey,  Algorithms.AES_CBC_PKCS5Padding,  "", Algorithms.AES, rdEncrypt,  rdDecrypt);
     }
 
     public static void testEncryptAES2() {
         String rawData  = "0123456789";
-        String secret   = "as323";
-        String rdEncrypt = SecureData.encryptAES(rawData, secret);
-        String rdDecrypt = SecureData.decryptAES(rdEncrypt, secret);
-        printResult(2, rawData,  secret,  Algorithms.AES_CBC_PKCS5Padding,  "", Algorithms.AES, rdEncrypt,  rdDecrypt);
+        String encKey   = "as323";
+        String rdEncrypt = SecureData.encryptAES(rawData, encKey);
+        String rdDecrypt = SecureData.decryptAES(rdEncrypt, encKey);
+        printResult(2, rawData,  encKey,  Algorithms.AES_CBC_PKCS5Padding,  "", Algorithms.AES, rdEncrypt,  rdDecrypt);
     }
 
     public static void testEncryyptTripleDES() {
         String rawData  = "0123456789";
-        String secret   = "eHEZ92vvd7jMqit6lkWa1sp7z6FpdVHRfRX8gZlslkw=";
-        String rdEncrypt = SecureData.encryptTripleDES(rawData, secret);
-        String rdDecrypt = SecureData.decryptTripleDES(rdEncrypt, secret);
-        printResult(3, rawData,  secret,  Algorithms.TripleDES_CBC_PKCS5Padding,  "", Algorithms.TripleDES, rdEncrypt,  rdDecrypt);
+        String encKey   = "eHEZ92vvd7jMqit6lkWa1sp7z6FpdVHRfRX8gZlslkw=";
+        String rdEncrypt = SecureData.encryptTripleDES(rawData, encKey);
+        String rdDecrypt = SecureData.decryptTripleDES(rdEncrypt, encKey);
+        printResult(3, rawData,  encKey,  Algorithms.TripleDES_CBC_PKCS5Padding,  "", Algorithms.TripleDES, rdEncrypt,  rdDecrypt);
     }
 
     public static void testEncryyptTripleDES2() {
         String rawData  = "0123456789";
-        String secret   = "as323";
-        String rdEncrypt = SecureData.encryptTripleDES(rawData, secret);
-        String rdDecrypt = SecureData.decryptTripleDES(rdEncrypt, secret);
-        printResult(3, rawData,  secret,  Algorithms.TripleDES_CBC_PKCS5Padding,  "", Algorithms.TripleDES, rdEncrypt,  rdDecrypt);
+        String encKey   = "as323";
+        String rdEncrypt = SecureData.encryptTripleDES(rawData, encKey);
+        String rdDecrypt = SecureData.decryptTripleDES(rdEncrypt, encKey);
+        printResult(3, rawData,  encKey,  Algorithms.TripleDES_CBC_PKCS5Padding,  "", Algorithms.TripleDES, rdEncrypt,  rdDecrypt);
     }
     public static void testEncryyptAESusingCBC() {
         String rawData  = "0123456789";
-        String secret   = "eHEZ92vvd7jMqit6lkWa1sp7z6FpdVHRfRX8gZlslkw=";
+        String encKey   = "eHEZ92vvd7jMqit6lkWa1sp7z6FpdVHRfRX8gZlslkw=";
         String cipher   = Algorithms.AES_CBC_PKCS5Padding;
         String md_algo  = Algorithms.SHA_512;
         String en_algo  = Algorithms.AES;
-        String rdEncrypt = SecureData.encrypt(rawData, cipher, secret, md_algo, en_algo);
-        String rdDecrypt = SecureData.decrypt(rdEncrypt, cipher, secret, md_algo, en_algo);
-        printResult(4, rawData,  secret,  cipher,  md_algo, en_algo, rdEncrypt,  rdDecrypt);
+        String rdEncrypt = SecureData.encrypt(rawData, cipher, encKey, md_algo, en_algo);
+        String rdDecrypt = SecureData.decrypt(rdEncrypt, cipher, encKey, md_algo, en_algo);
+        printResult(4, rawData,  encKey,  cipher,  md_algo, en_algo, rdEncrypt,  rdDecrypt);
     }
 
     public static void testEncryyptAESusingECB() {
         String rawData  = "0123456789";
-        String secret   = "eHEZ92vvd7jMqit6lkWa1sp7z6FpdVHRfRX8gZlslkw=";
+        String encKey   = "eHEZ92vvd7jMqit6lkWa1sp7z6FpdVHRfRX8gZlslkw=";
         String cipher   = Algorithms.AES_ECB_PKCS5Padding;
         String md_algo  = Algorithms.SHA_512;
         String en_algo  = Algorithms.AES;
-        String rdEncrypt = SecureData.encrypt(rawData, cipher, secret, md_algo, en_algo);
-        String rdDecrypt = SecureData.decrypt(rdEncrypt, cipher, secret, md_algo, en_algo);
-        printResult(5, rawData,  secret,  cipher,  md_algo, en_algo, rdEncrypt,  rdDecrypt);
+        String rdEncrypt = SecureData.encrypt(rawData, cipher, encKey, md_algo, en_algo);
+        String rdDecrypt = SecureData.decrypt(rdEncrypt, cipher, encKey, md_algo, en_algo);
+        printResult(5, rawData,  encKey,  cipher,  md_algo, en_algo, rdEncrypt,  rdDecrypt);
     }
 
     /**
@@ -351,46 +351,46 @@ public class SecureData {
      */
     public static void testEncryption(int _cnt) {
         String rawData = "My Name is Lincoln Hawk from the Galaxy Andromeda!";
-        String secret = "<([SecretKey!!To??Encrypt##Data@12345%6790])>-" + _cnt;
+        String encKey = "<([SecretKey!!To??Encrypt##Data@12345%6790])>-" + _cnt;
         String cipher = Algorithms.AES_ECB_PKCS5Padding;
         String md_algo = Algorithms.SHA_512;
         String en_algo = Algorithms.AES;
-        String rdEncrypt = SecureData.encrypt(rawData, cipher, secret, md_algo, en_algo);
-        String rdDecrypt = SecureData.decrypt(rdEncrypt, cipher, secret, md_algo, en_algo);
-        printResult(6, rawData, secret, cipher, md_algo, en_algo, rdEncrypt, rdDecrypt);
+        String rdEncrypt = SecureData.encrypt(rawData, cipher, encKey, md_algo, en_algo);
+        String rdDecrypt = SecureData.decrypt(rdEncrypt, cipher, encKey, md_algo, en_algo);
+        printResult(6, rawData, encKey, cipher, md_algo, en_algo, rdEncrypt, rdDecrypt);
     }
 
     /**
      * Print the Result with Default Algorithms
      * @param testNo
      * @param rawData
-     * @param secret
+     * @param encKey
      * @param rdEncrypt
      * @param rdDecrypt
      */
-    public static void printResult(int testNo, String rawData, String secret, String rdEncrypt, String rdDecrypt) {
-        printResult( testNo,  rawData,  secret,  DEFAULT_ALGORITHM,  DEFAULT_MD_ALGO, Algorithms.AES, rdEncrypt,  rdDecrypt);
+    public static void printResult(int testNo, String rawData, String encKey, String rdEncrypt, String rdDecrypt) {
+        printResult( testNo,  rawData,  encKey,  DEFAULT_ALGORITHM,  DEFAULT_MD_ALGO, Algorithms.AES, rdEncrypt,  rdDecrypt);
     }
 
     /**
      * Print the Result
      * @param testNo
      * @param rawData
-     * @param secret
+     * @param encKey
      * @param cipher
      * @param md_algo
      * @param encryptAlgo
      * @param rdEncrypt
      * @param rdDecrypt
      */
-    public static void printResult(int testNo, String rawData, String secret, String cipher, String md_algo,
+    public static void printResult(int testNo, String rawData, String encKey, String cipher, String md_algo,
                                    String encryptAlgo, String rdEncrypt, String rdDecrypt) {
         String uuid = UUID.randomUUID().toString();
         // System.out.println("UUID         : "+uuid+" | Length = "+uuid.length());
         System.out.println("MD Algorithm : "+md_algo);
         System.out.println("Cipher Suite : "+cipher);
         System.out.println("Encrypt Algo : "+encryptAlgo);
-        System.out.println("Secret Key   : "+secret);
+        System.out.println("Enc Key   : "+encKey);
         // System.out.println("----------------------------------------------------------------------------------------");
         System.out.println("Plain String : "+rawData);
         System.out.println("Encrypted "+testNo+"  : "+rdEncrypt);

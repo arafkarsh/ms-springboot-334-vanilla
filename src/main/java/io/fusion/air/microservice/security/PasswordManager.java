@@ -68,14 +68,14 @@ public class PasswordManager {
      */
     public static void main (String[] args) {
 
-        String seed  = "metamagic"+"|"+"ms-cache"+"|"+"<([1234567890SecretKEY!!TO??Encrypt##DATA@12345%6790])>";
-        String userName = "sa";
-        String password = "password";
-        String userNameEnc = SecureData.encrypt(userName, seed);
-        String passwordEnc = SecureData.encrypt(password, seed);
-        System.out.println("Username="+userName+" | Encrypted="+userNameEnc);
-        System.out.println("Username="+userName+" | Decrypted="+SecureData.decrypt(userNameEnc, seed));
-        System.out.println("Password="+password+" | Encrypted="+passwordEnc);
-        System.out.println("Username="+password+" | Decrypted="+SecureData.decrypt(passwordEnc, seed));
+        String seed  = "lincolnHawk"+"|"+"ms-vanilla"+"|"+"<([1234567890SecretKEY!!TO??Encrypt##DATA@12345%6790])>";
+        String un = "sa";
+        String psd = "SigmaHawk.1901";
+        String uEnc = SecureData.encrypt(un, seed);
+        String pEnc = SecureData.encrypt(psd, seed);
+        System.out.println("U="+un+" | Encrypted="+uEnc);
+        System.out.println("U="+un+" | Decrypted="+SecureData.decrypt(uEnc, seed));
+        System.out.println("P="+psd+" | Encrypted="+pEnc);
+        System.out.println("U="+psd+" | Decrypted="+SecureData.decrypt(pEnc, seed));
     }
 }

@@ -81,7 +81,7 @@ public class ServiceBootStrap {
 	private static final Logger log = getLogger(lookup().lookupClass());
 
 	// All CAPS Words will be replaced using data from application.properties
-	private  static final String title = "<h1>Welcome to MICRO service<h1/>"
+	private  static final String SERVICE_TITLE = "<h1>Welcome to MICRO service<h1/>"
 			+"<h3>Copyright (c) COMPANY, 2022</h3>"
 			+"<h5>Build No: BN :: Build Date: BD :: </h5>";
 
@@ -174,8 +174,8 @@ public class ServiceBootStrap {
 	public String home(HttpServletRequest request) {
 		String result = printRequestURI(request);
 		log.info("Request to Home Page of Service...{} ",  result);
-		return (serviceConfig == null) ? title :
-				title.replace("MICRO", serviceConfig.getServiceName())
+		return (serviceConfig == null) ? SERVICE_TITLE :
+				SERVICE_TITLE.replace("MICRO", serviceConfig.getServiceName())
 						.replace("COMPANY", serviceConfig.getServiceOrg())
 						.replace("BN", "" + serviceConfig.getBuildNumber())
 						.replace("BD", serviceConfig.getBuildDate());
