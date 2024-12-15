@@ -158,15 +158,15 @@ run prod
 ```
 
 3. Microsoft Windows
-Profile = Development
+- Profile = Development
 ```aiignore
 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=dev  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
 ```
-Profile = Staging
+- Profile = Staging
 ```aiignore
 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=staging  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
 ```
-Profile = Production
+- Profile = Production
 ```aiignore
 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=prod  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
 ```
