@@ -43,6 +43,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class MetricsCounterHandler {
 
+    private static final String METRIC_NAME = "METRIC-NAME-NOT-DEFINED";
+    private static final String METRIC_PATH = "METRICS.PATH.NOT.DEFINED.";
+    private static final String METRIC_ENDPOINT = "METRICS.FUNCTION.NOT.DEFINED";
+
     /**
      * Get the Metric Meta-Data from the Annotations
      * @param joinPoint
@@ -56,9 +60,9 @@ public class MetricsCounterHandler {
         // Check for method-level annotation
         MetricsCounter metricFunction = signature.getMethod().getAnnotation(MetricsCounter.class);
 
-        String metricName = "METRIC-NAME-NOT-DEFINED";
-        String name = "METRICS.PATH.NOT.DEFINED.";
-        String endPoint = "METRICS.FUNCTION.NOT.DEFINED";
+        String metricName = METRIC_NAME;
+        String name = METRIC_PATH;
+        String endPoint = METRIC_ENDPOINT;
         String[] tags = null;
         // Extract Class Name and Method Name
         if (metricClass != null) {
@@ -68,7 +72,7 @@ public class MetricsCounterHandler {
             if(metricFunction.name() != null && !metricFunction.name().trim().isEmpty()) {
                 name = metricFunction.name();
             }
-            endPoint = metricFunction.endpoint().replaceAll("/", ".");  // Use method endpoint
+            endPoint = metricFunction.endpoint().replace("/", ".");  // Use method endpoint
             metricName = name + endPoint;
             tags = metricFunction.tags();
         } else {

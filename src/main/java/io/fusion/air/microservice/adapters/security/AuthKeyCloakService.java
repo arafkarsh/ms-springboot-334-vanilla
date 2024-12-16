@@ -24,7 +24,6 @@ import io.fusion.air.microservice.domain.models.auth.Token;
 import io.fusion.air.microservice.security.CryptoKeyGenerator;
 import io.fusion.air.microservice.security.KeyCloakConfig;
 // Spring
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -55,14 +54,26 @@ import java.util.Base64;
 @Service
 public class AuthKeyCloakService {
 
-    @Autowired
-    private KeyCloakConfig keyCloakConfig;
+    // Autowired using the Constructor
+    private final KeyCloakConfig keyCloakConfig;
 
-    @Autowired
-    private CryptoKeyGenerator cryptoKeyGenerator;
+    // Autowired using the Constructor
+    private final CryptoKeyGenerator cryptoKeyGenerator;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    // Autowired using the Constructor
+    private final RestTemplate restTemplate;
+
+    /**
+     * Autowired using the Constructor
+     * @param keyCloakCfg
+     * @param cryptoKeyGen
+     */
+    public AuthKeyCloakService(KeyCloakConfig keyCloakCfg,
+                               CryptoKeyGenerator cryptoKeyGen ) {
+            keyCloakConfig = keyCloakCfg;
+            cryptoKeyGenerator = cryptoKeyGen;
+            restTemplate =  new RestTemplate();;
+    }
 
     /**
      * Authenticate User with KeyCloak using User Credentials
@@ -84,12 +95,11 @@ public class AuthKeyCloakService {
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restClient = new RestTemplate();
         try {
-            ResponseEntity<Token> responseEntity = restTemplate.postForEntity(keyCloakConfig.getKeyCloakUrl(), request, Token.class);
+            ResponseEntity<Token> responseEntity = restClient.postForEntity(keyCloakConfig.getKeyCloakUrl(), request, Token.class);
             return responseEntity.getBody();
         } catch (Exception e) {
-            // throw new SecurityException("Access Denied!", e);
             throw new AuthorizationException("Access Denied!", e);
         }
     }
@@ -106,12 +116,11 @@ public class AuthKeyCloakService {
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restClient = new RestTemplate();
         try {
-            ResponseEntity<Token> responseEntity = restTemplate.postForEntity(keyCloakConfig.getKeyCloakUrl(), request, Token.class);
+            ResponseEntity<Token> responseEntity = restClient.postForEntity(keyCloakConfig.getKeyCloakUrl(), request, Token.class);
             return responseEntity.getBody();
         } catch (Exception e) {
-            // throw new SecurityException("Access Denied!", e);
             throw new AuthorizationException("Access Denied!", e);
         }
     }
@@ -170,20 +179,18 @@ public class AuthKeyCloakService {
             try {
                 key = cryptoKeyGenerator.readPublicKey(new File(keyCloakConfig.getKeyCloakPublicKey()));
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new SecurityException("Unable to read RSA Public Key...",e);
             }
         } else {
             // File Doesnt Exist - Create the File
             try {
                 key = createRSAKey();
             } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-                throw new RuntimeException(e);
+                throw new SecurityException("Unable to create RSA Public Key...",e);
             }
             cryptoKeyGenerator.setPublicKeyFromKeyCloak(key);
             cryptoKeyGenerator.writePEMFile(key, keyCloakConfig.getKeyCloakPublicKey(), keyName);
         }
         return cryptoKeyGenerator.convertKeyToText(key, keyName);
     }
-
-
 }

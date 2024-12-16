@@ -47,11 +47,23 @@ public class _8_FunctionTimerExample {
     private final FunctionTimer functionTimer;
     private final TimedObject timedObject;
 
+    /**
+     *
+     * @param meterRegistry
+     */
     public _8_FunctionTimerExample(MeterRegistry meterRegistry) {
         timedObject = new TimedObject(10, 2000);
-        functionTimer = FunctionTimer.builder("fusion.air.example.8.functionTimer", timedObject,
+        functionTimer = FunctionTimer.builder("fusion.air.example.8.functionTimer", getTimedObject(),
                         obj -> obj.getCount(), obj -> obj.getTotalTime(), TimeUnit.MILLISECONDS)
                 .description("Measures the count and duration of events through functions")
                 .register(meterRegistry);
+    }
+
+    public FunctionTimer getFunctionTimer() {
+        return functionTimer;
+    }
+
+    public TimedObject getTimedObject() {
+        return timedObject;
     }
 }

@@ -18,8 +18,12 @@ package io.fusion.air.microservice.adapters.security;
 import io.fusion.air.microservice.domain.exceptions.AuthorizationException;
 import io.fusion.air.microservice.utils.Utils;
 import io.jsonwebtoken.Claims;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
+
+import static java.lang.invoke.MethodHandles.lookup;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Claims Manager
@@ -46,17 +50,21 @@ import org.springframework.web.context.annotation.RequestScope;
 @RequestScope
 public class ClaimsManager {
 
+    // Set Logger -> Lookup will automatically determine the class name.
+    private static final Logger log = getLogger(lookup().lookupClass());
+
     private Claims claims;
     private boolean claimsInitialized = false;
 
     /**
      *
-     * @param _claims
+     * @param claims
      */
-    public void setClaims(Claims _claims) {
-        claims = _claims;
+    public void setClaims(Claims claims) {
+        this.claims = claims;
         claimsInitialized = true;
-        System.out.println(">>> CLAIMS = "+ Utils.toJsonString(claims));
+        String c =  Utils.toJsonString(this.claims);
+        log.debug(">>> CLAIMS = {}", c);
     }
 
     /**
@@ -143,5 +151,4 @@ public class ClaimsManager {
     public String getEmail() {
         return (claims != null) ? (String) claims.get("email") : "";
     }
-
 }

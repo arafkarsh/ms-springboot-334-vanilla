@@ -29,7 +29,11 @@ package io.fusion.air.microservice.adapters.logging.examples.tracing;
 
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+
+import static java.lang.invoke.MethodHandles.lookup;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * ms-springboot-334-vanilla / _01_CustomTraceExample 
@@ -40,6 +44,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class OpenTelemetryCustomTraceExample {
+
+    // Set Logger -> Lookup will automatically determine the class name.
+    private static final Logger log = getLogger(lookup().lookupClass());
+
     private final Tracer tracer;
 
     public OpenTelemetryCustomTraceExample(Tracer tracer) {
@@ -49,7 +57,7 @@ public class OpenTelemetryCustomTraceExample {
     public void testTraceMethod() {
         Span span = tracer.spanBuilder("testTraceMethod").startSpan();
         try {
-            System.out.println("OpenTelemetry Request Tracing.... ");
+            log.info("OpenTelemetry Request Tracing.... ");
             // Application logic here
 
         } finally {

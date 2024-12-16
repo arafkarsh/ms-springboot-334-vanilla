@@ -44,18 +44,18 @@ public class MetricModel {
 
     /**
      * Create the Metric Model with relevant data
-     * @param _metricPath
-     * @param _metricEndPoint
-     * @param _metricDescription
-     * @param _metricTags
+     * @param metricPath
+     * @param metricEndPoint
+     * @param metricDescription
+     * @param metricTags
      */
-    public MetricModel(String _metricPath, String _metricEndPoint, String _metricDescription,
-                       String[] _metricTags, String _metricName) {
-        this.metricPath = _metricPath;
-        this.metricEndPoint = _metricEndPoint;
-        this.metricDescription = _metricDescription;
-        this.metricTags = _metricTags;
-        this.metricName = _metricName;
+    public MetricModel(String metricPath, String metricEndPoint, String metricDescription,
+                       String[] metricTags, String metricName) {
+        this.metricPath = metricPath;
+        this.metricEndPoint = metricEndPoint;
+        this.metricDescription = metricDescription;
+        this.metricTags = metricTags;
+        this.metricName = metricName;
     }
 
     /**

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.adapters.security;
-
+// Custom
 import io.fusion.air.microservice.domain.exceptions.*;
 import io.fusion.air.microservice.security.JsonWebToken;
+// JWT
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+// Aspect
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
+// Spring
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,9 +33,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
+// Java
 import jakarta.servlet.http.HttpServletRequest;
-
+import org.slf4j.Logger;
+import org.slf4j.MDC;
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -51,29 +52,45 @@ public class AuthorizeRequestAspect {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
 
-    public final static String AUTH             = "auth";
-    public final static String AUTH_REFRESH     = "refresh";
-    public final static String TX_USERS         = "tx-users";
-    public final static String TX_SERVICE       = "tx-internal";
-    public final static String TX_EXTERNAL      = "tx-external";
+    public static final String AUTH             = "auth";
+    public static final String AUTH_REFRESH     = "refresh";
+    public static final String TX_USERS         = "tx-users";
+    public static final String TX_SERVICE       = "tx-internal";
+    public static final String TX_EXTERNAL      = "tx-external";
 
-    public final static String REFRESH_TOKEN    = "Refresh-Token";
-    public final static String AUTH_TOKEN       = "Authorization";
-    public final static String SINGLE_TOKEN     = "Authorization";
-    public final static String TX_TOKEN         = "TX-TOKEN";
+    public static final String REFRESH_TOKEN    = "Refresh-Token";
+    public static final String AUTH_TOKEN       = "Authorization";
+    public static final String SINGLE_TOKEN     = "Authorization";
+    public static final String TX_TOKEN         = "TX-TOKEN";
 
-    public final static int CONSUMERS           = 1;
-    public final static int INTERNAL_SERVICES   = 2;
-    public final static int EXTERNAL_SERVICES   = 3;
+    public static final int CONSUMERS           = 1;
+    public static final int INTERNAL_SERVICES   = 2;
+    public static final int EXTERNAL_SERVICES   = 3;
 
-    @Autowired
-    private JsonWebToken jwtUtil;
+    private static final String ERROR = "ERROR";
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    // Autowired using the Constructor
+    private final JsonWebToken jwtUtil;
 
-    @Autowired
-    private ClaimsManager claimsManager;
+    // Autowired using the Constructor
+    private final UserDetailsServiceImpl userDetailsService;
+
+    // Autowired using the Constructor
+    private final ClaimsManager claimsManager;
+
+    /**
+     * Autowired using the Constructor
+     * @param jwt
+     * @param userService
+     * @param claims
+     */
+    public AuthorizeRequestAspect(JsonWebToken jwt, UserDetailsServiceImpl userService,
+                                  ClaimsManager claims ) {
+        jwtUtil = jwt;
+        userDetailsService = userService;
+        claimsManager = claims;
+    }
+
 
     /**
      * Validate REST Endpoint Annotated with @validateRefreshToken Annotation
@@ -167,9 +184,7 @@ public class AuthorizeRequestAspect {
         logTime(startTime, "Validating", request.getRequestURI(), joinPoint);
         final String token = getToken(startTime, request.getHeader(tokenKey), joinPoint);
         final String user = getUser(startTime, token, joinPoint);
-        System.out.println("Step 0: User Extracted... "+user);
-        // System.out.println("Step 0: Security Context. "+SecurityContextHolder.getContext().getAuthentication());
-        // System.out.println("Step 0: Principal....... "+SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        log.info("Step 0: User Extracted... {} ", user);
         // Validate the Token when User is NOT Null
         if (user != null) {
             // System.out.println("Step 1: Extract Tokens...");
@@ -209,7 +224,7 @@ public class AuthorizeRequestAspect {
             return tokenKey.substring(7);
         }
         String msg = "Access Denied: Unable to extract token from Header!";
-        logTime(startTime, "ERROR", msg,  joinPoint);
+        logTime(startTime, ERROR, msg,  joinPoint);
         throw new JWTTokenExtractionException(msg);
     }
 
@@ -238,12 +253,12 @@ public class AuthorizeRequestAspect {
         } catch (NullPointerException e) {
             msg = "Access Denied: Invalid Token (Null Token) Error: "+e.getMessage();
             throw new JWTUnDefinedException(msg, e);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             msg = "Access Denied: Error:  "+e.getMessage();
             throw new JWTUnDefinedException(msg, e);
         } finally {
             if(msg != null) {
-                logTime(startTime, "ERROR", msg, joinPoint);
+                logTime(startTime, ERROR, msg, joinPoint);
             }
         }
     }
@@ -280,28 +295,7 @@ public class AuthorizeRequestAspect {
                 // Validate the Token Type
                 validateTokenType( startTime,  user,  tokenKey, claims,  tokenCtg,  joinPoint);
                 // Verify that the user role name matches the role name defined by the protected resource
-                MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-                AuthorizationRequired annotation = null;
-                String annotationRole = null;
-                try {
-                    if (tokenKey.equalsIgnoreCase(AUTH_TOKEN)) {
-                        annotation = signature.getMethod().getAnnotation(AuthorizationRequired.class);
-                        annotationRole = annotation.role();
-                        // } else {
-                        //    annotation = signature.getMethod().getAnnotation(ValidateRefreshToken.class);
-                    }
-                } catch (Exception ignored) {
-                    // System.out.println("ROLE NOT FOUND: "+ignored.getMessage());
-                }
-                System.out.println("Step 3: Role Check @Role = "+annotationRole+" Claims Role = "+role);
-                // If the Role in the Token is User and Required is Admin then Reject the request
-
-                if(role.trim().equalsIgnoreCase(UserRole.User.toString())
-                        && annotationRole != null
-                        && annotationRole.equals(UserRole.Admin.toString())) {
-                    throw new AuthorizationException("Invalid User Role!");
-                }
-                // System.out.println("Step 4: Return UserDetails");
+                verifyTheUserRole( role,  tokenKey,  joinPoint);
                 return userDetails;
             } else {
                 msg = "Auth-Token: Unauthorized Access: Token Validation Failed!";
@@ -309,14 +303,41 @@ public class AuthorizeRequestAspect {
             }
         } catch(AuthorizationException e) {
             throw e;
-        } catch(Throwable e) {
+        } catch(Exception e) {
             msg = "Auth-Token: Unauthorized Access: Error: "+e.getMessage();
             throw new AuthorizationException(msg, e);
         } finally {
             // Error is Logged ONLY if msg != NULL
             if(msg != null) {
-                logTime(startTime, "ERROR", msg, joinPoint);
+                logTime(startTime, ERROR, msg, joinPoint);
             }
+        }
+    }
+
+
+    /**
+     * Verify the User Role Matches the Claim
+     * @param tokenKey
+     * @param joinPoint
+     */
+    private void verifyTheUserRole(String role, String tokenKey, ProceedingJoinPoint joinPoint) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        AuthorizationRequired annotation = null;
+        String annotationRole = null;
+        try {
+            if (tokenKey.equalsIgnoreCase(AUTH_TOKEN)) {
+                annotation = signature.getMethod().getAnnotation(AuthorizationRequired.class);
+                annotationRole = annotation.role();
+            }
+        } catch (Exception ignored) {
+            throw new AuthorizationException("Role Not Found!", ignored);
+        }
+        log.info("Step 3: Role Check Role = {},  Claims Role = {} ", annotationRole, role);
+        // If the Role in the Token is User and Required is Admin then Reject the request
+        if(role.trim().equalsIgnoreCase(UserRole.User.toString())
+                && annotationRole != null
+                && annotationRole.equals(UserRole.Admin.toString())) {
+            throw new AuthorizationException("Invalid User Role!");
         }
     }
 
@@ -329,22 +350,15 @@ public class AuthorizeRequestAspect {
      * @param tokenCtg
      * @param joinPoint
      */
-    private void validateTokenType(long startTime, String user, String tokenKey, Claims claims, int tokenCtg, ProceedingJoinPoint joinPoint) {
+    private void validateTokenType(long startTime, String user, String tokenKey, Claims claims,
+                                   int tokenCtg, ProceedingJoinPoint joinPoint) {
         String msg = null;
         try {
             if (claims == null) {
                 msg = "Invalid Token! No Claims available! " + user;
                 throw new AuthorizationException(msg);
             }
-            String tokenType = null;
-            try {
-                tokenType = (String) claims.get("type");
-            } catch (Exception e) {
-            }
-            if (tokenType == null) {
-                msg = "Invalid Token Type from Claims! " + user;
-                throw new AuthorizationException(msg);
-            }
+            String tokenType =  validateTokenType( user,  claims);
             switch(tokenCtg) {
                 case CONSUMERS:
                     if (tokenKey.equals(AUTH_TOKEN) && !tokenType.equals(AUTH)) {
@@ -367,11 +381,13 @@ public class AuthorizeRequestAspect {
                         throw new AuthorizationException(msg);
                     }
                     break;
+                default:
+                    throw new AuthorizationException("Invalid Token Category.");
             }
         } finally {
             // Error is Logged ONLY if msg != NULL
             if(msg != null) {
-                logTime(startTime, "ERROR", msg, joinPoint);
+                logTime(startTime, ERROR, msg, joinPoint);
             }
         }
     }
@@ -391,7 +407,7 @@ public class AuthorizeRequestAspect {
             token = tokenData.substring(7);
         } else {
             String msg = "TX-Token: Access Denied: Unable to extract TX-Token from Header! "+user;
-            logTime(startTime, "ERROR", msg, joinPoint);
+            logTime(startTime, ERROR, msg, joinPoint);
             throw new JWTTokenExtractionException(msg);
         }
         String msg = null;
@@ -399,15 +415,7 @@ public class AuthorizeRequestAspect {
             Claims claims = null;
             if (jwtUtil.validateToken(user, token)) {
                 claims = jwtUtil.getAllClaims(token);
-                String tokenType = null;
-                try {
-                    tokenType = (String) claims.get("type");
-                } catch (Exception e) {
-                }
-                if (tokenType == null) {
-                    msg = "Invalid Token Type from Claims! " + user;
-                    throw new AuthorizationException(msg);
-                }
+                String tokenType = validateTokenType( user,  claims);
                 if (!tokenType.equals(TX_USERS)) {
                     msg = "Invalid TX Token Type ("+tokenType+") ! " + user;
                     throw new AuthorizationException(msg);
@@ -421,25 +429,47 @@ public class AuthorizeRequestAspect {
             }
         } catch(AuthorizationException e) {
             throw e;
-        } catch(Throwable e) {
+        } catch(Exception e) {
             msg = "TX-Token: Unauthorized Access: Error: "+e.getMessage();
             throw new AuthorizationException(msg, e);
         } finally {
             // Error is Logged ONLY if msg != NULL
             if(msg != null) {
-                logTime(startTime, "ERROR", msg, joinPoint);
+                logTime(startTime, ERROR, msg, joinPoint);
             }
         }
     }
 
     /**
+     * Validates Token  Type
+     * @param user
+     * @param claims
+     * @return
+     */
+    private String validateTokenType(String user, Claims claims) {
+        String tokenType;
+        String msg;
+        try {
+            tokenType = (String) claims.get("type");
+        } catch (Exception e) {
+            msg = "Unable to get Token Type from Claims for user: "+user;
+            throw new AuthorizationException(msg, e);
+        }
+        if (tokenType == null) {
+            msg = "Invalid Token Type from Claims! for user: " + user;
+            throw new AuthorizationException(msg);
+        }
+        return tokenType;
+    }
+
+    /**
      * Log Time
-     * @param _startTime
-     * @param _status
+     * @param startTime
+     * @param status
      * @param joinPoint
      */
-    private void logTime(long _startTime, String _status, String _msg, ProceedingJoinPoint joinPoint) {
-        long timeTaken=System.currentTimeMillis() - _startTime;
-        log.info("2|JA|TIME={} ms|STATUS={}|CLASS={}|Msg={}", timeTaken, _status,joinPoint, _msg);
+    private void logTime(long startTime, String status, String msg, ProceedingJoinPoint joinPoint) {
+        long timeTaken=System.currentTimeMillis() - startTime;
+        log.info("2|JA|TIME={} ms|STATUS={}|CLASS={}|Msg={}", timeTaken, status,joinPoint, msg);
     }
  }

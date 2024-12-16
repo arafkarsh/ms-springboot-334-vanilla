@@ -101,11 +101,13 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @param request
      * @return
      */
+    /**
     private ResponseEntity<Object> createErrorResponse(Exception ex,
                                                        HttpStatus status,
                                                        WebRequest request) {
         return createErrorResponse(ex, ex.getMessage(), "599",null, status, request);
     }
+     */
 
     /**
      * Build Error Response Entity
@@ -142,12 +144,14 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @param request
      * @return
      */
+    /**
     private ResponseEntity<Object> createErrorResponse(AbstractServiceException ase,
                                                        String errorCode,
                                                        HttpHeaders headers,
                                                        WebRequest request) {
         return createErrorResponse(ase, ase.getMessage(), errorCode, headers, ase.getHttpStatus(), request);
     }
+     */
 
     /**
      * Unable to Save Persistence Exceptions
@@ -187,7 +191,8 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
         logException(appErrorCode,  exception);                                                                               // Log Exception
         StandardResponse stdResponse = Utils.createErrorResponse(
                 null, errorPrefix, errorCode, httpStatus,  message);                                // Std Response
-
+        String cp = request.getContextPath();
+        log.debug("Error Web Request Context Path = {} ",cp);
         return (headers != null)
                 ?  new ResponseEntity<>(stdResponse, headers, httpStatus)                                         // HTTP Response
                 : new ResponseEntity<>(stdResponse, httpStatus);
@@ -298,7 +303,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = JWTTokenExtractionException.class)
-    public ResponseEntity<Object> JWTTokenExtractionException(JWTTokenExtractionException adEx,  WebRequest request) {
+    public ResponseEntity<Object> jwtTokenExtractionException(JWTTokenExtractionException adEx,  WebRequest request) {
         return createErrorResponse(adEx, "414",  request);
     }
 
@@ -309,7 +314,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = JWTTokenExpiredException.class)
-    public ResponseEntity<Object> JWTTokenExpiredException(JWTTokenExpiredException adEx,  WebRequest request) {
+    public ResponseEntity<Object> jwtTokenExpiredException(JWTTokenExpiredException adEx,  WebRequest request) {
         return createErrorResponse(adEx, "415", request);
     }
 
@@ -320,7 +325,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = JWTTokenSubjectException.class)
-    public ResponseEntity<Object> JWTTokenSubjectException(JWTTokenSubjectException adEx,  WebRequest request) {
+    public ResponseEntity<Object> jwtTokenSubjectException(JWTTokenSubjectException adEx,  WebRequest request) {
         return createErrorResponse(adEx,"416",  request);
     }
 
@@ -331,7 +336,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = JWTInvalidSignatureException.class)
-    public ResponseEntity<Object> JWTInvalidSignatureException(JWTInvalidSignatureException adEx,  WebRequest request) {
+    public ResponseEntity<Object> jwtInvalidSignatureException(JWTInvalidSignatureException adEx,  WebRequest request) {
         return createErrorResponse(adEx,  "417",  request);
     }
 
@@ -342,7 +347,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = JWTUnDefinedException.class)
-    public ResponseEntity<Object> JWTUnDefinedException(JWTUnDefinedException adEx,  WebRequest request) {
+    public ResponseEntity<Object> jwtUnDefinedException(JWTUnDefinedException adEx,  WebRequest request) {
         return createErrorResponse(adEx,  "429",  request);
     }
 
@@ -623,8 +628,10 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
      * @param e
      */
     private void logException(String status, Throwable e) {
-        log.trace(getStackTraceAsString(e));
-        log.info("2|EH|TIME=00|STATUS=Error: {}|CLASS={}|",status, e.toString());
+        String msg = getStackTraceAsString(e);
+        log.trace(msg);
+        msg = e.getMessage();
+        log.info("2|EH|TIME=00|STATUS=Error: {}|CLASS={}|",status, msg);
     }
 
     /**

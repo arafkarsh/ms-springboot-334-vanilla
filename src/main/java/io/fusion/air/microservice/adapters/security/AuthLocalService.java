@@ -16,18 +16,19 @@
 package io.fusion.air.microservice.adapters.security;
 
 // Custom
+import io.fusion.air.microservice.domain.exceptions.SecurityException;
 import io.fusion.air.microservice.domain.models.auth.Token;
 import io.fusion.air.microservice.security.CryptoKeyGenerator;
-import io.fusion.air.microservice.security.JsonWebToken;
 import io.fusion.air.microservice.security.TokenManager;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 // Spring
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 // Java
 import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -43,18 +44,14 @@ public class AuthLocalService {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
 
-    @Autowired
-    private ServiceConfiguration serviceConfig;
-    private String serviceName;
+    // Autowired using Constructor
+    private final ServiceConfiguration serviceConfig;
 
-    @Autowired
-    private JsonWebToken jsonWebToken;
+    // Autowired using Constructor
+    private final CryptoKeyGenerator cryptoKeys;
 
-    @Autowired
-    private CryptoKeyGenerator cryptoKeys;
-
-    @Autowired
-    private TokenManager tokenManager;
+    // Autowired using Constructor
+    private final TokenManager tokenManager;
 
     @Value("${server.token.auth.expiry:300000}")
     private long tokenAuthExpiry;
@@ -62,12 +59,24 @@ public class AuthLocalService {
     @Value("${server.token.refresh.expiry:1800000}")
     private long tokenRefreshExpiry;
 
+    /**
+     * Autowired using Constructor
+     * @param serviceCfg
+     * @param crypto
+     * @param tm
+     */
+    public  AuthLocalService(ServiceConfiguration serviceCfg,
+                             CryptoKeyGenerator crypto, TokenManager tm ) {
+        serviceConfig = serviceCfg;
+        cryptoKeys = crypto;
+        tokenManager = tm;
+    }
 
-    public HashMap<String,String> getPublicKey() throws Exception {
+    public Map<String,String> getPublicKey() throws SecurityException {
         cryptoKeys.setKeyFiles(getCryptoPublicKeyFile(), getCryptoPrivateKeyFile())
                 .readRSAKeyFiles();
         // Send the Token in the Body (This is NOT Required and ONLY for Testing Purpose)
-        HashMap<String,String> data = new HashMap<String,String>();
+        HashMap<String,String> data = new HashMap<>();
         data.put("type", "Public-Key");
         data.put("format", cryptoKeys.getPublicKey().getFormat());
         data.put("key", cryptoKeys.getPublicKeyPEMFormat());
@@ -97,8 +106,9 @@ public class AuthLocalService {
      * @param password
      * @return
      */
-    public HashMap<String, String> authenticateUser(String username, String password) {
+    public Map<String, String> authenticateUser(String username, String password) {
         // Validate the User ID & Password with DB
+        log.debug("Authenticate user with credentials {} ", username);
         // .....
         // If Validation is Successful then Create the Tokens (Auth & Refresh Tokens)
         HttpHeaders headers = new HttpHeaders();
@@ -109,7 +119,7 @@ public class AuthLocalService {
         return tokens;
     }
 
-    public Token refreshToken(String refreshToken) {
-        return null;
+    public Token refreshToken(String refreshToken) throws NoSuchMethodException {
+        throw new NoSuchMethodException("Refresh Token "+refreshToken);
     }
 }

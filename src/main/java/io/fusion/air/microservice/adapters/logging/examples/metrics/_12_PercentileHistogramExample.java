@@ -49,23 +49,23 @@ public class _12_PercentileHistogramExample {
     private final DistributionSummary summaryWithHistogram;
     private final MeterRegistry meterRegistry;
 
-    public _12_PercentileHistogramExample(MeterRegistry _meterRegistry) {
-        meterRegistry = _meterRegistry;
+    public _12_PercentileHistogramExample(MeterRegistry registry) {
+        meterRegistry = registry;
         this.timerWithPercentiles = Timer.builder("fusion.air.example.12.percentileHistogram.timer")
                 .publishPercentileHistogram()
                 .publishPercentiles(0.5, 0.9, 0.95) // Track 50th, 90th, and 95th percentiles
                 .description("Response time with percentiles and histogram support")
-                .register(meterRegistry);;
+                .register(getMeterRegistry());;
 
         summaryWithHistogram = DistributionSummary.builder("fusion.air.example.12.percentileHistogram.ds")
                 .publishPercentileHistogram()
                 .publishPercentiles(0.75, 0.9, 0.99) // Track 75th, 90th, and 99th percentiles
                 .description("Request size distribution with percentiles and histogram")
-                .register(meterRegistry);
+                .register(getMeterRegistry());
     }
 
-    public void record(int diff) {
-        timerWithPercentiles.record(() -> {
+    public void recordData(int diff) {
+        getTimerWithPercentiles().record(() -> {
             // Simulate an operation whose duration is being measured
             try {
                 Thread.sleep(100+diff);
@@ -77,7 +77,7 @@ public class _12_PercentileHistogramExample {
 
     public void printStats() {
         // Print all registered meters and their measurements
-        UtilsMeter.printStats(meterRegistry);
+        UtilsMeter.printStats(getMeterRegistry());
     }
 
     public static void main(String[] args) {
@@ -86,7 +86,7 @@ public class _12_PercentileHistogramExample {
 
         _12_PercentileHistogramExample ex = new _12_PercentileHistogramExample(meterRegistry);
         for(int x=0; x<10; x++) {
-            ex.record(getRandomNumber(0, 10) * 10 );
+            ex.recordData(getRandomNumber(0, 10) * 10 );
         }
         ex.printStats();
     }
@@ -94,5 +94,17 @@ public class _12_PercentileHistogramExample {
     public static int getRandomNumber(int min, int max) {
         Random random = new Random();
         return random.nextInt(max - min + 1) + min; // Generate random number between min and max
+    }
+
+    public Timer getTimerWithPercentiles() {
+        return timerWithPercentiles;
+    }
+
+    public DistributionSummary getSummaryWithHistogram() {
+        return summaryWithHistogram;
+    }
+
+    public MeterRegistry getMeterRegistry() {
+        return meterRegistry;
     }
 }

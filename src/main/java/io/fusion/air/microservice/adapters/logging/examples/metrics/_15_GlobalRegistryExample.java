@@ -27,7 +27,6 @@
  */
 package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.micrometer.prometheusmetrics.PrometheusConfig;
@@ -42,10 +41,12 @@ import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
  */
 public class _15_GlobalRegistryExample {
 
+    /**
+     * Access the global registry via the Metrics class
+     *  MeterRegistry globalRegistry = Metrics.globalRegistry;
+     * @param args
+     */
     public static void main(String[] args) {
-        // Access the global registry via the Metrics class
-        MeterRegistry globalRegistry = Metrics.globalRegistry;
-
         // Create and add a SimpleMeterRegistry
         SimpleMeterRegistry simpleRegistry = new SimpleMeterRegistry();
         Metrics.globalRegistry.add(simpleRegistry);  // OR Metrics.addRegistry(simpleRegistry);

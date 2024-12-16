@@ -38,6 +38,9 @@ import io.micrometer.core.instrument.MeterRegistry;
  */
 public class UtilsMeter {
 
+    private UtilsMeter() {
+    }
+
     /**
      *  Print all registered meters and their measurements
      * @param meterRegistry

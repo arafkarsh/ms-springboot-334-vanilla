@@ -47,12 +47,12 @@ public class TimedObject {
 
     /**
      * Creates Timed Object
-     * @param _count
-     * @param _totalTime
+     * @param cnt
+     * @param time
      */
-    public TimedObject(int _count, long _totalTime) {
-        count = _count;
-        totalTime = _totalTime;
+    public TimedObject(int cnt, long time) {
+        count = cnt;
+        totalTime = time;
     }
 
     /**
@@ -63,8 +63,8 @@ public class TimedObject {
         return count;
     }
 
-    public void setCount(int _count) {
-        count = _count;
+    public void setCount(int cnt) {
+        count = cnt;
     }
 
     /**
@@ -75,8 +75,8 @@ public class TimedObject {
         return totalTime;
     }
 
-    public void setTotalTime(long _totalTime) {
-        totalTime = _totalTime;
+    public void setTotalTime(long time) {
+        totalTime = time;
     }
 
     /**

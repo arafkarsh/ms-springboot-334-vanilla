@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.adapters.security;
-
+// Custom
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
-
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+// Jakarta
+// Spring
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,11 +26,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
+// Java
 import java.util.Arrays;
 
 /**
@@ -46,8 +39,17 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfiguration {
-    @Autowired
-    private ServiceConfiguration serviceConfig;
+
+    // Autowired using the constructor
+    private final ServiceConfiguration serviceConfig;
+
+    /**
+     * Autowired using the constructor
+     * @param serviceCfg
+     */
+    public WebSecurityConfiguration(ServiceConfiguration serviceCfg) {
+        serviceConfig = serviceCfg;
+    }
 
     /**
      * Configures the security filter chain for HTTP requests, applying various security measures
@@ -155,6 +157,7 @@ public class WebSecurityConfiguration {
         // Clickjacking is a malicious technique of tricking web users into revealing confidential information or taking
         // control of their interaction with the website, by loading your website in an iframe of another website and
         // then overlaying it with additional content.
+        //                 .frameOptions(frameOptions -> frameOptions.deny())
         http.headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.deny())
                 .contentSecurityPolicy(csp -> csp
@@ -203,7 +206,7 @@ public class WebSecurityConfiguration {
      */
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/images/**", "/js/**", "/webjars/**");
+        return web -> web.ignoring().requestMatchers("/images/**", "/js/**", "/webjars/**");
     }
 
     /**
@@ -220,6 +223,7 @@ public class WebSecurityConfiguration {
     /**
      * ONLY For Local Testing with Custom CSRF Headers in Swagger APi Docs
      */
+    /**
     private static class CsrfTokenResponseHeaderBindingFilter extends OncePerRequestFilter {
         @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -231,5 +235,6 @@ public class WebSecurityConfiguration {
             filterChain.doFilter(request, response);
         }
     }
+     */
 }
 
