@@ -53,19 +53,21 @@ public class CountryFilter implements Filter {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
 
+    private static final String COOKIE = "Set-Cookie";
+
     @Override
-    public void doFilter(ServletRequest _servletRequest, ServletResponse _servletResponse, FilterChain _filterChain)
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
 
-        HttpServletRequest request = (HttpServletRequest) _servletRequest;
-        HttpServletResponse response = (HttpServletResponse) _servletResponse;
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         HttpHeaders headers = Utils.createSecureCookieHeaders("CNT-RID", MDC.get("ReqId"), 300);
-        response.addHeader("Set-Cookie", headers.getFirst("Set-Cookie"));
+        response.addHeader(COOKIE, headers.getFirst(COOKIE));
+        Object o =  headers.getFirst(COOKIE);
+        log.debug("<[4]>>> Country Filter Called => {} ", o);
 
-        System.out.println("<[4]>>> Country Filter Called => "+ headers.getFirst("Set-Cookie"));
-
-        _filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 }
 

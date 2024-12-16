@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.adapters.filters;
-
+// Custom
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
+// Spring
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Component;
-
+import org.springframework.web.filter.OncePerRequestFilter;
+// Java
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.filter.OncePerRequestFilter;
-
+import org.slf4j.Logger;
+import org.slf4j.MDC;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.UUID;
@@ -57,31 +56,38 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class SecurityFilter extends OncePerRequestFilter {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
-    @Autowired
-    private ServiceConfiguration serviceConfig;
+
+    // Autowired using constructor
+    private final ServiceConfiguration serviceConfig;
+
+    private static final String COOKIE = "Set-Cookie";
+
+    /**
+     * Autowired using constructor
+     * @param serviceCfg
+     */
+    public SecurityFilter(ServiceConfiguration serviceCfg) {
+        serviceConfig = serviceCfg;
+    }
 
     /**
      * Security Filter To Check Http Firewall status and throw exception if the Firewall rejects the request.
      *
-     * @param _servletRequest
-     * @param _servletResponse
-     * @param _filterChain
+     * @param request
+     * @param response
+     * @param filterchain
      * @throws ServletException
      * @throws IOException
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest _servletRequest, HttpServletResponse _servletResponse,
-                                    FilterChain _filterChain) throws ServletException, IOException {
-
-        HttpServletRequest request = (HttpServletRequest) _servletRequest;
-        HttpServletResponse response = (HttpServletResponse) _servletResponse;
-
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterchain) throws ServletException, IOException {
         try {
             HttpHeaders headers = Utils.createSecureCookieHeaders("JSESSIONID", UUID.randomUUID().toString(), 3000);
-            // System.out.println("<[2]>>> Security Filter Called => "+ headers.getFirst("Set-Cookie"));
-            log.info("1|SF|TIME=|STATUS=INIT|CLASS=| Security Filter invoked "+headers.getFirst("Set-Cookie"));
-            _filterChain.doFilter(request, response);
-            response.setHeader("Set-Cookie", headers.getFirst("Set-Cookie"));
+            Object o = headers.getFirst(COOKIE);
+            log.info("1|SF|TIME=|STATUS=INIT|CLASS=| Security Filter invoked {} ", o);
+            filterchain.doFilter(request, response);
+            response.setHeader(COOKIE, headers.getFirst(COOKIE));
             // Return the Headers
             HeaderManager.returnHeaders(request, response);
         } catch (RequestRejectedException e ) {

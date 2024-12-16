@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.adapters.external;
-
+// Java
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.util.Arrays.asList;
 import static org.slf4j.LoggerFactory.getLogger;
-
 import org.slf4j.Logger;
+// Spring
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
+// Faster XML
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
  *
@@ -73,7 +71,7 @@ public class RestClientService  extends RestTemplate {
      * Returns Converters 2
      * @return
      */
-    public List<HttpMessageConverter<?>> getDataConverters2() {
+    public List<HttpMessageConverter<Object>> getDataConverters2() {
         return asList(
                 new MappingJackson2HttpMessageConverter(
                         getObjectMapper())
@@ -94,7 +92,6 @@ public class RestClientService  extends RestTemplate {
      * Return HttpComponentsClientHttpRequestFactory
      * Spring throws Error saying Apache HttpClient Not Found1!!!!!
      * @return
-     * @deprecated
      */
     public HttpComponentsClientHttpRequestFactory getHttpFactory() {
         log.debug("Initialized RestClientService.... setRequestFactory()... 2");

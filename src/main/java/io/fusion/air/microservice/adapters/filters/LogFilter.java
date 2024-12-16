@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.adapters.filters;
-
+// Custom
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.utils.CPU;
-import org.slf4j.Logger;
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
+// Spring
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
+// Java
+import org.slf4j.Logger;
+import org.slf4j.MDC;
 import jakarta.servlet.*;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -44,21 +43,30 @@ public class LogFilter implements Filter {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
 
-    @Autowired
-    private ServiceConfiguration serviceConfig;
+    // Autowired using Constructor
+    private final ServiceConfiguration serviceConfig;
+
+    /**
+     * Autowired using Constructor
+     * @param serviceCfg
+     */
+    public LogFilter(ServiceConfiguration serviceCfg) {
+        serviceConfig = serviceCfg;
+    }
 
     @Override
-    public void doFilter(ServletRequest _servletRequest, ServletResponse _servletResponse, FilterChain _filterChain)
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         String name= (serviceConfig != null) ? serviceConfig.getServiceName(): "NotDefined";
         MDC.put("Service", name);
 
-        HttpServletRequest request = (HttpServletRequest) _servletRequest;
-        HttpServletResponse response = (HttpServletResponse) _servletResponse;
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        log.info("1|LF|TIME=|STATUS=INIT|CLASS={}", CPU.printCpuStats());
+        String s = CPU.printCpuStats();
+        log.info("1|LF|TIME=|STATUS=INIT|CLASS={}", s);
 
-        _filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
 
     }
 }
