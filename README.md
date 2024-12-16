@@ -157,16 +157,13 @@ run prod
  mvn spring-boot:run -Dspring-boot.run.profiles=prod
 ```
 
-3. Microsoft Windows
-- Profile = Development
+3. Microsoft Windows - Profiles (dev, staging, or prod)
 ```aiignore
 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=dev  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
 ```
-- Profile = Staging
 ```aiignore
 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=staging  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
 ```
-- Profile = Production
 ```aiignore
 java -jar target/ms-vanilla-service-*-spring-boot.jar --spring.profiles.active=prod  -Djava.security.manager=java.lang.SecurityManager -Djava.security.policy=./vanilla.policy
 ```
