@@ -20,18 +20,13 @@ import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.utils.Utils;
 // Spring
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 // Java
 import jakarta.validation.ConstraintViolationException;
 import java.util.*;
@@ -56,19 +51,26 @@ public class InputValidatorAdvice {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
 
-    // ServiceConfiguration
-    @Autowired
+    // Autowired using Constructor
     private ServiceConfiguration serviceConfig;
 
     /**
+     * Autowired using Constructor
+     * @param serviceCfg
+     */
+    public InputValidatorAdvice(ServiceConfiguration serviceCfg) {
+        serviceConfig = serviceCfg;
+    }
+
+    /**
      * Validating Complex Object Rules
-     * @param _ex
-     * @param _request
+     * @param ex
+     * @param request
      * @return
      */
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException _ex, WebRequest _request) {
-        List<String> errors = _ex.getBindingResult()
+    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, WebRequest request) {
+        List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(error -> error.getField() + " | " + error.getDefaultMessage())
@@ -78,13 +80,13 @@ public class InputValidatorAdvice {
 
     /**
      * Validating Method Parameters
-     * @param _ex
-     * @param _request
+     * @param ex
+     * @param request
      * @return
      */
     @ExceptionHandler(value = ConstraintViolationException.class)
-    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException _ex,  WebRequest _request) {
-        List<String> errors = _ex.getConstraintViolations()
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex,  WebRequest request) {
+        List<String> errors = ex.getConstraintViolations()
                 .stream()
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
                 .collect(Collectors.toList());
@@ -110,11 +112,11 @@ public class InputValidatorAdvice {
 
     /**
      * Log Time with Input Validation Errors
-     * @param _startTime
-     * @param _status
+     * @param startTime
+     * @param status
      */
-    private void logTime(long _startTime, String _status) {
-        long timeTaken=System.currentTimeMillis() - _startTime;
-        log.info("2|IV|TIME={} ms|{}|CLASS=|", timeTaken, _status);
+    private void logTime(long startTime, String status) {
+        long timeTaken=System.currentTimeMillis() - startTime;
+        log.info("2|IV|TIME={} ms|{}|CLASS=|", timeTaken, status);
     }
 }

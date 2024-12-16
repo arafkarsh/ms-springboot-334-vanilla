@@ -19,9 +19,9 @@ import io.fusion.air.microservice.adapters.logging.MetricsCounter;
 import io.fusion.air.microservice.adapters.logging.MetricsPath;
 import io.fusion.air.microservice.domain.entities.order.CountryEntity;
 import io.fusion.air.microservice.domain.entities.order.CountryGeoEntity;
+import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.domain.ports.services.CountryService;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.controllers.AbstractController;
 // Swagger
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 // Spring
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -72,6 +71,8 @@ public class CountryControllerImpl extends AbstractController {
 
 	// Autowired using the Constructor
 	private CountryService countryService;
+	private String serviceName;
+
 
 	private static final String DATA_FETCH = "Data Fetch Success!";
 
@@ -81,6 +82,7 @@ public class CountryControllerImpl extends AbstractController {
 	 */
 	public CountryControllerImpl(CountryService countrySvc) {
 		countryService = countrySvc;
+		serviceName = super.name();
 	}
 
 	/**
@@ -99,10 +101,9 @@ public class CountryControllerImpl extends AbstractController {
     })
 	@GetMapping("/geo/page/{page}/size/{size}")
 	@MetricsCounter(endpoint = "/geo/page/size")
-	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchCountriesByPageAndSize(@PathVariable("page") int page,
-													@PathVariable("size") int size) throws Exception {
-		log.debug("|"+name()+"|Request to Get All Countries by page no {} & Size =  {}", page, size);
+													@PathVariable("size") int size) throws AbstractServiceException {
+		log.debug("| {} |Request to Get All Countries by page no {} & Size =  {}", serviceName, page, size);
 
 		Page<CountryGeoEntity> countries = countryService.getAllGeoCountries(page, size);
 		StandardResponse stdResponse = createSuccessResponse(DATA_FETCH);
@@ -126,10 +127,9 @@ public class CountryControllerImpl extends AbstractController {
 	})
 	@GetMapping("/geo/all/")
 	@MetricsCounter(endpoint = "/geo/all")
-	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchAllGeoCountries(HttpServletRequest request,
-														   HttpServletResponse response) throws Exception {
-		log.debug("|"+name()+"|Request to get All Countries ... ");
+														   HttpServletResponse response) throws AbstractServiceException {
+		log.debug("| {} |Request to get All Countries ... ",serviceName);
 		Page<CountryGeoEntity> countries = countryService.getAllGeoCountries();
 		StandardResponse stdResponse = createSuccessResponse(DATA_FETCH);
 		stdResponse.setPayload(countries);
@@ -152,10 +152,9 @@ public class CountryControllerImpl extends AbstractController {
 	})
 	@GetMapping("/all/")
 	@MetricsCounter(endpoint = "/all")
-	@ResponseBody
 	public ResponseEntity<StandardResponse> fetchAlCountries(HttpServletRequest request,
-														   HttpServletResponse response) throws Exception {
-		log.debug("|"+name()+"|Request to get All Countries ... ");
+														   HttpServletResponse response) throws AbstractServiceException {
+		log.debug("| {} |Request to get All Countries ... ", serviceName);
 		List<CountryEntity> countries = countryService.getAllCountries();
 		StandardResponse stdResponse = createSuccessResponse(DATA_FETCH);
 		stdResponse.setPayload(countries);

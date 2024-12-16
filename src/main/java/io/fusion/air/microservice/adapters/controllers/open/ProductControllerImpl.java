@@ -19,10 +19,10 @@ import io.fusion.air.microservice.adapters.logging.MetricsCounter;
 import io.fusion.air.microservice.adapters.logging.MetricsPath;
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.entities.order.ProductEntity;
+import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.domain.models.order.Product;
 import io.fusion.air.microservice.domain.ports.services.ProductService;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.controllers.AbstractController;
 // Swagger
 import io.fusion.air.microservice.utils.Utils;
@@ -77,20 +77,17 @@ public class ProductControllerImpl extends AbstractController {
 	// Set Logger -> Lookup will automatically determine the class name.
 	private static final Logger log = getLogger(lookup().lookupClass());
 	
-	// @Autowired not required - Constructor based Autowiring
-	private final ServiceConfiguration serviceConfig;
 	private String serviceName;
 	// @Autowired not required - Constructor based Autowiring
 	private final ProductService productServiceImpl;
 
 	/**
 	 * Constructor based Autowiring
-	 * @param _serviceConfig
-	 * @param _productServiceImpl
+	 * @param productSvc
 	 */
-	public ProductControllerImpl(ServiceConfiguration _serviceConfig, ProductService _productServiceImpl) {
-		serviceConfig = _serviceConfig;
-		productServiceImpl = _productServiceImpl;
+	public ProductControllerImpl(ProductService productSvc) {
+		productServiceImpl = productSvc;
+		serviceName = super.name();
 	}
 
 	/**
@@ -107,9 +104,9 @@ public class ProductControllerImpl extends AbstractController {
 	})
 	@PostMapping("/create")
 	@MetricsCounter(endpoint = "/create")
-	public ResponseEntity<StandardResponse> createProduct(@Valid @RequestBody Product _product) {
-		log.debug("|"+name()+"|Request to Create Product... "+_product);
-		ProductEntity prodEntity = productServiceImpl.createProduct(_product);
+	public ResponseEntity<StandardResponse> createProduct(@Valid @RequestBody Product product) {
+		log.debug("| {} |Request to Create Product... {} ", serviceName, product);
+		ProductEntity prodEntity = productServiceImpl.createProduct(product);
 		StandardResponse stdResponse = createSuccessResponse("Product Created");
 		stdResponse.setPayload(prodEntity);
 		return ResponseEntity.ok(stdResponse);
@@ -131,12 +128,11 @@ public class ProductControllerImpl extends AbstractController {
     })
 	@GetMapping("/status/{productId}")
 	@MetricsCounter(endpoint = "/status")
-	@ResponseBody
-	public ResponseEntity<StandardResponse> getProductStatus(@PathVariable("productId") UUID _productId,
+	public ResponseEntity<StandardResponse> getProductStatus(@PathVariable("productId") UUID productId,
 														HttpServletRequest request,
-														HttpServletResponse response) throws Exception {
-		log.debug("|"+name()+"|Request to Get Product Status.. "+_productId);
-		ProductEntity product = productServiceImpl.getProductById(_productId);
+														HttpServletResponse response) throws AbstractServiceException {
+		log.debug("| {} |Request to Get Product Status. {} ", serviceName, productId);
+		ProductEntity product = productServiceImpl.getProductById(productId);
 		StandardResponse stdResponse = createSuccessResponse("Data Fetch Success!");
 		stdResponse.setPayload(product);
 		return ResponseEntity.ok(stdResponse);
@@ -158,9 +154,8 @@ public class ProductControllerImpl extends AbstractController {
 	})
 	@GetMapping("/all/")
 	@MetricsCounter(endpoint = "/all")
-	@ResponseBody
 	public ResponseEntity<StandardResponse> getAllProducts(HttpServletRequest request,
-														   HttpServletResponse response) throws Exception {
+														   HttpServletResponse response) throws AbstractServiceException {
 		return getAllProducts();
 	}
 
@@ -175,9 +170,8 @@ public class ProductControllerImpl extends AbstractController {
 	})
 	@GetMapping("/all/secured/")
 	@MetricsCounter(endpoint = "/all/secured")
-	@ResponseBody
 	public ResponseEntity<StandardResponse> getAllProductsSecured(HttpServletRequest request,
-														   HttpServletResponse response) throws Exception {
+														   HttpServletResponse response) throws AbstractServiceException {
 		return getAllProducts();
 	}
 
@@ -186,10 +180,10 @@ public class ProductControllerImpl extends AbstractController {
 	 * @return
 	 */
 	private ResponseEntity<StandardResponse> getAllProducts() {
-		log.debug("|"+name()+"|Request to get All Products ... ");
+		log.debug("| {} |Request to get All Products ... ", serviceName);
 		List<ProductEntity> productList = productServiceImpl.getAllProduct();
 		StandardResponse stdResponse = null;
-		log.info("Products List = "+productList.size());
+		log.info("Products List = {} ", productList.size());
 		if(productList == null || productList.isEmpty()) {
 			productList = createFallBackProducts();
 			stdResponse = createSuccessResponse("201","Fallback Data!");
@@ -218,10 +212,10 @@ public class ProductControllerImpl extends AbstractController {
 			@PathVariable("productName")
 			@NotBlank(message = "The Product Name is  required.")
 			@Size(min = 3, max = 32, message = "The length of Product Name must be between 3 and 32 characters.")
-			String _productName) {
-		log.debug("|"+name()+"|Request to Search the Product By Name ... "+_productName);
-		List<ProductEntity> products = productServiceImpl.fetchProductsByName(_productName);
-		StandardResponse stdResponse = createSuccessResponse("Products Found For Search Term = "+_productName);
+			String productName) {
+		log.debug("| {} |Request to Search the Product By Name ...  {} ", serviceName, productName);
+		List<ProductEntity> products = productServiceImpl.fetchProductsByName(productName);
+		StandardResponse stdResponse = createSuccessResponse("Products Found For Search Term = "+productName);
 		stdResponse.setPayload(products);
 		return ResponseEntity.ok(stdResponse);
 	}
@@ -240,10 +234,10 @@ public class ProductControllerImpl extends AbstractController {
 	})
 	@GetMapping("/search/price/{price}")
 	@MetricsCounter(endpoint = "/search/price")
-	public ResponseEntity<StandardResponse> searchProductsByPrice(@PathVariable("price") BigDecimal _price) {
-		log.debug("|"+name()+"|Request to Search the Product By Price... "+_price);
-		List<ProductEntity> products = productServiceImpl.fetchProductsByPriceGreaterThan(_price);
-		StandardResponse stdResponse = createSuccessResponse("Products Found for Price >= "+_price);
+	public ResponseEntity<StandardResponse> searchProductsByPrice(@PathVariable("price") BigDecimal price) {
+		log.debug("| {} |Request to Search the Product By Price... {} ", serviceName, price);
+		List<ProductEntity> products = productServiceImpl.fetchProductsByPriceGreaterThan(price);
+		StandardResponse stdResponse = createSuccessResponse("Products Found for Price >= "+price);
 		stdResponse.setPayload(products);
 		return ResponseEntity.ok(stdResponse);
 	}
@@ -263,7 +257,7 @@ public class ProductControllerImpl extends AbstractController {
 	@GetMapping("/search/active/")
 	@MetricsCounter(endpoint = "/search/active")
 	public ResponseEntity<StandardResponse> searchActiveProducts() {
-		log.debug("|"+name()+"|Request to Search the Active Products ... ");
+		log.debug("| {} |Request to Search the Active Products ... ", serviceName);
 		List<ProductEntity> products = productServiceImpl.fetchActiveProducts();
 		StandardResponse stdResponse = createSuccessResponse("Active Products Found = "+products.size());
 		stdResponse.setPayload(products);
@@ -285,9 +279,9 @@ public class ProductControllerImpl extends AbstractController {
 	})
 	@PutMapping("/deactivate/{productId}")
 	@MetricsCounter(endpoint = "/deactivate")
-	public ResponseEntity<StandardResponse> deActivateProduct(@PathVariable("productId") UUID _productId) {
-		log.debug("|"+name()+"|Request to De-Activate the Product... "+_productId);
-		ProductEntity product = productServiceImpl.deActivateProduct(_productId);
+	public ResponseEntity<StandardResponse> deActivateProduct(@PathVariable("productId") UUID productId) {
+		log.debug("| {} |Request to De-Activate the Product... {} ",serviceName, productId);
+		ProductEntity product = productServiceImpl.deActivateProduct(productId);
 		StandardResponse stdResponse = createSuccessResponse("Product De-Activated");
 		stdResponse.setPayload(product);
 		return ResponseEntity.ok(stdResponse);
@@ -308,9 +302,9 @@ public class ProductControllerImpl extends AbstractController {
 	})
 	@PutMapping("/activate/{productId}")
 	@MetricsCounter(endpoint = "/activate")
-	public ResponseEntity<StandardResponse> activateProduct(@PathVariable("productId") UUID _productId) {
-		log.debug("|"+name()+"|Request to Activate the Product... "+_productId);
-		ProductEntity product = productServiceImpl.activateProduct(_productId);
+	public ResponseEntity<StandardResponse> activateProduct(@PathVariable("productId") UUID productId) {
+		log.debug("| {} |Request to Activate the Product... {} ",serviceName, productId);
+		ProductEntity product = productServiceImpl.activateProduct(productId);
 		StandardResponse stdResponse = createSuccessResponse("Product Activated");
 		stdResponse.setPayload(product);
 		return ResponseEntity.ok(stdResponse);
@@ -331,9 +325,9 @@ public class ProductControllerImpl extends AbstractController {
 	})
 	@PutMapping("/update/")
 	@MetricsCounter(endpoint = "/update")
-	public ResponseEntity<StandardResponse> updateProduct(@Valid @RequestBody ProductEntity _product) {
-		log.debug("|"+name()+"|Request to Update Product Details... "+_product);
-		ProductEntity prodEntity = productServiceImpl.updateProduct(_product);
+	public ResponseEntity<StandardResponse> updateProduct(@Valid @RequestBody ProductEntity product) {
+		log.debug("| {} |Request to Update Product Details... {}  ",serviceName, product);
+		ProductEntity prodEntity = productServiceImpl.updateProduct(product);
 		StandardResponse stdResponse = createSuccessResponse("Product Updated!");
 		stdResponse.setPayload(prodEntity);
 		return ResponseEntity.ok(stdResponse);
@@ -353,9 +347,9 @@ public class ProductControllerImpl extends AbstractController {
 	})
 	@PutMapping("/update/price")
 	@MetricsCounter(endpoint = "/update/price")
-	public ResponseEntity<StandardResponse> updatePrice(@Valid @RequestBody ProductEntity _product) {
-		log.debug("|"+name()+"|Request to Update Product Price... ["+_product);
-		ProductEntity prodEntity = productServiceImpl.updatePrice(_product);
+	public ResponseEntity<StandardResponse> updatePrice(@Valid @RequestBody ProductEntity product) {
+		log.debug("| {} |Request to Update Product Price... {} ",serviceName, product);
+		ProductEntity prodEntity = productServiceImpl.updatePrice(product);
 		StandardResponse stdResponse = createSuccessResponse("Product Price Updated");
 		stdResponse.setPayload(prodEntity);
 		return ResponseEntity.ok(stdResponse);
@@ -375,9 +369,9 @@ public class ProductControllerImpl extends AbstractController {
 	})
 	@PutMapping("/update/details")
 	@MetricsCounter(endpoint = "/update/details")
-	public ResponseEntity<StandardResponse> updateProductDetails(@Valid @RequestBody ProductEntity _product) {
-		log.debug("|"+name()+"|Request to Update Product Details... "+_product);
-		ProductEntity prodEntity = productServiceImpl.updateProductDetails(_product);
+	public ResponseEntity<StandardResponse> updateProductDetails(@Valid @RequestBody ProductEntity product) {
+		log.debug("| {} |Request to Update Product Details... {} ",serviceName, product);
+		ProductEntity prodEntity = productServiceImpl.updateProductDetails(product);
 		StandardResponse stdResponse = createSuccessResponse("Product Details Updated");
 		stdResponse.setPayload(prodEntity);
 		return ResponseEntity.ok(stdResponse);
@@ -398,9 +392,9 @@ public class ProductControllerImpl extends AbstractController {
 	})
 	@DeleteMapping("/{productId}")
 	@MetricsCounter(endpoint = "/delete")
-	public ResponseEntity<StandardResponse> deleteProduct(@PathVariable("productId") UUID _productId) {
-		log.debug("|"+name()+"|Request to Delete Product... "+_productId);
-		productServiceImpl.deleteProduct(_productId);
+	public ResponseEntity<StandardResponse> deleteProduct(@PathVariable("productId") UUID productId) {
+		log.debug("| {} |Request to Delete Product... {} ", serviceName, productId);
+		productServiceImpl.deleteProduct(productId);
 		StandardResponse stdResponse = createSuccessResponse("Product Deleted!");
 		return ResponseEntity.ok(stdResponse);
 	}
@@ -411,7 +405,7 @@ public class ProductControllerImpl extends AbstractController {
 	 * @return
 	 */
 	private List<ProductEntity> createFallBackProducts() {
-		List<ProductEntity> productList = new ArrayList<ProductEntity>();
+		List<ProductEntity> productList = new ArrayList<>();
 		productList.add(new ProductEntity("iPhone 10", "iPhone 10, 64 GB", new BigDecimal(60000), "12345"));
 		productList.add(new ProductEntity("iPhone 11", "iPhone 11, 128 GB", new BigDecimal(70000), "12345"));
 		productList.add(new ProductEntity("Samsung Galaxy s20", "Samsung Galaxy s20, 256 GB", new BigDecimal(80000), "12345"));

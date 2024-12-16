@@ -18,6 +18,7 @@ package io.fusion.air.microservice.adapters.controllers.open;
 import io.fusion.air.microservice.adapters.logging.MetricsCounter;
 import io.fusion.air.microservice.adapters.logging.MetricsPath;
 import io.fusion.air.microservice.domain.entities.order.OrderEntity;
+import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
 import io.fusion.air.microservice.domain.exceptions.BusinessServiceException;
 import io.fusion.air.microservice.domain.exceptions.ControllerException;
 import io.fusion.air.microservice.domain.exceptions.InputDataException;
@@ -26,7 +27,6 @@ import io.fusion.air.microservice.domain.models.order.PaymentDetails;
 import io.fusion.air.microservice.domain.models.order.PaymentStatus;
 import io.fusion.air.microservice.domain.models.order.PaymentType;
 import io.fusion.air.microservice.domain.ports.services.OrderService;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.controllers.AbstractController;
 // Swagger Open API
 import io.swagger.v3.oas.annotations.Operation;
@@ -77,21 +77,17 @@ public class OrderControllerImpl extends AbstractController {
 	// Set Logger -> Lookup will automatically determine the class name.
 	private static final Logger log = getLogger(lookup().lookupClass());
 
-	// @Autowired not required - Constructor based Autowiring
-	private final ServiceConfiguration serviceConfig;
 	private String serviceName;
-
 	// @Autowired not required - Constructor based Autowiring
 	private final OrderService orderService;
 
 	/**
 	 * Constructor for Autowiring
-	 * @param _serviceConfig
-	 * @param _orderService
+	 * @param orderSvc
 	 */
-	public OrderControllerImpl(ServiceConfiguration _serviceConfig,  OrderService _orderService) {
-		serviceConfig = _serviceConfig;
-		orderService = _orderService;
+	public OrderControllerImpl(OrderService orderSvc) {
+		orderService = orderSvc;
+		serviceName = super.name();
 	}
 
 	/**
@@ -110,9 +106,8 @@ public class OrderControllerImpl extends AbstractController {
 	})
 	@GetMapping("/all")
 	@MetricsCounter(endpoint = "/all")
-	@ResponseBody
-	public ResponseEntity<StandardResponse> fetchAllOrders() throws Exception {
-		log.debug("|"+name()+"|Request to Get Order For the Customers ");
+	public ResponseEntity<StandardResponse> fetchAllOrders() throws AbstractServiceException {
+		log.debug("| {} |Request to Get Order For the Customers ", serviceName);
 		List<OrderEntity> orders = orderService.findAll();
 		StandardResponse stdResponse = createSuccessResponse("Order Retrieved. Orders =  "+orders.size());
 		stdResponse.setPayload(orders);
@@ -135,9 +130,8 @@ public class OrderControllerImpl extends AbstractController {
     })
 	@GetMapping("/customer/{customerId}")
 	@MetricsCounter(endpoint = "/customer")
-	@ResponseBody
-	public ResponseEntity<StandardResponse> fetchOrder(@PathVariable("customerId") String customerId) throws Exception {
-		log.debug("|"+name()+"|Request to Get Order For the Customer "+customerId);
+	public ResponseEntity<StandardResponse> fetchOrder(@PathVariable("customerId") String customerId) throws AbstractServiceException {
+		log.debug("| {} |Request to Get Order For the Customer {} ",serviceName, customerId);
 		List<OrderEntity> orders = orderService.findByCustomerId(customerId);
 		StandardResponse stdResponse = createSuccessResponse("Order Retrieved. Orders =  "+orders.size());
 		stdResponse.setPayload(orders);
@@ -158,9 +152,9 @@ public class OrderControllerImpl extends AbstractController {
 	})
 	@PostMapping("/save")
 	@MetricsCounter(endpoint = "/save")
-	public ResponseEntity<StandardResponse> saveOrder(@Valid @RequestBody OrderEntity _order) {
-		log.debug("|"+name()+"|Request to Save Order ... "+_order);
-		OrderEntity order = orderService.save(_order);
+	public ResponseEntity<StandardResponse> saveOrder(@Valid @RequestBody OrderEntity orderInput) {
+		log.debug(" {} |Request to Save Order ... {} ", serviceName, orderInput);
+		OrderEntity order = orderService.save(orderInput);
 		StandardResponse stdResponse = createSuccessResponse("Order Saved!");
 		stdResponse.setPayload(order);
 		return ResponseEntity.ok(stdResponse);
@@ -198,16 +192,16 @@ public class OrderControllerImpl extends AbstractController {
 	)
 	@PostMapping("/processPayments")
 	@MetricsCounter(endpoint = "/processPayments")
-	public ResponseEntity<StandardResponse> processPayments(@RequestBody PaymentDetails _payDetails) {
-		log.debug("|"+name()+"|Request to process Payments... "+_payDetails);
-		if(_payDetails != null) {
-			if(_payDetails.getCardDetails().getExpiryYear() < LocalDate.now().getYear()) {
+	public ResponseEntity<StandardResponse> processPayments(@RequestBody PaymentDetails payDetails) {
+		log.debug("| {} |Request to process Payments... {} ", serviceName, payDetails);
+		if(payDetails != null) {
+			if(payDetails.getCardDetails().getExpiryYear() < LocalDate.now().getYear()) {
 				throw new BusinessServiceException("Invalid Card Expiry Year");
 			}
-			if(_payDetails.getCardDetails().getExpiryMonth() < 1 ||  _payDetails.getCardDetails().getExpiryMonth() >12) {
+			if(payDetails.getCardDetails().getExpiryMonth() < 1 ||  payDetails.getCardDetails().getExpiryMonth() >12) {
 				throw new BusinessServiceException("Invalid Card Expiry Month");
 			}
-			if (_payDetails.getOrderValue() > 0) {
+			if (payDetails.getOrderValue() > 0) {
 				StandardResponse stdResponse = createSuccessResponse("Processing Success!");
 				PaymentStatus ps = new PaymentStatus(
 						"fb908151-d249-4d30-a6a1-4705729394f4",
