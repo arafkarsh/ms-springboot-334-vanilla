@@ -23,59 +23,51 @@ package io.fusion.air.microservice.security;
 public final class Algorithms {
 
     // Message Digest Algorithms Definitions
-    public final static String	MD2				= "MD2";
-    public final static String	MD5				= "MD5";
-    public final static String	SHA_1			= "SHA-1";
-    public final static String	SHA_224			= "SHA-224";
-    public final static String	SHA_256			= "SHA-256";
-    // public final static String	SHA_384			= "SHA-386";
-    public final static String	SHA_512			= "SHA-512";
-    // public final static String	SHA_512_224		= "SHA-512_224";
-    // public final static String	SHA_512_256		= "SHA-512_256";
+    public static final  String	MD2				= "MD2";
+    public static final  String	MD5				= "MD5";
+    public static final String	SHA_1			= "SHA-1";
+    public static final String	SHA_224			= "SHA-224";
+    public static final String	SHA_256			= "SHA-256";
+    public static final String	SHA_512			= "SHA-512";
 
-    public final static String[] ALGOS           = { MD2, MD5, SHA_1, SHA_224, SHA_256, SHA_512 };
+    protected static final String[] ALGOS           = { MD2, MD5, SHA_1, SHA_224, SHA_256, SHA_512 };
 
     // Cipher Algorithms
-    public final static String AES_CBC_NoPadding    = "AES/CBC/NoPadding";
-    public final static String AES_CBC_PKCS5Padding = "AES/CBC/PKCS5Padding";
-    public final static String AES_ECB_NoPadding    = "AES/ECB/NoPadding";
-    public final static String AES_ECB_PKCS5Padding = "AES/ECB/PKCS5Padding";
-    public final static String AES_GCM_NoPadding    = "AES/GCM/NoPadding";
-    public final static String DES_CBC_NoPadding    = "DES/CBC/NoPadding";
-    public final static String DES_CBC_PKCS5Padding = "DES/CBC/PKCS5Padding";
-    public final static String DES_ECB_NoPadding    = "DES/ECB/NoPadding";
-    public final static String DES_ECB_PKCS5Padding = "DES/ECB/PKCS5Padding";
-    public final static String DESede_CBC_NoPadding = "DESede/CBC/NoPadding";
-    public final static String DESede_CBC_PKCS5Padding = "DESede/CBC/PKCS5Padding";
-    public final static String DESede_ECB_NoPadding = "DESede/ECB/NoPadding";
-    public final static String DESede_ECB_PKCS5Padding = "DESede/ECB/PKCS5Padding";
-    public final static String TripleDES_CBC_PKCS5Padding = "TripleDES/CBC/PKCS5Padding";
-    public final static String RSA_ECB_PKCS1Padding = "RSA/ECB/PKCS1Padding";
-    public final static String RSA_ECB_OAEPWithSHA_1AndMGF1Padding = "RSA/ECB/OAEPWithSHA-1AndMGF1Padding";
-    public final static String RSA_ECB_OAEPWithSHA_256AndMGF1Padding = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding";
+    public static final String AES_CBC_NO_PADDING = "AES/CBC/NoPadding";
+    public static final String AES_CBC_PKCS_5_PADDING = "AES/CBC/PKCS5Padding";
+    public static final String AES_ECB_NO_PADDING = "AES/ECB/NoPadding";
+    public static final String AES_ECB_PKCS_5_PADDING = "AES/ECB/PKCS5Padding";
+    public static final String AES_GCM_NO_PADDING = "AES/GCM/NoPadding";
+    public static final String DES_CBC_NO_PADDING = "DES/CBC/NoPadding";
+    public static final String DES_CBC_PKCS_5_PADDING = "DES/CBC/PKCS5Padding";
+    public static final String DES_ECB_NO_PADDING = "DES/ECB/NoPadding";
+    public static final String DES_ECB_PKCS_5_PADDING = "DES/ECB/PKCS5Padding";
+    public static final String DESEDE_CBC_NO_PADDING = "DESede/CBC/NoPadding";
+    public static final String DESEDE_CBC_PKCS_5_PADDING = "DESede/CBC/PKCS5Padding";
+    public static final String DESEDE_ECB_NO_PADDING = "DESede/ECB/NoPadding";
+    public static final String DESEDE_ECB_PKCS_5_PADDING = "DESede/ECB/PKCS5Padding";
+    public static final String TRIPLE_DES_CBC_PKCS_5_PADDING = "TripleDES/CBC/PKCS5Padding";
+    public static final String RSA_ECB_PKCS_1_PADDING = "RSA/ECB/PKCS1Padding";
+    public static final String RSA_ECB_OAEPWITH_SHA_1_AND_MGF_1_PADDING = "RSA/ECB/OAEPWithSHA-1AndMGF1Padding";
+    public static final String RSA_ECB_OAEPWITH_SHA_256_AND_MGF_1_PADDING = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding";
 
     // Algorithm Parameters
     public static final String AES          = "AES";
     public static final String DES          = "DES";
-    public static final String TripleDES    = "TripleDES";
-    public static final String DESede       = "DESede";
-    public static final String DiffieHellman = "DiffieHellman";
+    public static final String TRIPLE_DES = "TripleDES";
+    public static final String DESEDE = "DESede";
+    public static final String DIFFIE_HELLMAN = "DiffieHellman";
     public static final String DSA          = "DSA";
 
-    private String DEFAULT_MD_ALGO            = SHA_512;
-    private String CURRENT_MD_ALGO            = DEFAULT_MD_ALGO;
+    private static final String DEFAULT_MD_ALGO            = SHA_512;
+    private final String currentMdAlgo;
 
     /**
      * Create Algorithms
      */
     public Algorithms() {
-        try {
-            CURRENT_MD_ALGO = (String) System.getProperty("HASHALGO");
-        } catch (Exception ignored) {}
-        if(CURRENT_MD_ALGO == null) {
-            CURRENT_MD_ALGO = DEFAULT_MD_ALGO;
-            // System.out.println("CURRENT_ALGO = "+CURRENT_MD_ALGO);
-        }
+        String algo = System.getProperty("HASHALGO");
+        currentMdAlgo = (algo == null) ? DEFAULT_MD_ALGO : algo ;
     }
 
     /**
@@ -92,7 +84,7 @@ public final class Algorithms {
      * @return int algo_code
      */
     public String getDefaultMessageDigestAlgorithm() {
-        return CURRENT_MD_ALGO;
+        return currentMdAlgo;
     }
 
     /**
@@ -100,6 +92,6 @@ public final class Algorithms {
      * @return
      */
     public String toString() {
-        return CURRENT_MD_ALGO;
+        return currentMdAlgo;
     }
 }

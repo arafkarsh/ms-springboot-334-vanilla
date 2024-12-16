@@ -62,6 +62,6 @@ public class SecretKeyData {
      * @return
      */
     public byte[] getKeyBytesForIVSpecs() {
-        return (encryptAlgo == Algorithms.TripleDES) ? Arrays.copyOf(keyBytes, 8) : keyBytes;
+        return (encryptAlgo == Algorithms.TRIPLE_DES) ? Arrays.copyOf(keyBytes, 8) : keyBytes;
     }
 }

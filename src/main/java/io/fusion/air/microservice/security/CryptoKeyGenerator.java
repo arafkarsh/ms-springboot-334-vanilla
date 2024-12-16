@@ -39,8 +39,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CryptoKeyGenerator {
 
-    public final static String PUBLIC = "PUBLIC";
-    private final static String PRIVATE = "PRIVATE";
+    public static final String PUBLIC = "PUBLIC";
+    public static final String PRIVATE = "PRIVATE";
 
     private PublicKey publicKey;
     private PrivateKey privateKey;
@@ -48,8 +48,8 @@ public class CryptoKeyGenerator {
     private File publicKeyFile;
     private File privateKeyFile;
 
-    private boolean publicKeyFileExists = false;
-    private boolean privateKeyFileExists = false;
+    private boolean publicKeyFileExists;
+    private boolean privateKeyFileExists;
 
     /**
      * Instantiate Generate Crypto Keys
@@ -63,6 +63,8 @@ public class CryptoKeyGenerator {
      *
      */
     public CryptoKeyGenerator() {
+        publicKeyFileExists = false;
+        privateKeyFileExists = false;
     }
 
     /**
@@ -77,13 +79,13 @@ public class CryptoKeyGenerator {
 
     /**
      * Set the Crypto Key File Names
-     * @param _publicKeyFile
-     * @param _privateKeyFile
+     * @param pubKeyFile
+     * @param priKeyFile
      * @return
      */
-    public CryptoKeyGenerator setKeyFiles(String _publicKeyFile, String _privateKeyFile) {
-        publicKeyFile = new File(_publicKeyFile);
-        privateKeyFile = new File(_privateKeyFile);
+    public CryptoKeyGenerator setKeyFiles(String pubKeyFile, String priKeyFile) {
+        publicKeyFile = new File(pubKeyFile);
+        privateKeyFile = new File(priKeyFile);
         return this;
     }
 
@@ -92,8 +94,8 @@ public class CryptoKeyGenerator {
      * @return
      */
     public CryptoKeyGenerator iFPublicPrivateKeyFileNotFound() {
-        publicKeyFileExists = (publicKeyFile == null || !publicKeyFile.exists()) ? false : true;
-        privateKeyFileExists = (privateKeyFile == null || !privateKeyFile.exists()) ? false : true;
+        publicKeyFileExists = (publicKeyFile == null || !publicKeyFile.exists());
+        privateKeyFileExists = (privateKeyFile == null || !privateKeyFile.exists()) ;
         return this;
     }
 
@@ -103,7 +105,7 @@ public class CryptoKeyGenerator {
      * Generate the Public / Private Keys if the File doesnt exists
      */
     public CryptoKeyGenerator createRSAKeyFiles()  {
-        if(!publicKeyFileExists) {
+        if(!isPublicKeyFileExists()) {
             try {
                 generateRSAKeyPair();
             } catch (NoSuchAlgorithmException e) {
@@ -153,8 +155,8 @@ public class CryptoKeyGenerator {
         KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("RSA");
         keyGenerator.initialize(2048);
         KeyPair kp = keyGenerator.genKeyPair();
-        publicKey = (PublicKey) kp.getPublic();
-        privateKey = (PrivateKey) kp.getPrivate();
+        publicKey =  kp.getPublic();
+        privateKey = kp.getPrivate();
         return this;
     }
 
@@ -171,27 +173,19 @@ public class CryptoKeyGenerator {
     /**
      * Write Key to PEM File
      *
-     * @param _key
-     * @param _fileName
-     * @param _description
+     * @param key
+     * @param fileName
+     * @param description
      */
-    public void writePEMFile(Key _key, String _fileName, String _description) {
-        if(_key == null || _fileName == null) {
+    public void writePEMFile(Key key, String fileName, String description) {
+        if(key == null || fileName == null) {
             return;
         }
-        PemObject pemObject = new PemObject(_description, _key.getEncoded());
-        PemWriter pemWriter = null;
-        try {
-            pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(_fileName)));
+        PemObject pemObject = new PemObject(description, key.getEncoded());
+        try (PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(fileName)))) {
             pemWriter.writeObject(pemObject);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if(pemWriter != null) {
-                try {
-                    pemWriter.close();
-                } catch (Exception ignored) {}
-            }
         }
     }
 
@@ -222,28 +216,20 @@ public class CryptoKeyGenerator {
      * Public Key = X.509
      * Private Key = PKCS#8
      *
-     * @param _key
-     * @param _description
+     * @param key
+     * @param description
      * @return
      */
-    public String convertKeyToText(Key _key, String _description){
-        if(_key == null || _description == null) {
+    public String convertKeyToText(Key key, String description){
+        if(key == null || description == null) {
             return "";
         }
         StringWriter stringWriter = new StringWriter();
-        PemObject pemObject = new PemObject(_description, _key.getEncoded());
-        PemWriter pemWriter = null;
-        try {
-            pemWriter = new PemWriter(new PrintWriter(stringWriter));
+        PemObject pemObject = new PemObject(description, key.getEncoded());
+        try (PemWriter pemWriter = new PemWriter(new PrintWriter(stringWriter));) {
             pemWriter.writeObject(pemObject);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if(pemWriter != null) {
-                try {
-                    pemWriter.close();
-                } catch (Exception ignored) {}
-            }
         }
         return stringWriter.toString();
     }
@@ -334,5 +320,13 @@ public class CryptoKeyGenerator {
         priKey = keys.readPrivateKey(new File("privateKey.pem"));
         System.out.println("Private key format: " + priKey.getFormat());
         System.out.println(keys.getPrivateKeyPEMFormat());
+    }
+
+    public boolean isPublicKeyFileExists() {
+        return publicKeyFileExists;
+    }
+
+    public boolean isPrivateKeyFileExists() {
+        return privateKeyFileExists;
     }
 }
