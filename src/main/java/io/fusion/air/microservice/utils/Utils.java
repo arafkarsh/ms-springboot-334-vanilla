@@ -15,7 +15,7 @@
  */
 
 package io.fusion.air.microservice.utils;
-
+// Java
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -25,20 +25,20 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
-
+import org.slf4j.MDC;
+// FasterXML
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+// Spring
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-
+import org.springframework.http.ResponseCookie;
+// Custom
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import org.slf4j.MDC;
-
+// Jakarta
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.ResponseCookie;
 
 /**
  * 
@@ -52,22 +52,22 @@ public final class Utils {
 	/**
 	 * Returns UUID Object from a Byte Array
 	 * Reference: https://www.baeldung.com/java-uuid
-	 * @param _byteArray
+	 * @param byteArray
 	 * @return
 	 */
-	public static UUID getUUID(byte[] _byteArray) {
-		return  UUID.nameUUIDFromBytes(_byteArray);
+	public static UUID getUUID(byte[] byteArray) {
+		return  UUID.nameUUIDFromBytes(byteArray);
 	}
 
 	/**
 	 * Returns UUID Object from a UUID String
 	 * Reference: https://www.baeldung.com/java-uuid
 	 * A UUID represents a 128-bit value (36 Characters long)
-	 * @param _uuid
+	 * @param uuid
 	 * @return
 	 */
-	public static UUID getUUID(String _uuid) {
-		return  UUID.fromString(_uuid);
+	public static UUID getUUID(String uuid) {
+		return  UUID.fromString(uuid);
 	}
 
 	/**
@@ -253,18 +253,18 @@ public final class Utils {
 
 	/***
 	 * 
-	 * @param _object
+	 * @param object
 	 * @return
 	 */
-	public static String toJsonString(Object _object) {
-		if(_object == null) {
+	public static String toJsonString(Object object) {
+		if(object == null) {
 			return "";
 		}
 		try {
 			return new ObjectMapper()
 					.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 					.findAndRegisterModules()
-					.writeValueAsString(_object);
+					.writeValueAsString(object);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -301,6 +301,9 @@ public final class Utils {
 	 */
 	public static class Strings {
 
+		private Strings() {
+		}
+
 		/**
 		 * Returns True if the String is NULL or Empty
 		 * 
@@ -323,7 +326,9 @@ public final class Utils {
 	 *
 	 */
 	public static class Numbers {
-		
+
+		private Numbers() {}
+
 		/**
 		 * Returns True if the Number is an Odd Number
 		 * @param number
@@ -337,14 +342,14 @@ public final class Utils {
 	/**
 	 * Create Cookie
 	 * @param request
-	 * @param _key
-	 * @param _value
+	 * @param key
+	 * @param value
 	 * @deprecated Use createSecureCookie(String _key, String _value)
 	 * @see #createSecureCookie(String, String)
 	 * @return
 	 */
-	public static Cookie createSecureCookie(HttpServletRequest request, String _key, String _value) {
-		Cookie c = new Cookie(_key, _value);
+	public static Cookie createSecureCookie(HttpServletRequest request, String key, String value) {
+		Cookie c = new Cookie(key, value);
 		// c.setDomain(serviceConfig.getServerHost());
 		c.setSecure(true);
 		c.setHttpOnly(true);
@@ -356,19 +361,19 @@ public final class Utils {
 	/**
 	 * Create Cookie
 	 * @param request
-	 * @param _key
-	 * @param _value
-	 * @param _age
+	 * @param key
+	 * @param value
+	 * @param age
 	 * @return
-	 * @deprecated Use createSecureCookie(String _key, String _value)
+	 * @deprecated Use createSecureCookie(String _key, String value)
 	 *  @see #createSecureCookie(String, String, String, int)
 	 */
-	public static Cookie createSecureCookie(HttpServletRequest request, String _key, String _value, int _age) {
-		Cookie c = new Cookie(_key, _value);
+	public static Cookie createSecureCookie(HttpServletRequest request, String key, String value, int age) {
+		Cookie c = new Cookie(key, value);
 		// c.setDomain(serviceConfig.getServerHost());
 		c.setSecure(true);
 		c.setHttpOnly(true);
-		c.setMaxAge(_age);
+		c.setMaxAge(age);
 		c.setPath(request.getRequestURI());
 		return c;
 	}
@@ -376,46 +381,46 @@ public final class Utils {
 	/**
 	 * Create Secure Cookie
 	 *
-	 * @param _key
-	 * @param _value
+	 * @param key
+	 * @param value
 	 * @return
 	 */
-	public static String createSecureCookie(String _key, String _value) {
-		return createSecureCookie( MDC.get("URI"), _key, _value, 3600);
+	public static String createSecureCookie(String key, String value) {
+		return createSecureCookie( MDC.get("URI"), key, value, 3600);
 	}
 
 	/**
 	 * Create Secure Cookie
-	 * @param _key
-	 * @param _value
-	 * @param _age
+	 * @param key
+	 * @param value
+	 * @param age
 	 * @return
 	 */
-	public static String createSecureCookie(String _key, String _value, int _age) {
-		return createSecureCookie( MDC.get("URI"), _key, _value, _age);
+	public static String createSecureCookie(String key, String value, int age) {
+		return createSecureCookie( MDC.get("URI"), key, value, age);
 	}
 	/**
 	 * Create Secure Cookie
 	 *
-	 * @param _path
-	 * @param _key
-	 * @param _value
-	 * @param _age
+	 * @param pth
+	 * @param key
+	 * @param value
+	 * @param age
 	 * @return
 	 */
-	public static String createSecureCookie(String _path, String _key, String _value, int _age) {
-		if(_value == null || _value.isEmpty()) {
-			throw new IllegalArgumentException("Invalid Value for the Cookie: "+_value);
+	public static String createSecureCookie(String pth, String key, String value, int age) {
+		if(value == null || value.isEmpty()) {
+			throw new IllegalArgumentException("Invalid Value for the Cookie: "+value);
 		}
-		if (_value.matches("[\\r\\n]")) {
-			throw new IllegalArgumentException("Invalid characters For the Cookie Value: "+_value);
+		if (value.matches("[\\r\\n]")) {
+			throw new IllegalArgumentException("Invalid characters For the Cookie Value: "+value);
 		}
-		String path = (_path == null) ? "/" : _path;
-		ResponseCookie cookie = ResponseCookie.from(_key, _value)
+		String path = (pth == null) ? "/" : pth;
+		ResponseCookie cookie = ResponseCookie.from(key, value)
 				.httpOnly(true)         // Protects against XSS attacks.
 				.secure(true)           // Cookie will only be sent over HTTPS, not with unsecured HTTP.
 				.path(path)             // Define the path for the cookie.
-				.maxAge(_age)    		// Expire the cookie after X mins.
+				.maxAge(age)    		// Expire the cookie after X mins.
 				.sameSite("Strict")     // Mitigate CSRF attacks by restricting the sending of the cookie to same-site requests only.
 				.build();
 		return cookie.toString();
@@ -424,69 +429,69 @@ public final class Utils {
 	/**
 	 * Returns HttpHeaders with Secure Cookie
 	 *
-	 * @param _key
-	 * @param _value
+	 * @param key
+	 * @param value
 	 * @return
 	 */
-	public static HttpHeaders createSecureCookieHeaders(String _key, String _value) {
-		return createSecureCookieHeaders(null, _key, _value);
+	public static HttpHeaders createSecureCookieHeaders(String key, String value) {
+		return createSecureCookieHeaders(null, key, value);
 	}
 
 	/**
 	 * Returns HttpHeaders with Secure Cookie
 	 *
-	 * @param _key
-	 * @param _value
-	 * @param _age
+	 * @param key
+	 * @param value
+	 * @param age
 	 * @return
 	 */
-	public static HttpHeaders createSecureCookieHeaders(String _key, String _value, int _age) {
-		return createSecureCookieHeaders(null, _key, _value, _age);
-	}
-
-	/**
-	 * Returns HttpHeaders with Secure Cookie
-	 *
-	 * @param headers
-	 * @param _key
-	 * @param _value
-	 * @return
-	 */
-	public static HttpHeaders createSecureCookieHeaders(HttpHeaders headers, String _key, String _value) {
-		return createSecureCookieHeaders(headers, _key, _value, 3600);
+	public static HttpHeaders createSecureCookieHeaders(String key, String value, int age) {
+		return createSecureCookieHeaders(null, key, value, age);
 	}
 
 	/**
 	 * Returns HttpHeaders with Secure Cookie
 	 *
 	 * @param headers
-	 * @param _key
-	 * @param _value
-	 * @param _age
+	 * @param key
+	 * @param value
 	 * @return
 	 */
-	public static HttpHeaders createSecureCookieHeaders(HttpHeaders headers, String _key, String _value, int _age) {
-		return createSecureCookieHeaders(headers,MDC.get("URI"), _key, _value, _age);
+	public static HttpHeaders createSecureCookieHeaders(HttpHeaders headers, String key, String value) {
+		return createSecureCookieHeaders(headers, key, value, 3600);
 	}
 
 	/**
 	 * Returns HttpHeaders with Secure Cookie
 	 *
 	 * @param headers
-	 * @param _path
-	 * @param _key
-	 * @param _value
-	 * @param _age
+	 * @param key
+	 * @param value
+	 * @param age
 	 * @return
 	 */
-	public static HttpHeaders createSecureCookieHeaders(HttpHeaders headers, String _path, String _key, String _value, int _age) {
+	public static HttpHeaders createSecureCookieHeaders(HttpHeaders headers, String key, String value, int age) {
+		return createSecureCookieHeaders(headers,MDC.get("URI"), key, value, age);
+	}
+
+	/**
+	 * Returns HttpHeaders with Secure Cookie
+	 *
+	 * @param headers
+	 * @param path
+	 * @param key
+	 * @param value
+	 * @param age
+	 * @return
+	 */
+	public static HttpHeaders createSecureCookieHeaders(HttpHeaders headers, String path, String key, String value, int age) {
 		if(headers == null) {
 			headers = new HttpHeaders();
 		}
-		if(_path == null) {
-			_path = MDC.get("URI");
+		if(path == null) {
+			path = MDC.get("URI");
 		}
-		headers.add(HttpHeaders.SET_COOKIE, createSecureCookie(_path, _key, _value, _age));
+		headers.add(HttpHeaders.SET_COOKIE, createSecureCookie(path, key, value, age));
 		return headers;
 	}
 
@@ -495,9 +500,9 @@ public final class Utils {
 	 * @param request
 	 * @return
 	 */
-	public static HashMap<String, String> getCookieMap(HttpServletRequest request) {
+	public static Map<String, String> getCookieMap(HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
-		HashMap<String, String> cookieMap = new HashMap<String, String>();
+		HashMap<String, String> cookieMap = new HashMap<>();
 		if(cookies != null) {
 			for(Cookie cookie : cookies) {
 				cookieMap.put(cookie.getName(), cookie.getValue());
@@ -508,30 +513,29 @@ public final class Utils {
 
 	/**
 	 * Create Standard Error Response
-	 * @param _inputErrors
+	 * @param inputErrors
 	 * @param servicePrefix
-	 * @param _httpStatus
-	 * @param _errorCode
-	 * @param _message
+	 * @param httpStatus
+	 * @param errorCode
+	 * @param message
 	 * @return
 	 */
-	public static StandardResponse createErrorResponse(Object _inputErrors, String servicePrefix,
-							 String _errorCode, HttpStatus _httpStatus, String _message) {
+	public static StandardResponse createErrorResponse(Object inputErrors, String servicePrefix,
+							 String errorCode, HttpStatus httpStatus, String message) {
 
 		// Initialize Standard Error Response
 		StandardResponse stdResponse = new StandardResponse();
-		stdResponse.initFailure(servicePrefix + _errorCode, _message);
-		LinkedHashMap<String, Object> payload = new LinkedHashMap<String,Object>();
+		stdResponse.initFailure(servicePrefix + errorCode, message);
+		LinkedHashMap<String, Object> payload = new LinkedHashMap<>();
 
 		// Add Input Errors If Available
-		if(_inputErrors != null) {
-			payload.put("input", _inputErrors);
+		if(inputErrors != null) {
+			payload.put("input", inputErrors);
 		}
-
 		// Add Error Details
-		LinkedHashMap<String,Object> errorData = new LinkedHashMap<String,Object>();
-		errorData.put("code", _httpStatus.value());
-		errorData.put("mesg", _httpStatus.name());
+		LinkedHashMap<String,Object> errorData = new LinkedHashMap<>();
+		errorData.put("code", httpStatus.value());
+		errorData.put("mesg", httpStatus.name());
 		errorData.put("srv", MDC.get("Service"));
 		errorData.put("reqId", MDC.get("ReqId"));
 		errorData.put("http", MDC.get("Protocol"));
@@ -567,7 +571,7 @@ public final class Utils {
 		if(headers != null) {
 			for (String key : headers.keySet()) {
 				List<String> val = headers.get(key);
-				if (val != null && val.size() > 0) {
+				if (val != null && val.isEmpty()) {
 					sb.append(" -H ").append("'").append(key).append(": ");
 					int x = 0;
 					for (String v : val) {
@@ -607,9 +611,7 @@ public final class Utils {
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
-
+	public static void main(String[] args)  {
 		generateUUIDs();
-		// System.out.println("Utils.toJsonString() = "+Utils.toJsonString(new ServiceConfiguration("localhost", 9090)));
 	}
 }
