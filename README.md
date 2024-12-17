@@ -1,5 +1,29 @@
 # Microservice Vanilla Template
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=arafkarsh_ms-springboot-334-vanilla&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=arafkarsh_ms-springboot-334-vanilla) | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=arafkarsh_ms-springboot-334-vanilla&metric=bugs)](https://sonarcloud.io/summary/new_code?id=arafkarsh_ms-springboot-334-vanilla)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=arafkarsh_ms-springboot-334-vanilla&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=arafkarsh_ms-springboot-334-vanilla) | [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=arafkarsh_ms-springboot-334-vanilla&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=arafkarsh_ms-springboot-334-vanilla)
+
+This microservice template offers a range of built-in functionalities. The Quality Gate check fails 
+because the password is encrypted within the application’s properties file, with the encryption key 
+stored externally, outside the application’s context. However, quality standards mandate that 
+passwords should be securely stored in a vault, such as HashiCorp Vault, for enhanced security.
+
+To simplify the demonstration of various features, an encrypted password is utilized for connecting 
+to H2 and PostgreSQL databases. The template includes utilities for encrypting and decrypting 
+passwords, ensuring that the encryption key is securely stored outside the application’s runtime 
+context.
+
+### What the Template Provides out of the box
+
+1. SpringBoot App with Swagger Docs (...adapters.controllers)
+2. Exception Handling with Exception Framework using AOP ( ..adapters.aop)
+3. Log Management using Logback  (...adapters.filters)
+4. Standardized REST Responses (...domain.models.StandardResponse)
+5. Security using JWT Tokens (...adapters.security)
+6. Encrypting Sensitive Data using Encryption Algorithms (...security)
+7. JPA configurations for H2 and PostgreSQL (...server.config)
+8. Observability Using Micrometer, Prometheus and Open Telemetry.
+
 ## Template Tutorials - Java 23, SpringBoot 3.3.4 & Jakarta 10 Series
 1. [Java 23, SpringBoot 3.3.4 & Jakarta 10 — Part 1](https://arafkarsh.medium.com/java-23-springboot-3-3-4-jakarta-10-125bc815d6c1)
 2. [Java 23, SpringBoot 3.3.4: AOP Exception Handling — Part 2](https://arafkarsh.medium.com/java-23-springboot-3-3-4-aop-exception-handling-part-2-e6adc86c8a26)
@@ -18,15 +42,6 @@
 
 ![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Pkg-Structure.jpg)
 
-### What the Template Provides out of the box
-
-1. SpringBoot App with Swagger Docs (...adapters.controllers)
-2. Exception Handling with Exception Framework using AOP ( ..adapters.aop)
-3. Log Management using Logback  (...adapters.filters)
-4. Standardized REST Responses (...domain.models.StandardResponse) 
-5. Security using JWT Tokens (...adapters.security)
-6. Encrypting Sensitive Data using Encryption Algorithms (...security)
-7. JPA configurations for H2 and PostgreSQL (...server.config)
 
 ### Pre-Requisites
 
