@@ -230,7 +230,7 @@ public class CartControllerImpl extends AbstractController {
 															   @PathVariable("cartId") UUID cartId) {
 		String safeCustomerId = HtmlUtils.htmlEscape(customerId);
 		log.debug("| {} |Request to Activate the CartItem item...{}  ",serviceName, cartId);
-		CartEntity product = cartService.activateCartItem(customerId, cartId);
+		CartEntity product = cartService.activateCartItem(safeCustomerId, cartId);
 		StandardResponse stdResponse = createSuccessResponse("CartItem Item Activated");
 		stdResponse.setPayload(product);
 		return ResponseEntity.ok(stdResponse);
