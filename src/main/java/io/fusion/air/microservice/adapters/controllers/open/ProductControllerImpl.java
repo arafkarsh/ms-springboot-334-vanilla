@@ -216,7 +216,7 @@ public class ProductControllerImpl extends AbstractController {
 			@Size(min = 3, max = 32, message = "The length of Product Name must be between 3 and 32 characters.")
 			String productName) {
 		String safeProductName = HtmlUtils.htmlEscape(productName);
-		log.debug("| {} |Request to Search the Product By Name ...  {} ", serviceName, productName);
+		log.debug("| {} |Request to Search the Product By Name ...  {} ", serviceName, safeProductName);
 		List<ProductEntity> products = productServiceImpl.fetchProductsByName(safeProductName);
 		StandardResponse stdResponse = createSuccessResponse("Products Found For Search Term = "+safeProductName);
 		stdResponse.setPayload(products);
