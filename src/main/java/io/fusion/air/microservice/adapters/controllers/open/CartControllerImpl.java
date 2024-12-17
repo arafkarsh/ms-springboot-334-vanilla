@@ -40,6 +40,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 // Java
 import jakarta.validation.Valid;
+import org.springframework.web.util.HtmlUtils;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -126,8 +128,10 @@ public class CartControllerImpl extends AbstractController {
 	@GetMapping("/customer/{customerId}")
 	@MetricsCounter(endpoint = "/customer", tags = {"layer", "ws", "public", "yes"})
 	public ResponseEntity<StandardResponse> fetchCart(@PathVariable("customerId") String customerId) throws AbstractServiceException {
-		log.debug("| {} |Request to Get Cart For the Customer {} ", serviceName, customerId);
-		List<CartEntity> cart = cartService.findByCustomerId(customerId);
+
+		String safeCustomerId = HtmlUtils.htmlEscape(customerId);
+		log.debug("| {} |Request to Get Cart For the Customer {} ", serviceName, safeCustomerId);
+		List<CartEntity> cart = cartService.findByCustomerId(safeCustomerId);
 		StandardResponse stdResponse = createSuccessResponse(CART_RETRIEVED+cart.size());
 		stdResponse.setPayload(cart);
 		return ResponseEntity.ok(stdResponse);
@@ -153,8 +157,9 @@ public class CartControllerImpl extends AbstractController {
 	@MetricsCounter(endpoint = "/customer/price", tags = {"layer", "ws", "public", "yes"})
 	public ResponseEntity<StandardResponse> fetchCartForItems(@PathVariable("customerId") String customerId,
 															  @PathVariable("price") BigDecimal price) throws AbstractServiceException {
-		log.debug("| {} |Request to Get Cart For the Customer {} ",serviceName ,customerId);
-		List<CartEntity> cart = cartService.fetchProductsByPriceGreaterThan(customerId, price);
+		String safeCustomerId = HtmlUtils.htmlEscape(customerId);
+		log.debug("| {} |Request to Get Cart For the Customer {} ",serviceName ,safeCustomerId);
+		List<CartEntity> cart = cartService.fetchProductsByPriceGreaterThan(safeCustomerId, price);
 		StandardResponse stdResponse = createSuccessResponse(CART_RETRIEVED+cart.size());
 		stdResponse.setPayload(cart);
 		return ResponseEntity.ok(stdResponse);
@@ -198,8 +203,9 @@ public class CartControllerImpl extends AbstractController {
 	@MetricsCounter(endpoint = "/deactivate/customer/cartItem", tags = {"layer", "ws", "public", "yes"})
 	public ResponseEntity<StandardResponse> deActivateCartItem(@PathVariable("customerId") String customerId,
 									@PathVariable("cartId") UUID cartId) {
+		String safeCustomerId = HtmlUtils.htmlEscape(customerId);
 		log.debug("| {} |Request to De-Activate the Cart item...{}  ", serviceName, cartId);
-		CartEntity product = cartService.deActivateCartItem(customerId, cartId);
+		CartEntity product = cartService.deActivateCartItem(safeCustomerId, cartId);
 		StandardResponse stdResponse = createSuccessResponse("Cart Item De-Activated");
 		stdResponse.setPayload(product);
 		return ResponseEntity.ok(stdResponse);
@@ -221,6 +227,7 @@ public class CartControllerImpl extends AbstractController {
 	@MetricsCounter(endpoint = "/activate/customer/cartItem", tags = {"layer", "ws", "public", "yes"})
 	public ResponseEntity<StandardResponse> activateCartItem(@PathVariable("customerId") String customerId,
 															   @PathVariable("cartId") UUID cartId) {
+		String safeCustomerId = HtmlUtils.htmlEscape(customerId);
 		log.debug("| {} |Request to Activate the Cart item...{}  ",serviceName, cartId);
 		CartEntity product = cartService.activateCartItem(customerId, cartId);
 		StandardResponse stdResponse = createSuccessResponse("Cart Item Activated");
@@ -245,8 +252,9 @@ public class CartControllerImpl extends AbstractController {
 	@MetricsCounter(endpoint = "/delete/customer/cartItem", tags = {"layer", "ws", "public", "no"})
 	public ResponseEntity<StandardResponse> deleteCartItem(@PathVariable("customerId") String customerId,
 															 @PathVariable("cartId") UUID cartId) {
+		String safeCustomerId = HtmlUtils.htmlEscape(customerId);
 		log.debug("| {} |Request to Delete the Cart item...  {} ",serviceName, cartId);
-		cartService.deleteCartItem(customerId, cartId);
+		cartService.deleteCartItem(safeCustomerId, cartId);
 		StandardResponse stdResponse = createSuccessResponse("Cart Item Deleted");
 		return ResponseEntity.ok(stdResponse);
 	}
