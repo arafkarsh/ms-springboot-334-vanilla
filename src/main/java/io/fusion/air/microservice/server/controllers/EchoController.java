@@ -16,10 +16,10 @@
 package io.fusion.air.microservice.server.controllers;
 
 
+import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
 import io.fusion.air.microservice.domain.exceptions.InputDataException;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import io.fusion.air.microservice.server.config.ServiceHelp;
 import io.fusion.air.microservice.server.models.EchoData;
 import io.fusion.air.microservice.server.models.EchoResponseData;
 import io.fusion.air.microservice.server.service.examples.*;
@@ -29,7 +29,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,35 +60,44 @@ public class EchoController extends AbstractController {
 	// Set Logger -> Lookup will automatically determine the class name.
 	private static final Logger log = getLogger(lookup().lookupClass());
 
-	@Autowired
+	// Autowired using the Constructor
 	private EchoService echoService;
 
-	@Autowired
+	// Autowired using the Constructor
 	private EchoSessionService echoSessionService;
 
-	@Autowired
+	// Autowired using the Constructor
 	private EchoAppService echoAppService;
 
-	@Autowired
+	// Autowired using the Constructor
 	private MyService1 service1;
 
-	@Autowired
+	// Autowired using the Constructor
 	private MyService2 service2;
 
-	@Autowired
+	// Autowired using the Constructor
 	private MyService3 service3;
-	
-	private final String title = "<h1>Welcome to Health Service<h1/>"
-					+ ServiceHelp.NL
-					+"<h3>Copyright (c) COMPANY Pvt Ltd, 2022</h3>"
-					+ ServiceHelp.NL
-					;
-
-
-	@Autowired
-	private ServiceConfiguration serviceConfig;
 	private String serviceName;
 
+	/**
+	 * Autowired using the Constructor
+	 * @param echoService
+	 * @param echoSessionService
+	 * @param echoAppService
+	 * @param service1
+	 * @param service2
+	 * @param service3
+	 */
+	public EchoController(EchoService echoService, EchoSessionService echoSessionService,
+						  EchoAppService echoAppService, MyService1 service1, MyService2 service2, MyService3 service3) {
+		this.echoService = echoService;
+		this.echoSessionService = echoSessionService;
+		this.echoAppService = echoAppService;
+		this.service1 = service1;
+		this.service2 = service2;
+		this.service3 = service3;
+		this.serviceName = super.name();
+	}
 
 	/**
 	 * Get Method Call to Check the Health of the App
@@ -106,11 +114,10 @@ public class EchoController extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/echo")
-	@ResponseBody
-	public ResponseEntity<StandardResponse> getHealth(HttpServletRequest request) throws Exception {
-		log.debug(name()+"|Request to Health of Service... ");
+	public ResponseEntity<StandardResponse> getHealth(HttpServletRequest request) throws AbstractServiceException {
+		log.debug("{} |Request to Health of Service... ", serviceName);
 		StandardResponse stdResponse = createSuccessResponse("Service is OK!");
-		HashMap<String, Object> payload = new LinkedHashMap<String, Object>();
+		HashMap<String, Object> payload = new LinkedHashMap<>();
 		payload.put("requestScope", echoService.getEchoData());
 		payload.put("sessionScope", echoSessionService.getEchoData());
 		payload.put("appScope", echoAppService.getEchoData());
@@ -142,7 +149,7 @@ public class EchoController extends AbstractController {
     })
     @PostMapping("/echo/world")
     public ResponseEntity<StandardResponse> remoteEchoWorld(@RequestBody EchoData echoData) {
-		log.debug(name()+"|Request for Echo ... "+echoData);
+		log.debug("{} |Request for Echo/World ...{} ", serviceName, echoData);
     	if(echoData == null) {
 			throw new InputDataException("Empty EchoData");
 		}
@@ -179,7 +186,7 @@ public class EchoController extends AbstractController {
 	})
 	@PostMapping("/echo")
 	public ResponseEntity<StandardResponse> remoteEcho(@RequestBody EchoData echoData) {
-		log.debug(name()+"|Request for Echo ... "+echoData);
+		log.debug("{} |Request for Echo ... {} ", serviceName, echoData);
 		if(echoData == null) {
 			throw new InputDataException("Empty EchoData");
 		}

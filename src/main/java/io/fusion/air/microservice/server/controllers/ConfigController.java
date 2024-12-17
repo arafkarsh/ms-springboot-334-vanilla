@@ -15,28 +15,27 @@
  */
 package io.fusion.air.microservice.server.controllers;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+// Custom
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
+import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import io.fusion.air.microservice.server.config.ServiceHelp;
+// Swagger API
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+// Spring
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
-
+// Java
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
-
+import org.slf4j.Logger;
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -56,16 +55,19 @@ public class ConfigController extends AbstractController {
 
 	// Set Logger -> Lookup will automatically determine the class name.
 	private static final Logger log = getLogger(lookup().lookupClass());
-	
-	private final String title = "<h1>Welcome to Health Service<h1/>"
-					+ ServiceHelp.NL
-					+"<h3>Copyright (c) COMPANY Pvt Ltd, 2022</h3>"
-					+ ServiceHelp.NL
-					;
 
-	@Autowired
-	private ServiceConfiguration serviceConfig;
-	private String serviceName;
+	// Autowired using the Constructor
+	private final ServiceConfiguration serviceConfig;
+	private final String serviceName;
+
+	/**
+	 * Autowired using the Constructor
+	 * @param serviceCfg
+	 */
+	public ConfigController(ServiceConfiguration serviceCfg) {
+		serviceConfig = serviceCfg;
+		serviceName = super.name();
+	}
 
 	/**
 	 * Show Service Environment
@@ -84,9 +86,8 @@ public class ConfigController extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/env")
-	@ResponseBody
-	public ResponseEntity<StandardResponse> getEnv(HttpServletRequest request) throws Exception {
-		log.info(name()+"|Request to Get Environment Vars Check.. ");
+	public ResponseEntity<StandardResponse> getEnv(HttpServletRequest request) throws AbstractServiceException {
+		log.info("{} |Request to Get Environment Vars Check.. ", serviceName);
 		Map<String, String> sysProps = serviceConfig.systemProperties();
 		StandardResponse stdResponse = createSuccessResponse("System Properties Ready!");
 		stdResponse.setPayload(sysProps);
@@ -109,14 +110,10 @@ public class ConfigController extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/map")
-	@ResponseBody
-	public ResponseEntity<StandardResponse> getConfigMap(HttpServletRequest request) throws Exception {
+	public ResponseEntity<StandardResponse> getConfigMap(HttpServletRequest request) throws AbstractServiceException {
 		StandardResponse stdResponse = createSuccessResponse("Config is Ready!");
-		ObjectMapper om = new ObjectMapper()
-				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-				.findAndRegisterModules();
 		String json = serviceConfig.toJSONString();
-		log.debug(name()+"|Request to Get ServiceConfiguration .1. "+json);
+		log.debug("{} |Request to Get ServiceConfiguration .1. {} ", serviceName, json);
 		stdResponse.setPayload(serviceConfig.getConfigMap());
 		return ResponseEntity.ok(stdResponse);
 	}
@@ -136,13 +133,13 @@ public class ConfigController extends AbstractController {
             content = @Content)
     })
 	@GetMapping("/log")
-    public ResponseEntity<StandardResponse> log() {
-		log.debug(name()+"|Request to Log Level.. ");
-    	log.trace(name()+"|This is TRACE level message");
-        log.debug(name()+"|This is a DEBUG level message");
-        log.info(name()+"|This is an INFO level message");
-        log.warn(name()+"|This is a WARN level message");
-        log.error(name()+"|This is an ERROR level message");
+    public ResponseEntity<StandardResponse> printLogs() {
+		log.debug("{} |Request to Log Level.. ", serviceName);
+    	log.trace("{} |This is TRACE level message", serviceName);
+        log.debug("{} |This is a DEBUG level message", serviceName);
+        log.info("{} |This is an INFO level message", serviceName);
+        log.warn("{} |This is a WARN level message", serviceName);
+        log.error("{} |This is an ERROR level message", serviceName);
 		StandardResponse stdResponse = createSuccessResponse("Check the Log Files!");
 		return ResponseEntity.ok(stdResponse);
     }

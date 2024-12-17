@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.server.controllers;
-
+// Custom
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.exceptions.*;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
@@ -25,15 +25,14 @@ import io.fusion.air.microservice.security.JsonWebToken;
 import io.fusion.air.microservice.security.JsonWebTokenConstants;
 import io.fusion.air.microservice.security.TokenManager;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import io.jsonwebtoken.Claims;
+// Swagger
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+// Spring
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -41,11 +40,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.http.HttpHeaders;
+// Java
 import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.HashMap;
 import java.util.Map;
-
+import org.slf4j.Logger;
+import io.jsonwebtoken.Claims;
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -70,17 +70,34 @@ public class TokenController extends AbstractController {
 	// Set Logger -> Lookup will automatically determine the class name.
 	private static final Logger log = getLogger(lookup().lookupClass());
 
-	@Autowired
+	// Autowired using the Constructor
 	private ServiceConfiguration serviceConfig;
 	private String serviceName;
 
-	@Autowired
+	// Autowired using the Constructor
 	private JsonWebToken jsonWebToken;
 
-	@Autowired
+	// Autowired using the Constructor
 	private CryptoKeyGenerator cryptoKeys;
-	@Autowired
+	// Autowired using the Constructor
 	private TokenManager tokenManager;
+
+	/**
+	 * Autowired using the Constructor
+	 * @param serviceConfig
+	 * @param jsonWebToken
+	 * @param cryptoKeys
+	 * @param tokenManager
+	 */
+	public TokenController(ServiceConfiguration serviceConfig, JsonWebToken jsonWebToken,
+						   CryptoKeyGenerator cryptoKeys, TokenManager tokenManager ) {
+		this.serviceConfig = serviceConfig;
+		this.jsonWebToken = jsonWebToken;
+		this.cryptoKeys = cryptoKeys;
+		this.tokenManager = tokenManager;
+		this.serviceName = super.name();
+
+	}
 
 	@Value("${server.token.auth.expiry:300000}")
 	private long tokenAuthExpiry;
@@ -99,14 +116,13 @@ public class TokenController extends AbstractController {
 					content = @Content)
 	})
 	@GetMapping("/publickey")
-	@ResponseBody
-	public ResponseEntity<StandardResponse> getPublicKey(HttpServletRequest request) throws Exception {
-		log.debug(name()+"|Request to Generate Tokens... ");
+	public ResponseEntity<StandardResponse> getPublicKey(HttpServletRequest request) throws AbstractServiceException {
+		log.debug("{} |Request to Generate Tokens... ", serviceName);
 		cryptoKeys.setKeyFiles(getCryptoPublicKeyFile(), getCryptoPrivateKeyFile())
 				.readRSAKeyFiles();
 		StandardResponse stdResponse = createSuccessResponse("Public Key Retrieved!");
 		// Send the Token in the Body (This is NOT Required and ONLY for Testing Purpose)
-		HashMap<String,String> data = new HashMap<String,String>();
+		HashMap<String,String> data = new HashMap<>();
 		data.put("type", "Public-Key");
 		data.put("format", cryptoKeys.getPublicKey().getFormat());
 		data.put("key", cryptoKeys.getPublicKeyPEMFormat());
@@ -153,16 +169,12 @@ public class TokenController extends AbstractController {
             content = @Content)
     })
 	@GetMapping("/refresh")
-	@ResponseBody
-	public ResponseEntity<StandardResponse> generate(HttpServletRequest request) throws Exception {
-		log.debug(name()+"|Request to Generate Refresh Tokens... ");
+	public ResponseEntity<StandardResponse> generate(HttpServletRequest request) throws AbstractServiceException {
+		log.debug("{} |Request to Generate Refresh Tokens... ", serviceName);
 
 		// Step 1:
-		//  final String authToken = getToken(request.getHeader(AuthorizeRequestAspect.AUTH_TOKEN));
 		final String refreshToken = getToken(request.getHeader(AuthorizeRequestAspect.REFRESH_TOKEN));
 		String subject = jsonWebToken.getSubjectFromToken(refreshToken);
-
-		// Claims authTokenClaims = jwtUtil.getAllClaims(authToken);
 		Claims refreshTokenClaims = jsonWebToken.getAllClaims(refreshToken);
 		Map<String, String> tokens = refreshTokens(subject, refreshTokenClaims, refreshTokenClaims);
 
@@ -174,7 +186,7 @@ public class TokenController extends AbstractController {
 		StandardResponse stdResponse = createSuccessResponse("Auth & Refresh Tokens Generated!!!");
 		// Send the Token in the Body (This is NOT Required and ONLY for Testing Purpose)
 		stdResponse.setPayload(allTokens);
-		return new ResponseEntity<StandardResponse>(stdResponse, headers, HttpStatus.OK );
+		return new ResponseEntity<>(stdResponse, headers, HttpStatus.OK );
 	}
 
 	/**

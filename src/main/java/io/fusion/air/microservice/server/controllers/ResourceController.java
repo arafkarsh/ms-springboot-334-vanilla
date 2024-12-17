@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.server.controllers;
-
+// Custom
 import io.fusion.air.microservice.domain.exceptions.ResourceNotFoundException;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+// Swagger
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+// Spring
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
@@ -31,13 +30,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
-
+// Java
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-
-import static java.lang.invoke.MethodHandles.lookup;
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Resource Controller for the Service
@@ -52,13 +47,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 @RequestScope
 @Tag(name = "System - Resources", description = "Static Files / Images / Videos etc")
 public class ResourceController extends AbstractController {
-
-	// Set Logger -> Lookup will automatically determine the class name.
-	private static final Logger log = getLogger(lookup().lookupClass());
-
-	@Autowired
-	private ServiceConfiguration serviceConfig;
-	private String serviceName;
 
 	/**
 	 * Get the Image
@@ -77,7 +65,7 @@ public class ResourceController extends AbstractController {
 	})
 	@GetMapping(value = "/images/{imageName}", produces = MediaType.IMAGE_JPEG_VALUE)
 	public ResponseEntity<InputStreamResource> getImageFiles(HttpServletRequest request, HttpServletResponse response,
-											@PathVariable("imageName") String imageName) throws Exception {
+											@PathVariable("imageName") String imageName) throws ResourceNotFoundException {
 		try {
 			ClassPathResource imageFile = new ClassPathResource("static/images/" + imageName);
 			return ResponseEntity
@@ -106,7 +94,7 @@ public class ResourceController extends AbstractController {
 	})
 	@GetMapping(value = "/video/{videoName}", produces = MediaType.ALL_VALUE)
 	public ResponseEntity<InputStreamResource> getVideoFiles(HttpServletRequest request, HttpServletResponse response,
-															@PathVariable("videoName") String videoName) throws Exception {
+															@PathVariable("videoName") String videoName) throws ResourceNotFoundException {
 		try {
 			ClassPathResource videoFile = new ClassPathResource("static/videos/" + videoName);
 			return ResponseEntity
@@ -135,7 +123,7 @@ public class ResourceController extends AbstractController {
 	})
 	@GetMapping(value = "/files/{fileName}", produces = MediaType.TEXT_HTML_VALUE)
 	public ResponseEntity<InputStreamResource> getHtmlFiles(HttpServletRequest request, HttpServletResponse response,
-										@PathVariable("fileName") String fileName) throws Exception {
+										@PathVariable("fileName") String fileName) throws ResourceNotFoundException {
 		try {
 			ClassPathResource htmlFile = new ClassPathResource("static/files/" + fileName);
 			return ResponseEntity
@@ -153,7 +141,7 @@ public class ResourceController extends AbstractController {
 	 * @return
 	 * @throws Exception
 	 */
-	private ResponseEntity<InputStreamResource> getErrorPage(Exception e) throws Exception {
+	private ResponseEntity<InputStreamResource> getErrorPage(Exception e) throws ResourceNotFoundException {
 		try {
 			ClassPathResource errorFile = new ClassPathResource("static/files/error.html");
 			return ResponseEntity

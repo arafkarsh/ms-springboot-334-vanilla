@@ -60,6 +60,7 @@ public class SecurityController {
 	// Set Logger -> Lookup will automatically determine the class name.
 	private static final Logger log = getLogger(lookup().lookupClass());
 
+
 	/**
 	 * Get Method Call to Convert Plain Text to Encrypted Text of the App
 	 * 
@@ -75,8 +76,8 @@ public class SecurityController {
             content = @Content)
     })
 	@GetMapping("/security/{text}")
-	public ResponseEntity<HashMap<String, String>> encryptText(@PathVariable("text") String _text) throws Exception {
-		log.info(LocalDateTime.now()+"|Request to Encrypt of Service... ");
+	public ResponseEntity<HashMap<String, String>> encryptText(@PathVariable("text") String text) throws SecurityException {
+		log.info("{} |Request to Encrypt of Service... ", LocalDateTime.now());
 		String masterPassword = System.getenv("JASYPT_ENCRYPTOR_PASSWORD");
 
 		if(masterPassword != null) {
@@ -91,14 +92,14 @@ public class SecurityController {
 			textEncryptor.setIvGenerator(new RandomIvGenerator());
 			textEncryptor.setSaltGenerator(new RandomSaltGenerator());
 			out.println("Algorithm Used: "+algo);
-			String encryptedText = textEncryptor.encrypt(_text); // String to encrypt
+			String encryptedText = textEncryptor.encrypt(text); // String to encrypt
 			out.println("Encrypted Text: ENC(" + encryptedText + ")");
 			// Decrypt the text
 			String decryptedText = textEncryptor.decrypt(encryptedText);
 			out.println("Decrypted Text: " + decryptedText);
 			HashMap<String, String> data = new LinkedHashMap<String, String>();
 			data.put("algo", algo);
-			data.put("text", _text);
+			data.put("text", text);
 			data.put("encrypted", encryptedText);
 			return ResponseEntity.ok(data);
 		}

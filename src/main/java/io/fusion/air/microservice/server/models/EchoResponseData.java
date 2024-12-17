@@ -15,11 +15,10 @@
  */
 
 package io.fusion.air.microservice.server.models;
-
+// Java
 import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
+// Custom
 import io.fusion.air.microservice.utils.DateJsonSerializer;
 
 /**
@@ -34,12 +33,11 @@ public class EchoResponseData {
 	
 	@JsonSerialize(using = DateJsonSerializer.class)
 	private LocalDateTime responseTime;
-	
 	private int dayOftheYear;
-	
 	private String greetings;
 	
 	public EchoResponseData() {
+		// Nothing to instantiate
 	}
 	
 	/**
@@ -56,8 +54,7 @@ public class EchoResponseData {
 	 */
 	public EchoResponseData(String wordData, 
 			LocalDateTime responseTime, int dayOftheYear) {
-		this(wordData, LocalDateTime.now(), 
-				LocalDateTime.now().getDayOfYear(), "Good Morning " + wordData);
+		this(wordData, responseTime, dayOftheYear, "Good Morning " + wordData);
 	}	
 	
 	/**
@@ -100,6 +97,14 @@ public class EchoResponseData {
 	 */
 	public int hashCode() {
 		return wordData.hashCode();
+	}
+
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		EchoResponseData erd = (EchoResponseData) o;
+		return this.wordData.equals(erd.wordData);
 	}
 
 	/**

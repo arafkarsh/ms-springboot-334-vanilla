@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.server.models;
-
+// Java
 import java.time.LocalDateTime;
 import java.util.Objects;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
+// Custom
 import io.fusion.air.microservice.utils.DateJsonSerializer;
 import io.fusion.air.microservice.utils.Utils;
+import static io.fusion.air.microservice.utils.Utils.println;
 
 /**
  * 
@@ -45,10 +45,10 @@ public class EchoData {
 	
 	/**
 	 * Echo Constructor
-	 * @param _wordData
+	 * @param wordData
 	 */
-	public EchoData(String _wordData) {
-		this.word = _wordData;
+	public EchoData(String wordData) {
+		this.word = wordData;
 		requestTime = LocalDateTime.now();
 		day = requestTime.getDayOfYear();
 	}
@@ -99,8 +99,7 @@ public class EchoData {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println("Serialize "
-		+Utils.toJsonString(new EchoData("John")));
+		println("Serialize " +Utils.toJsonString(new EchoData("John")));
 	}
 
 }

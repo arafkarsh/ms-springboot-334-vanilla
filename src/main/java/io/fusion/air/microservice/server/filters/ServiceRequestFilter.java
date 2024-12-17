@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.server.filters;
-
+// Java
 import java.util.UUID;
-
 import jakarta.servlet.ServletRequestEvent;
 import jakarta.servlet.ServletRequestListener;
 import jakarta.servlet.annotation.WebListener;
 import jakarta.servlet.http.HttpServletRequest;
-
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import org.slf4j.Logger;
 import org.slf4j.MDC;
+//  Custom
+import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static java.lang.invoke.MethodHandles.lookup;
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * A ServletRequest is defined as coming into scope of a web application 
@@ -63,9 +58,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @WebListener
 public class ServiceRequestFilter implements ServletRequestListener {
 
-	// Set Logger -> Lookup will automatically determine the class name.
-	private static final Logger log = getLogger(lookup().lookupClass());
-
+	// WARNING: DON'T USE CONSTRUCTOR for AUTOWIRING
 	@Autowired
 	private ServiceConfiguration serviceConfig;
 
