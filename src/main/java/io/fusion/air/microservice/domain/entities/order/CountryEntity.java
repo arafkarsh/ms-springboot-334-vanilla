@@ -55,16 +55,16 @@ public class CountryEntity implements Serializable {
 
     /**
      * Create Country
-     * @param _pid
-     * @param _countryNm
-     * @param _countryOnm
-     * @param _countryCd
+     * @param pid
+     * @param countryNm
+     * @param countryOnm
+     * @param countryCd
      */
-    public CountryEntity(int _pid, String _countryNm, String _countryOnm, String _countryCd)  {
-        countryId   = _pid;
-        countryName = _countryNm;
-        countryOfficialName = _countryOnm;
-        countryCode   = _countryCd;
+    public CountryEntity(int pid, String countryNm, String countryOnm, String countryCd)  {
+        countryId   = pid;
+        countryName = countryNm;
+        countryOfficialName = countryOnm;
+        countryCode   = countryCd;
     }
 
     /**

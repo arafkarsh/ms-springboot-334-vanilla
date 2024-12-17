@@ -34,19 +34,19 @@ public class OrderNotes implements Serializable {
 
     /**
      * Create Order Notes
-     * @param _sourceState
-     * @param _targetState
-     * @param _transitionEvent
-     * @param _message
-     * @param _errorMessage
+     * @param sourceState
+     * @param targetState
+     * @param transitionEvent
+     * @param message
+     * @param errorMessage
      */
-    public OrderNotes(String _sourceState, String _targetState,
-                      String _transitionEvent, String _message, String _errorMessage) {
-        this.sourceState        = (_sourceState != null) ? _sourceState : "";
-        this.targetState        = (_targetState != null) ? _targetState : "";
-        this.transitionEvent    = (_transitionEvent != null) ? _transitionEvent : "";
-        this.message            = (_message != null) ? _message : "";
-        this.errorMessage       = (_errorMessage != null) ? _errorMessage : "";
+    public OrderNotes(String sourceState, String targetState,
+                      String transitionEvent, String message, String errorMessage) {
+        this.sourceState        = (sourceState != null) ? sourceState : "";
+        this.targetState        = (targetState != null) ? targetState : "";
+        this.transitionEvent    = (transitionEvent != null) ? transitionEvent : "";
+        this.message            = (message != null) ? message : "";
+        this.errorMessage       = (errorMessage != null) ? errorMessage : "";
     }
 
     /**

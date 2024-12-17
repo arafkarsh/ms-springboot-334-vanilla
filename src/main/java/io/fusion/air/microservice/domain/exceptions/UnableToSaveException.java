@@ -26,27 +26,26 @@ public class UnableToSaveException extends DatabaseException {
 
     /**
      * Unable to Save Exception
-     * @param _msg
-     * @param _e
+     * @param msg
      */
-    public UnableToSaveException(String _msg) {
-        super(_msg);
+    public UnableToSaveException(String msg) {
+        super(msg);
     }
 
     /**
      * Unable to Save Exception
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public UnableToSaveException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.BAD_REQUEST, _e);
+    public UnableToSaveException(String msg, Throwable e) {
+        super(msg, HttpStatus.BAD_REQUEST, e);
     }
 
     /**
      * Unable to Save Exception
-     * @param _e
+     * @param e
      */
-    public UnableToSaveException(Throwable _e) {
-        super("Unable to Save Data!", HttpStatus.BAD_REQUEST, _e);
+    public UnableToSaveException(Throwable e) {
+        super("Unable to Save Data!", HttpStatus.BAD_REQUEST, e);
     }
 }

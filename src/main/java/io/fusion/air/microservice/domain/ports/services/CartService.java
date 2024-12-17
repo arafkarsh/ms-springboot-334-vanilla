@@ -89,24 +89,24 @@ public interface CartService {
 
     /**
      * De Activate the Cart item
-     * @param _cartItem
+     * @param cartItem
      * @return
      */
-    public CartEntity deActivateCartItem(String _customerId, UUID _cartItem);
+    public CartEntity deActivateCartItem(String customerId, UUID cartItem);
 
     /**
      * Activate the Cart item
-     * @param _customerId
-     * @param _cartItem
+     * @param customerId
+     * @param cartItem
      * @return
      */
-    public CartEntity activateCartItem(String _customerId, UUID _cartItem);
+    public CartEntity activateCartItem(String customerId, UUID cartItem);
 
     /**
      * Delete the Cart item (Permanently Deletes the Item)
-     * @param _customerId
-     * @param _cartItem
+     * @param customerId
+     * @param cartItem
      */
-    public void deleteCartItem(String _customerId, UUID _cartItem);
+    public void deleteCartItem(String customerId, UUID cartItem);
 
 }

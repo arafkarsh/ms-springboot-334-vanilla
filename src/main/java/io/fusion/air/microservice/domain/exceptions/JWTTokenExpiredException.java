@@ -27,26 +27,26 @@ public class JWTTokenExpiredException extends SecurityException {
 
     /**
      * JWT Token Expired Exception - FORBIDDEN
-     * @param _msg
+     * @param msg
      */
-    public JWTTokenExpiredException(String _msg) {
-        this(_msg, null);
+    public JWTTokenExpiredException(String msg) {
+        this(msg, null);
     }
 
     /**
      * JWT Token Expired Exception - FORBIDDEN
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public JWTTokenExpiredException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.FORBIDDEN, _e);
+    public JWTTokenExpiredException(String msg, Throwable e) {
+        super(msg, HttpStatus.FORBIDDEN, e);
     }
 
     /**
      * JWT Token Expired Exception - FORBIDDEN
-     * @param _e
+     * @param e
      */
-    public JWTTokenExpiredException(Throwable _e) {
-        super("", HttpStatus.FORBIDDEN, _e);
+    public JWTTokenExpiredException(Throwable e) {
+        super("", HttpStatus.FORBIDDEN, e);
     }
 }

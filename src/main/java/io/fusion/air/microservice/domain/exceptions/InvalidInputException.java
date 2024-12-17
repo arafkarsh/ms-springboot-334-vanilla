@@ -27,24 +27,24 @@ public class InvalidInputException extends BusinessServiceException {
     /**
      * Input Data Exception
      */
-    public InvalidInputException(String _msg) {
-        super(_msg);
+    public InvalidInputException(String msg) {
+        super(msg);
     }
 
     /**
      * Input Data Exception
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public InvalidInputException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.BAD_REQUEST, _e);
+    public InvalidInputException(String msg, Throwable e) {
+        super(msg, HttpStatus.BAD_REQUEST, e);
     }
 
     /**
      * Input Data Exception
-     * @param _e
+     * @param e
      */
-    public InvalidInputException(Throwable _e) {
-        super("Invalid Input!", HttpStatus.BAD_REQUEST, _e);
+    public InvalidInputException(Throwable e) {
+        super("Invalid Input!", HttpStatus.BAD_REQUEST, e);
     }
 }

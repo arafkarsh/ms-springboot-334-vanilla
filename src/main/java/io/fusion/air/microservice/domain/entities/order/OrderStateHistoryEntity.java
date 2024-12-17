@@ -55,23 +55,25 @@ public class OrderStateHistoryEntity extends AbstractBaseEntityWithUUID implemen
     @Column(name = "notes")
     private String notes;
 
-    public OrderStateHistoryEntity() {}
+    public OrderStateHistoryEntity() {
+        // Nothing to instantiate
+    }
 
     /**
      * Create Order State History
-     * @param _source
-     * @param _target
-     * @param _event
-     * @param _version
-     * @param _notes
+     * @param source
+     * @param target
+     * @param event
+     * @param version
+     * @param notes
      */
-    public OrderStateHistoryEntity(OrderState _source, OrderState _target, OrderEvent _event,
-                                   int _version, String _notes) {
-        this.sourceState = _source;
-        this.targetState = _target;
-        this.transitionEvent = _event;
-        this.orderVersion = _version;
-        this.notes = _notes;
+    public OrderStateHistoryEntity(OrderState source, OrderState target, OrderEvent event,
+                                   int version, String notes) {
+        this.sourceState = source;
+        this.targetState = target;
+        this.transitionEvent = event;
+        this.orderVersion = version;
+        this.notes = notes;
     }
 
     /**
@@ -120,11 +122,11 @@ public class OrderStateHistoryEntity extends AbstractBaseEntityWithUUID implemen
      * @return
      */
     public OrderNotes getNotes() {
-        if(notes != null && notes.trim().length() > 0) {
+        if(notes != null && notes.isEmpty()) {
             try {
                 return Utils.fromJsonToObject(notes, OrderNotes.class);
             } catch (Exception e) {
-                System.out.println("ERROR: " + e.getMessage());
+                return null;
             }
         }
         return null;

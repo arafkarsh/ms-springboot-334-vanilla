@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author: Araf Karsh Hamid
@@ -50,48 +49,48 @@ public abstract class AbstractResponse implements Serializable {
 
     /**
      * Initialize for Failure Response
-     * @param _code
-     * @param _desc
+     * @param code
+     * @param desc
      */
-    public AbstractResponse initFailure( String _code, String _desc) {
-        return this.init(false, _code, _desc);
+    public AbstractResponse initFailure( String code, String desc) {
+        return this.init(false, code, desc);
     }
 
     /**
      * Initialize for Success Response
-     * @param _code
-     * @param _desc
+     * @param code
+     * @param desc
      */
-    public AbstractResponse initSuccess(String _code, String _desc) {
-        return this.init(true, _code, _desc);
+    public AbstractResponse initSuccess(String code, String desc) {
+        return this.init(true, code, desc);
     }
 
     /**
      * Set the Response Status, Code and Description
-     * @param _status
-     * @param _code
-     * @param _desc
+     * @param status
+     * @param code
+     * @param desc
      */
-    public AbstractResponse init(boolean _status, String _code, String _desc) {
-        success     = _status;
-        code        = _code;
-        description = _desc;
+    public AbstractResponse init(boolean status, String code, String desc) {
+        success     = status;
+        this.code = code;
+        description = desc;
         payload     = new ArrayList<Object>();
         return this;
     }
 
     /**
      * Set the Payload
-     * @param _payload
+     * @param payload
      */
-    public AbstractResponse setPayload(Object _payload) {
-        ArrayList<Object> data = new ArrayList<Object>();
-        if(_payload != null) {
-            if(_payload instanceof List) {
-                this.payload = _payload;
+    public AbstractResponse setPayload(Object payload) {
+        ArrayList<Object> data = new ArrayList<>();
+        if(payload != null) {
+            if(payload instanceof List) {
+                this.payload = payload;
                 return this;
             } else {
-                data.add(_payload);
+                data.add(payload);
             }
         }
         this.payload = data;

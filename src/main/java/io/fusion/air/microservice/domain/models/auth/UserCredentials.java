@@ -39,12 +39,12 @@ public class UserCredentials {
 
     /**
      * Constructor
-     * @param _userId
-     * @param _password
+     * @param userId
+     * @param password
      */
-    public UserCredentials(String _userId, String _password) {
-        userId = _userId;
-        password = _password;
+    public UserCredentials(String userId, String password) {
+        this.userId = userId;
+        this.password = password;
     }
 
     /**

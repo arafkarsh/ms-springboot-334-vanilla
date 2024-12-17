@@ -27,26 +27,26 @@ public class JWTUnDefinedException extends SecurityException {
 
     /**
      * JWT UnDefined Exception - FORBIDDEN
-     * @param _msg
+     * @param msg
      */
-    public JWTUnDefinedException(String _msg) {
-        this(_msg, null);
+    public JWTUnDefinedException(String msg) {
+        this(msg, null);
     }
 
     /**
      * JWT UnDefined Exception - FORBIDDEN
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public JWTUnDefinedException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.FORBIDDEN, _e);
+    public JWTUnDefinedException(String msg, Throwable e) {
+        super(msg, HttpStatus.FORBIDDEN, e);
     }
 
     /**
      * JWT UnDefined Exception - FORBIDDEN
-     * @param _e
+     * @param e
      */
-    public JWTUnDefinedException(Throwable _e) {
-        super("", HttpStatus.FORBIDDEN, _e);
+    public JWTUnDefinedException(Throwable e) {
+        super("", HttpStatus.FORBIDDEN, e);
     }
 }

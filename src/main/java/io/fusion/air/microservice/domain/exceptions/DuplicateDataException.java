@@ -26,26 +26,26 @@ public class DuplicateDataException extends DatabaseException {
 
     /**
      * DuplicateData Exception
-     * @param _msg
+     * @param msg
      */
-    public DuplicateDataException(String _msg) {
-        super(_msg);
+    public DuplicateDataException(String msg) {
+        super(msg);
     }
 
     /**
      * DuplicateData Exception
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public DuplicateDataException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.BAD_REQUEST, _e);
+    public DuplicateDataException(String msg, Throwable e) {
+        super(msg, HttpStatus.BAD_REQUEST, e);
     }
 
     /**
      * DuplicateData Exception
-     * @param _e
+     * @param e
      */
-    public DuplicateDataException(Throwable _e) {
-        super("Duplicate Data Exception!", HttpStatus.BAD_REQUEST, _e);
+    public DuplicateDataException(Throwable e) {
+        super("Duplicate Data Exception!", HttpStatus.BAD_REQUEST, e);
     }
 }

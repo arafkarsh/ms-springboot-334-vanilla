@@ -26,26 +26,26 @@ public class MessagingException extends AbstractServiceException {
 
     /**
      * Messaging Exception
-     * @param _msg
+     * @param msg
      */
-    public MessagingException(String _msg) {
-        super(_msg);
+    public MessagingException(String msg) {
+        super(msg);
     }
 
     /**
      * Messaging Exception
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public MessagingException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.BAD_REQUEST, _e);
+    public MessagingException(String msg, Throwable e) {
+        super(msg, HttpStatus.BAD_REQUEST, e);
     }
 
     /**
      * Messaging Exception
-     * @param _e
+     * @param e
      */
-    public MessagingException(Throwable _e) {
-        super("Message Error!", HttpStatus.BAD_REQUEST,_e);
+    public MessagingException(Throwable e) {
+        super("Message Error!", HttpStatus.BAD_REQUEST,e);
     }
 }

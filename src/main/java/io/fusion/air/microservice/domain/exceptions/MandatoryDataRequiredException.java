@@ -27,26 +27,26 @@ public class MandatoryDataRequiredException extends BusinessServiceException {
 
     /**
      * MandatoryDataRequired Service Exception
-     * @param _msg
+     * @param msg
      */
-    public MandatoryDataRequiredException(String _msg) {
-        super(_msg);
+    public MandatoryDataRequiredException(String msg) {
+        super(msg);
     }
 
     /**
      * MandatoryDataRequired Service Exception
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public MandatoryDataRequiredException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.BAD_REQUEST, _e);
+    public MandatoryDataRequiredException(String msg, Throwable e) {
+        super(msg, HttpStatus.BAD_REQUEST, e);
     }
 
     /**
      * MandatoryDataRequired Service Exception
-     * @param _e
+     * @param e
      */
-    public MandatoryDataRequiredException(Throwable _e) {
-        super("Mandatory Data Required!", HttpStatus.BAD_REQUEST, _e);
+    public MandatoryDataRequiredException(Throwable e) {
+        super("Mandatory Data Required!", HttpStatus.BAD_REQUEST, e);
     }
 }

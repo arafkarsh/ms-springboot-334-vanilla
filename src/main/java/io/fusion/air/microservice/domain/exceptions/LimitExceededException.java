@@ -27,24 +27,24 @@ public class LimitExceededException extends BusinessServiceException {
     /**
      * Input Data Exception
      */
-    public LimitExceededException(String _msg) {
-        this(_msg, null);
+    public LimitExceededException(String msg) {
+        this(msg, null);
     }
 
     /**
      * Input Data Exception
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public LimitExceededException(String _msg, Throwable _e) {
-        super("Rate Limit Exceeded: "+_msg, HttpStatus.TOO_MANY_REQUESTS, _e);
+    public LimitExceededException(String msg, Throwable e) {
+        super("Rate Limit Exceeded: "+msg, HttpStatus.TOO_MANY_REQUESTS, e);
     }
 
     /**
      * Input Data Exception
-     * @param _e
+     * @param e
      */
-    public LimitExceededException(Throwable _e) {
-        super("Rate Limit Exceeded!", HttpStatus.TOO_MANY_REQUESTS, _e);
+    public LimitExceededException(Throwable e) {
+        super("Rate Limit Exceeded!", HttpStatus.TOO_MANY_REQUESTS, e);
     }
 }

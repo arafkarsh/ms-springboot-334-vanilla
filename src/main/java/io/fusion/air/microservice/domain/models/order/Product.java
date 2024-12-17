@@ -60,16 +60,16 @@ public class Product implements Serializable {
 
     /**
      * Create Product
-     * @param _pid
-     * @param _prodNm
-     * @param _prodDt
-     * @param _prodPr
+     * @param pid
+     * @param prodNm
+     * @param prodDt
+     * @param prodPr
      */
-    public Product(String _pid, String _prodNm, String _prodDt, BigDecimal _prodPr)  {
-        productId   = _pid;
-        productName = _prodNm;
-        productDetails = _prodDt;
-        productPrice   = _prodPr;
+    public Product(String pid, String prodNm, String prodDt, BigDecimal prodPr)  {
+        productId   = pid;
+        productName = prodNm;
+        productDetails = prodDt;
+        productPrice   = prodPr;
     }
 
     /**

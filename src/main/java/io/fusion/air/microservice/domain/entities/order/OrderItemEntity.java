@@ -47,16 +47,16 @@ public class OrderItemEntity extends AbstractBaseEntityWithUUID {
     /**
      * Create Order Item Entity
      *
-     * @param _productId
-     * @param _productName
-     * @param _quantity
-     * @param _price
+     * @param productId
+     * @param productName
+     * @param quantity
+     * @param price
      */
-    public OrderItemEntity(String _productId, String _productName, BigDecimal _quantity, BigDecimal _price) {
-        this.productId = _productId;
-        this.productName = _productName;
-        this.quantity = _quantity;
-        this.price = _price;
+    public OrderItemEntity(String productId, String productName, BigDecimal quantity, BigDecimal price) {
+        this.productId = productId;
+        this.productName = productName;
+        this.quantity = quantity;
+        this.price = price;
     }
 
     /**

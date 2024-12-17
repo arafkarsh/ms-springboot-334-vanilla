@@ -32,51 +32,53 @@ public abstract class AbstractServiceException extends  RuntimeException {
     private final HttpStatus httpStatus;
     private String errorCode = "NA000";
 
+    private static final String NO_INFO_AVAILABLE = "No-Info Available";
+
     /**
      * Abstract Service Exception
-     * @param _e
+     * @param e
      */
-    public AbstractServiceException(String _e) {
-        super(_e);
-        errorMessage = (_e != null) ? _e : "No-Info Available" ;
+    protected AbstractServiceException(String e) {
+        super(e);
+        errorMessage = (e != null) ? e : NO_INFO_AVAILABLE ;
         serviceException = this;
         httpStatus = HttpStatus.BAD_REQUEST;
     }
 
     /**
      * Abstract Service Exception
-     * @param _e
+     * @param e
      */
-    public AbstractServiceException(Throwable _e) {
-        super(_e);
-        errorMessage = (_e != null) ? _e.getMessage() : "No-Info Available" ;
-        serviceException = (_e  != null) ? _e : this;
+    protected AbstractServiceException(Throwable e) {
+        super(e);
+        errorMessage = (e != null) ? e.getMessage() : NO_INFO_AVAILABLE ;
+        serviceException = (e  != null) ? e : this;
         httpStatus = HttpStatus.BAD_REQUEST;
     }
 
     /**
      * Service Base Exception
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public AbstractServiceException(String _msg, Throwable _e) {
-        super(_msg, _e);
-        errorMessage = (_msg != null) ? _msg : "No-Info Available" ;
-        serviceException = (_e  != null) ? _e : this;
+    protected AbstractServiceException(String msg, Throwable e) {
+        super(msg, e);
+        errorMessage = (msg != null) ? msg : NO_INFO_AVAILABLE ;
+        serviceException = (e  != null) ? e : this;
         httpStatus = HttpStatus.BAD_REQUEST;
     }
 
     /**
      * Service base Exception
-     * @param _msg
-     * @param _status
-     * @param _e
+     * @param msg
+     * @param status
+     * @param e
      */
-    public AbstractServiceException(String _msg, HttpStatus _status, Throwable _e) {
-        super(_msg, _e);
-        errorMessage = (_msg != null) ? _msg : "No-Info Available" ;
-        serviceException = (_e  != null) ? _e : this;
-        httpStatus = _status;
+    protected AbstractServiceException(String msg, HttpStatus status, Throwable e) {
+        super(msg, e);
+        errorMessage = (msg != null) ? msg : NO_INFO_AVAILABLE ;
+        serviceException = (e  != null) ? e : this;
+        httpStatus = status;
     }
 
     /**
@@ -123,9 +125,9 @@ public abstract class AbstractServiceException extends  RuntimeException {
 
     /**
      *  Set Service Error Code
-     * @param _errorCode
+     * @param errCode
      */
-    public void setErrorCode(String _errorCode) {
-        this.errorCode = (_errorCode != null) ? _errorCode : "NA999";
+    public void setErrorCode(String errCode) {
+        this.errorCode = (errCode != null) ? errCode : "NA999";
     }
 }

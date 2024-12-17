@@ -26,26 +26,26 @@ public class DataVersionMismatchException extends DatabaseException {
 
     /**
      * Data Version Mismatch Exception
-     * @param _msg
+     * @param msg
      */
-    public DataVersionMismatchException(String _msg) {
-        super(_msg);
+    public DataVersionMismatchException(String msg) {
+        super(msg);
     }
 
     /**
      * Data Version Mismatch Exception
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public DataVersionMismatchException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.BAD_REQUEST, _e);
+    public DataVersionMismatchException(String msg, Throwable e) {
+        super(msg, HttpStatus.BAD_REQUEST, e);
     }
 
     /**
      * Data Version Mismatch Exception
-     * @param _e
+     * @param e
      */
-    public DataVersionMismatchException(Throwable _e) {
-        super("Duplicate Data Exception!", HttpStatus.BAD_REQUEST, _e);
+    public DataVersionMismatchException(Throwable e) {
+        super("Duplicate Data Exception!", HttpStatus.BAD_REQUEST, e);
     }
 }

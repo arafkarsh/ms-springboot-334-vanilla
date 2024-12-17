@@ -28,19 +28,19 @@ public class ResourceNotFoundException extends ResourceException {
 
     /**
      * ResourceNotFound Exception
-     * @param _msg
+     * @param msg
      */
-    public ResourceNotFoundException(String _msg) {
-        super(_msg);
+    public ResourceNotFoundException(String msg) {
+        super(msg);
     }
 
 
     /**
      * ResourceNotFound Exception
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public ResourceNotFoundException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.NOT_FOUND, _e);
+    public ResourceNotFoundException(String msg, Throwable e) {
+        super(msg, HttpStatus.NOT_FOUND, e);
     }
 }

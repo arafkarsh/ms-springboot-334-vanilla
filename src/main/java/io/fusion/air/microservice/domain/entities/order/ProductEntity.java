@@ -54,7 +54,7 @@ public class ProductEntity extends AbstractBaseEntityWithUUID {
 
     @NotBlank(message = "The Product ZipCode is required.")
     @Column(name = "productLocationZipCode")
-    @Pattern(regexp = "^[0-9]{5}\\b", message = "Zip Code Must be 5 Digits")
+    @Pattern(regexp = "^\\d]{5}\\b", message = "Zip Code Must be 5 Digits")
     private String productLocationZipCode;
 
     /**
@@ -65,25 +65,25 @@ public class ProductEntity extends AbstractBaseEntityWithUUID {
 
     /**
      * Create Product from the Product DTO
-     * @param _product
+     * @param product
      */
-    public ProductEntity(Product _product) {
-        this(_product.getProductName(), _product.getProductDetails(),
-                _product.getProductPrice(), _product.getProductLocationZipCode());
+    public ProductEntity(Product product) {
+        this(product.getProductName(), product.getProductDetails(),
+                product.getProductPrice(), product.getProductLocationZipCode());
     }
 
     /**
      * Create Product Entity
-     * @param _pName
-     * @param _pDetails
-     * @param _pPrice
-     * @param _pZipCode
+     * @param pName
+     * @param pDetails
+     * @param pPrice
+     * @param pZipCode
      */
-    public ProductEntity(String _pName, String _pDetails, BigDecimal _pPrice, String _pZipCode) {
-        this.productName            = _pName;
-        this.productDetails         = _pDetails;
-        this.productPrice           = _pPrice;
-        this.productLocationZipCode = _pZipCode;
+    public ProductEntity(String pName, String pDetails, BigDecimal pPrice, String pZipCode) {
+        this.productName            = pName;
+        this.productDetails         = pDetails;
+        this.productPrice           = pPrice;
+        this.productLocationZipCode = pZipCode;
     }
 
     /**
@@ -182,6 +182,7 @@ public class ProductEntity extends AbstractBaseEntityWithUUID {
      * Return This Product ID / Name
      * @return
      */
+    @Override
     public String toString() {
         return super.toString() + "|" + productName;
     }

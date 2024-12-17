@@ -27,26 +27,26 @@ public class JWTTokenExtractionException extends SecurityException {
 
     /**
      * JWT Token Extraction Exception - FORBIDDEN
-     * @param _msg
+     * @param msg
      */
-    public JWTTokenExtractionException(String _msg) {
-        this(_msg, null);
+    public JWTTokenExtractionException(String msg) {
+        this(msg, null);
     }
 
     /**
      * JWT Token Extraction Exception - FORBIDDEN
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public JWTTokenExtractionException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.FORBIDDEN, _e);
+    public JWTTokenExtractionException(String msg, Throwable e) {
+        super(msg, HttpStatus.FORBIDDEN, e);
     }
 
     /**
      * JWT Token Extraction Exception - FORBIDDEN
-     * @param _e
+     * @param e
      */
-    public JWTTokenExtractionException(Throwable _e) {
-        super("", HttpStatus.FORBIDDEN, _e);
+    public JWTTokenExtractionException(Throwable e) {
+        super("", HttpStatus.FORBIDDEN, e);
     }
 }

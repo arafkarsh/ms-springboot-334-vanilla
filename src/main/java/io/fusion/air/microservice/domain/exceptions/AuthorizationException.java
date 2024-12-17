@@ -27,26 +27,26 @@ public class AuthorizationException extends SecurityException {
 
     /**
      * Authorization Service Exception
-     * @param _msg
+     * @param msg
      */
-    public AuthorizationException(String _msg) {
-        super(_msg);
+    public AuthorizationException(String msg) {
+        super(msg);
     }
 
     /**
      * Authorization Service Exception
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public AuthorizationException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.UNAUTHORIZED, _e);
+    public AuthorizationException(String msg, Throwable e) {
+        super(msg, HttpStatus.UNAUTHORIZED, e);
     }
 
     /**
      * Authorization Service Exception
-     * @param _e
+     * @param e
      */
-    public AuthorizationException(Throwable _e) {
-        super("", HttpStatus.UNAUTHORIZED, _e);
+    public AuthorizationException(Throwable e) {
+        super("", HttpStatus.UNAUTHORIZED, e);
     }
 }

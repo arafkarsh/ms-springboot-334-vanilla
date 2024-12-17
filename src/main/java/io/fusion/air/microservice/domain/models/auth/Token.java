@@ -54,6 +54,7 @@ public class Token {
      * Default Constructor
      */
     public Token() {
+        // Nothing to instantiate
     }
 
     public String getAccessToken() {

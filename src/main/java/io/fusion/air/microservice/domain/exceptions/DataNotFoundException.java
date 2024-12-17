@@ -26,27 +26,26 @@ public class DataNotFoundException extends DatabaseException {
 
     /**
      * DataNotFound Exception
-     * @param _msg
-     * @param _e
+     * @param msg
      */
-    public DataNotFoundException(String _msg) {
-        super(_msg, HttpStatus.NOT_FOUND, null);
+    public DataNotFoundException(String msg) {
+        super(msg, HttpStatus.NOT_FOUND, null);
     }
 
     /**
      * DataNotFound Exception
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public DataNotFoundException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.NOT_FOUND, _e);
+    public DataNotFoundException(String msg, Throwable e) {
+        super(msg, HttpStatus.NOT_FOUND, e);
     }
 
     /**
      * DataNotFound Exception
-     * @param _e
+     * @param e
      */
-    public DataNotFoundException(Throwable _e) {
-        super("Data Not Found!", HttpStatus.NOT_FOUND, _e);
+    public DataNotFoundException(Throwable e) {
+        super("Data Not Found!", HttpStatus.NOT_FOUND, e);
     }
 }

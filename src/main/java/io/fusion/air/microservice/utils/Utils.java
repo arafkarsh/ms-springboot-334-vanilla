@@ -591,7 +591,7 @@ public final class Utils {
 
 	public static void generateUUIDs() {
 		for(int x=0; x<10; x++) {
-			System.out.println(x+" UUID = "+UUID.randomUUID());
+			println(x+" UUID = "+UUID.randomUUID());
 		}
 	}
 

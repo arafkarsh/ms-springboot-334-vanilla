@@ -26,36 +26,36 @@ public class SecurityException extends AbstractServiceException {
 
     /**
      * Security Exception Forbidden
-     * @param _msg
+     * @param msg
      */
-    public SecurityException(String _msg) {
-        super(_msg);
+    public SecurityException(String msg) {
+        super(msg);
     }
 
     /**
      * Security Exception Forbidden
-     * @param _e
+     * @param e
      */
-    public SecurityException(Throwable _e) {
-        super("Security Exception!", HttpStatus.FORBIDDEN, _e);
+    public SecurityException(Throwable e) {
+        super("Security Exception!", HttpStatus.FORBIDDEN, e);
     }
 
     /**
      * Security Exception Forbidden
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public SecurityException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.FORBIDDEN, _e);
+    public SecurityException(String msg, Throwable e) {
+        super(msg, HttpStatus.FORBIDDEN, e);
     }
 
     /**
      * Security Exception Forbidden
-     * @param _msg
+     * @param msg
      * @param badRequest
-     * @param _e
+     * @param e
      */
-    public SecurityException(String _msg, HttpStatus badRequest, Throwable _e) {
-        super(_msg, badRequest, _e);
+    public SecurityException(String msg, HttpStatus badRequest, Throwable e) {
+        super(msg, badRequest, e);
     }
 }

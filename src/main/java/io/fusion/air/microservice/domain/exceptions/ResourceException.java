@@ -27,36 +27,36 @@ public class ResourceException extends AbstractServiceException {
 
     /**
      * Resource Exception Bad Request
-     * @param _msg
+     * @param msg
      */
-    public ResourceException(String _msg) {
-        super(_msg);
+    public ResourceException(String msg) {
+        super(msg);
     }
 
     /**
      * Resource Exception Bad Request
-     * @param _e
+     * @param e
      */
-    public ResourceException(Throwable _e) {
-        super("Resource Exception!", HttpStatus.BAD_REQUEST, _e);
+    public ResourceException(Throwable e) {
+        super("Resource Exception!", HttpStatus.BAD_REQUEST, e);
     }
 
     /**
      * Resource Exception Bad Request
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public ResourceException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.BAD_REQUEST, _e);
+    public ResourceException(String msg, Throwable e) {
+        super(msg, HttpStatus.BAD_REQUEST, e);
     }
 
     /**
      * Resource Exception Bad Request
-     * @param _msg
+     * @param msg
      * @param badRequest
-     * @param _e
+     * @param e
      */
-    public ResourceException(String _msg, HttpStatus badRequest, Throwable _e) {
-        super(_msg, badRequest, _e);
+    public ResourceException(String msg, HttpStatus badRequest, Throwable e) {
+        super(msg, badRequest, e);
     }
 }

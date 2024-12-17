@@ -28,4 +28,6 @@ public class OrderConstants {
     public static final String ERROR_SOURCE = "ERROR_SOURCE_STATE";
     public static final String ERROR_MSG = "ERROR_MSG";
     public static final String ERROR_OBJECT = "ERROR_OBJECT";
+
+    private OrderConstants() {}
 }

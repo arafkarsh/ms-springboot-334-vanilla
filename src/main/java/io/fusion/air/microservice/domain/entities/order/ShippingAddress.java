@@ -47,9 +47,9 @@ public class ShippingAddress {
     @Column(name = "phone")
     private String phone;
 
-    public ShippingAddress() {}
-
-
+    public ShippingAddress() {
+        // Nothing to instantiate
+    }
 
     public String getStreet() {
         return street;

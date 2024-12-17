@@ -16,7 +16,6 @@
 package io.fusion.air.microservice.domain.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * @author: Araf Karsh Hamid
@@ -25,28 +24,29 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 public class CryptoSecurityException extends SecurityException {
 
+    private static final String CRYPTO = "Crypto Exception: ";
     /**
      * CryptoSecurity Exception INTERNAL_SERVER_ERROR,
-     * @param _msg
+     * @param msg
      */
-    public CryptoSecurityException(String _msg) {
-        super("Crypto Exception: "+_msg);
+    public CryptoSecurityException(String msg) {
+        super(CRYPTO+msg);
     }
 
     /**
      * CryptoSecurity Exception INTERNAL_SERVER_ERROR,
-     * @param _e
+     * @param e
      */
-    public CryptoSecurityException(Throwable _e) {
-        super("Crypto Exception: ", HttpStatus.INTERNAL_SERVER_ERROR, _e);
+    public CryptoSecurityException(Throwable e) {
+        super(CRYPTO, HttpStatus.INTERNAL_SERVER_ERROR, e);
     }
 
     /**
      * CryptoSecurity Exception INTERNAL_SERVER_ERROR,
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public CryptoSecurityException(String _msg, Throwable _e) {
-        super("Crypto Exception: "+_msg, HttpStatus.INTERNAL_SERVER_ERROR, _e);
+    public CryptoSecurityException(String msg, Throwable e) {
+        super(CRYPTO+msg, HttpStatus.INTERNAL_SERVER_ERROR, e);
     }
 }

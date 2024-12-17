@@ -91,7 +91,6 @@ public class OrderEntity extends AbstractBaseEntityWithUUID {
                     .map(OrderItemEntity::getPrice)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
         }
-        System.out.println("Order Customer ID = "+ getCustomerId() +" Total Order Value = "+ getTotalOrderValue());
         return getTotalOrderValue();
     }
 
@@ -105,10 +104,10 @@ public class OrderEntity extends AbstractBaseEntityWithUUID {
 
     /**
      * Set the Order Result
-     * @param _result
+     * @param result
      */
-    public void setOrderResult(OrderResult _result) {
-        this.result = _result;
+    public void setOrderResult(OrderResult result) {
+        this.result = result;
     }
 
     /**

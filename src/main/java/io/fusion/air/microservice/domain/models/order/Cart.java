@@ -39,7 +39,9 @@ public class Cart {
 
     private BigDecimal quantity;
 
-    public Cart() {}
+    public Cart() {
+        // Nothing to instantiate
+    }
 
     /**
      * Get Customer ID

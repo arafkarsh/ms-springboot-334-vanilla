@@ -37,7 +37,9 @@ public class OrderPaymentEntity extends AbstractBaseEntityWithUUID {
     @Column(name = "status")
     private String status;
 
-    public OrderPaymentEntity() {}
+    public OrderPaymentEntity() {
+        // Nothing to instantiate
+    }
 
 
     public String getTransactionId() {

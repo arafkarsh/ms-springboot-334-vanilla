@@ -27,26 +27,26 @@ public class JWTTokenSubjectException extends SecurityException {
 
     /**
      * JWT Token Subject Exception - FORBIDDEN
-     * @param _msg
+     * @param msg
      */
-    public JWTTokenSubjectException(String _msg) {
-        this(_msg, null);
+    public JWTTokenSubjectException(String msg) {
+        this(msg, null);
     }
 
     /**
      * JWT Token Subject Exception - FORBIDDEN
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public JWTTokenSubjectException(String _msg, Throwable _e) {
-        super(_msg, HttpStatus.FORBIDDEN, _e);
+    public JWTTokenSubjectException(String msg, Throwable e) {
+        super(msg, HttpStatus.FORBIDDEN, e);
     }
 
     /**
      * JWT Token Subject Exception - FORBIDDEN
-     * @param _e
+     * @param e
      */
-    public JWTTokenSubjectException(Throwable _e) {
-        super("", HttpStatus.FORBIDDEN, _e);
+    public JWTTokenSubjectException(Throwable e) {
+        super("", HttpStatus.FORBIDDEN, e);
     }
 }

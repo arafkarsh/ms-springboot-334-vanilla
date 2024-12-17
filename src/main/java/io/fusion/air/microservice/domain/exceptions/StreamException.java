@@ -24,26 +24,26 @@ public class StreamException extends MessagingException {
 
     /**
      * Messaging Exception
-     * @param _msg
+     * @param msg
      */
-    public StreamException(String _msg) {
-        super(_msg);
+    public StreamException(String msg) {
+        super(msg);
     }
 
     /**
      * Messaging Exception
-     * @param _msg
-     * @param _e
+     * @param msg
+     * @param e
      */
-    public StreamException(String _msg, Throwable _e) {
-        super(_msg, _e);
+    public StreamException(String msg, Throwable e) {
+        super(msg, e);
     }
 
     /**
      * Messaging Exception
-     * @param _e
+     * @param e
      */
-    public StreamException(Throwable _e) {
-        this("Message Error!", _e);
+    public StreamException(Throwable e) {
+        this("Message Error!", e);
     }
 }
