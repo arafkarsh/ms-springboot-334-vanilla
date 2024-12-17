@@ -32,11 +32,11 @@ public class TokenData {
 
     private final Key validatoryKey;
 
-    public TokenData(String _token, String _issuer, int _keyType, Key _validatorKey) {
-        token = _token;
-        issuer = _issuer;
-        keyType = _keyType;
-        validatoryKey = _validatorKey;
+    public TokenData(String tkn, String is, int kType, Key vKey) {
+        token = tkn;
+        issuer = is;
+        keyType = kType;
+        validatoryKey = vKey;
     }
 
     /**

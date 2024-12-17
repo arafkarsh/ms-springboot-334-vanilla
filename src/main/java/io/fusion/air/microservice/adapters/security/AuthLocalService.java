@@ -112,7 +112,7 @@ public class AuthLocalService {
         // .....
         // If Validation is Successful then Create the Tokens (Auth & Refresh Tokens)
         HttpHeaders headers = new HttpHeaders();
-        HashMap<String, String> tokens = tokenManager.createAuthorizationToken(username, headers);
+        Map<String, String> tokens = tokenManager.createAuthorizationToken(username, headers);
         // TX - Token
         String txToken = tokenManager.createTXToken(username, TokenManager.TX_USERS,  headers);
         tokens.put("TX-Token", txToken);

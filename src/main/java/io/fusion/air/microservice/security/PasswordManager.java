@@ -16,7 +16,6 @@
 package io.fusion.air.microservice.security;
 
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Password Manager Decrypts the Encrypted DB Credentials in the property file
@@ -28,9 +27,16 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class PasswordManager {
 
-    @Autowired
+    // Autowired using the Constructor
     private ServiceConfiguration serviceConfig;
 
+    /**
+     * Autowired using the Constructor
+     * @param serviceCfg
+     */
+    public PasswordManager(ServiceConfiguration serviceCfg) {
+        serviceConfig = serviceCfg;
+    }
     /**
      * Return the Decrypted User Name
      * @return

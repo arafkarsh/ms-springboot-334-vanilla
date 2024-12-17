@@ -47,19 +47,20 @@ public class TokenManager {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
 
-    public final static String AUTH         = "auth";
-    public final static String AUTH_REFRESH = "refresh";
-    public final static String TX_USERS     = "tx-users";
-    public final static String TX_SERVICE   = "tx-internal";
-    public final static String TX_EXTERNAL  = "tx-external";
+    public static final String AUTH         = "auth";
+    public static final String AUTH_REFRESH = "refresh";
+    public static final String TX_USERS     = "tx-users";
+    public static final String TX_SERVICE   = "tx-internal";
+    public static final String TX_EXTERNAL  = "tx-external";
+    public static final String BEARER = "Bearer ";
 
-    @Autowired
+    // Autowired using the Constructor
     private ServiceConfiguration serviceConfig;
 
-    @Autowired
+    // Autowired using the Constructor
     private ClaimsManager claimsManager;
 
-    @Autowired
+    // Autowired using the Constructor
     private HeaderManager headerManager;
 
     @Value("${server.token.auth.expiry:300000}")
@@ -71,11 +72,28 @@ public class TokenManager {
     public TokenManager() {}
 
     /**
-     * For External Testing
-     * @param _serviceConfig
+     * Autowired using the Constructor
+     * @param serviceCfg
+     * @param cManager
+     * @param hManager
      */
-    public TokenManager(ServiceConfiguration _serviceConfig, long tknExpiry, long tknRefreshExpiry) {
-        this.serviceConfig = _serviceConfig;
+    @Autowired
+    public TokenManager(ServiceConfiguration serviceCfg,
+                        ClaimsManager cManager, HeaderManager hManager) {
+        serviceConfig = serviceCfg;
+        claimsManager = cManager;
+        headerManager = hManager;
+    }
+
+    /**
+     * For External Testing
+     *
+     * @param serviceCfg
+     * @param tknExpiry
+     * @param tknRefreshExpiry
+     */
+    public TokenManager(ServiceConfiguration serviceCfg, long tknExpiry, long tknRefreshExpiry) {
+        serviceConfig = serviceCfg;
         tokenAuthExpiry = tknExpiry;
         tokenRefreshExpiry = tknRefreshExpiry;
     }
@@ -91,17 +109,17 @@ public class TokenManager {
     /**
      * Create TX-Token with Subject, Token Type and Add to Header
      *
-     * @param _subject
-     * @param _type
+     * @param subject
+     * @param type
      * @param headers
      * @return
      */
-    public String createTXToken(String _subject, String _type, HttpHeaders headers) {
+    public String createTXToken(String subject, String type, HttpHeaders headers) {
 
         Map<String, Object> claims = new LinkedHashMap<>();
         claims.put("aud", "tx-services");
-        claims.put("sub", _subject);
-        claims.put("type",_type);
+        claims.put("sub", subject);
+        claims.put("type",type);
         claims.put("iss", serviceConfig.getServiceOrg());
         claims.put("rol", "User");
         claims.put("jti", UUID.randomUUID().toString());
@@ -109,11 +127,10 @@ public class TokenManager {
         long txTokenExpiry = (tokenRefreshExpiry < 50) ? JsonWebTokenConstants.EXPIRE_IN_ONE_HOUR : tokenRefreshExpiry;
         String token = new JsonWebTokenNew()
                             .init(serviceConfig.getTokenType())
-                            .generateToken(_subject,  serviceConfig.getServiceOrg(),  txTokenExpiry,  claims);
+                            .generateToken(subject,  serviceConfig.getServiceOrg(),  txTokenExpiry,  claims);
 
         if(headers != null) {
-            // headers.add("TX-TOKEN", "Bearer " + token);
-            headerManager.setResponseHeader(AuthorizeRequestAspect.TX_TOKEN, "Bearer " + token);
+            headerManager.setResponseHeader(AuthorizeRequestAspect.TX_TOKEN, BEARER + token);
         }
         return token;
     }
@@ -126,7 +143,7 @@ public class TokenManager {
      * @param headers
      * @return
      */
-    public HashMap<String, String> createExternalToken(String serviceId, String serviceName, String serviceOwner,
+    public Map<String, String> createExternalToken(String serviceId, String serviceName, String serviceOwner,
                                       String servicesAllowed, HttpHeaders headers) {
         String subject      = serviceName;
         Map<String, Object> claims = getServiceClaims(serviceId, serviceName, serviceOwner, servicesAllowed);
@@ -138,13 +155,12 @@ public class TokenManager {
                             .generateToken( subject,  serviceConfig.getServiceOrg(),  txTokenExpiry,  claims);
 
         // Store Tokens
-        HashMap<String, String> tokens = new HashMap<String, String>();
-        tokens.put("authToken", "Bearer " + token);
+        HashMap<String, String> tokens = new HashMap<>();
+        tokens.put("authToken", BEARER + token);
         tokens.put("expiryTime", ""+txTokenExpiry);
         // Add Token to Headers
         if(headers != null) {
-            // headers.add("Authorization", "Bearer " + token);
-            headerManager.setResponseHeader("Authorization", "Bearer " + token);
+            headerManager.setResponseHeader("Authorization", BEARER + token);
         }
         return tokens;
     }
@@ -156,7 +172,7 @@ public class TokenManager {
      * @param servicesAllowed
      * @return
      */
-    public HashMap<String, String> createInternalToken(String serviceId, String serviceName, String serviceOwner,
+    public Map<String, String> createInternalToken(String serviceId, String serviceName, String serviceOwner,
                                       String servicesAllowed, HttpHeaders headers) {
         String subject      = serviceName;
 
@@ -175,15 +191,14 @@ public class TokenManager {
                             .generateToken( subject,  serviceConfig.getServiceOrg(),  txTokenExpiry,  claims);
 
         // Store Tokens
-        HashMap<String, String> tokens = new HashMap<String, String>();
-        tokens.put("authToken", "Bearer " + token);
-        tokens.put("txToken", "Bearer " + txToken);
+        HashMap<String, String> tokens = new HashMap<>();
+        tokens.put("authToken", BEARER + token);
+        tokens.put("txToken", BEARER + txToken);
         tokens.put("expiryTime", ""+txTokenExpiry);
         // Add Token to Headers
         if(headers != null) {
-            // headers.add("Authorization", "Bearer " + token);
-            headerManager.setResponseHeader("Authorization", "Bearer " + token);
-            headerManager.setResponseHeader("TX-TOKEN", "Bearer " + txToken);
+            headerManager.setResponseHeader("Authorization", BEARER + token);
+            headerManager.setResponseHeader("TX-TOKEN", BEARER + txToken);
         }
         // Return Auth & TX Tokens
         return tokens;
@@ -219,7 +234,7 @@ public class TokenManager {
      * @param headers
      * @return
      */
-    public HashMap<String, String>  createAuthorizationToken(String subject, HttpHeaders headers) {
+    public Map<String, String>  createAuthorizationToken(String subject, HttpHeaders headers) {
 
         Map<String, Object> authClaims = new LinkedHashMap<>();
         authClaims.put("aud", "generic");
@@ -239,10 +254,10 @@ public class TokenManager {
 
         HashMap<String, String> tokens = refreshTokens(subject, authClaims, refreshClaims);
         String authToken = tokens.get("token");
-        String refreshTkn = tokens.get("refresh");
+        String refreshTkn = tokens.get(AUTH_REFRESH);
         if(headers != null) {
-            headerManager.setResponseHeader(AuthorizeRequestAspect.AUTH_TOKEN, "Bearer " + authToken);
-            headerManager.setResponseHeader(AuthorizeRequestAspect.REFRESH_TOKEN, "Bearer " + refreshTkn);
+            headerManager.setResponseHeader(AuthorizeRequestAspect.AUTH_TOKEN, BEARER + authToken);
+            headerManager.setResponseHeader(AuthorizeRequestAspect.REFRESH_TOKEN, BEARER + refreshTkn);
         }
         return tokens;
     }
@@ -276,8 +291,9 @@ public class TokenManager {
         Map<String, Object> claims = getClaims(subject,  issuer);
         claims.put("rol", "Admin");
 
-        long txTokenExpiry = (tokenRefreshExpiry < 50) ? JsonWebTokenConstants.EXPIRE_IN_ONE_HOUR : tokenRefreshExpiry;;
-        log.info("Admin Token Expiry in Days:Hours:Mins  {}", JsonWebToken.printExpiryTime(txTokenExpiry));
+        long txTokenExpiry = (tokenRefreshExpiry < 50) ? JsonWebTokenConstants.EXPIRE_IN_ONE_HOUR : tokenRefreshExpiry;
+        String st = JsonWebToken.printExpiryTime(txTokenExpiry);
+        log.info("Admin Token Expiry in Days:Hours:Mins  {}", st);
         return new JsonWebTokenNew()
                 .init(serviceConfig.getTokenType())
                 .generateToken( subject,  issuer,  txTokenExpiry,  claims);

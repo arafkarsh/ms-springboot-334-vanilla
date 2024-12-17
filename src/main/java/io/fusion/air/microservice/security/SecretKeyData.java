@@ -31,14 +31,14 @@ public class SecretKeyData {
 
     /**
      * Create SecretKey Data
-     * @param _secretKey
-     * @param _keyBytes
-     * @param _encryptAlgo
+     * @param secretKey
+     * @param kBytes
+     * @param encAlgo
      */
-    public SecretKeyData(SecretKeySpec _secretKey, byte[] _keyBytes, String  _encryptAlgo) {
-        secretKeySpec   = _secretKey;
-        keyBytes        = _keyBytes;
-        encryptAlgo     = _encryptAlgo;
+    public SecretKeyData(SecretKeySpec secretKey, byte[] kBytes, String  encAlgo) {
+        secretKeySpec   = secretKey;
+        keyBytes        = kBytes;
+        encryptAlgo     = encAlgo;
     }
 
     /**
@@ -62,6 +62,7 @@ public class SecretKeyData {
      * @return
      */
     public byte[] getKeyBytesForIVSpecs() {
-        return (encryptAlgo == Algorithms.TRIPLE_DES) ? Arrays.copyOf(keyBytes, 8) : keyBytes;
+        return (encryptAlgo.equalsIgnoreCase(Algorithms.TRIPLE_DES))
+                ? Arrays.copyOf(keyBytes, 8) : keyBytes;
     }
 }

@@ -62,37 +62,68 @@ public class KeyCloakConfig implements Serializable {
     @Value("${server.keycloak.issuer}")
     private String tokenIssuer;
 
-    public KeyCloakConfig() {
-    }
+    // Removed the Empty Constructor
 
+    /**
+     * Return KeyCloak URL
+     * @return
+     */
     public String getKeyCloakUrl() {
         return keyCloakUrl;
     }
 
+    /**
+     * Return KeyCloak Client ID
+     * @return
+     */
     public String getKeyCloakClientId() {
         return keyCloakClientId;
     }
 
+    /**
+     * Return KeyCloak Secret
+     * @return
+     */
     public String getKeyCloakSecret() {
         return keyCloakSecret;
     }
 
+    /**
+     * Return KeyCloak Certs URL
+     * @return
+     */
     public String getKeyCloakCertsUrl() {
         return keyCloakCertsUrl;
     }
 
+    /**
+     * Return KeyCloak Grant Type
+     * @return
+     */
     public String getKeyCloakGrantType() {
         return keyCloakGrantType;
     }
 
+    /**
+     * Returns TRUE KeyCloak Enabled
+     * @return
+     */
     public boolean isKeyCloakEnabled() {
         return keyCloakEnabled;
     }
 
+    /**
+     * Returns the KeyCloak Public Key
+     * @return
+     */
     public String getKeyCloakPublicKey() {
         return keyCloakPublicKey;
     }
 
+    /**
+     * Returns the Token Issuer
+     * @return
+     */
     public String getTokenIssuer() {
         return tokenIssuer;
     }

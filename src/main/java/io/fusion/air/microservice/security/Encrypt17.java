@@ -46,9 +46,11 @@ import static java.lang.System.out;
  */
 public class Encrypt17 {
 
+    public static final String LINE = "-------------------------------------------------------";
+
     public static void main(String[] args) {
         out.println("Text Encryptor using Jasypt Encryption Library (v1.9.3)");
-        out.println("-------------------------------------------------------");
+        out.println(LINE);
         doEncryptionAES(args);
     }
 
@@ -78,7 +80,7 @@ public class Encrypt17 {
         // Decrypt the text
         var decryptedText = encryptor.decrypt(encryptedText);
         out.println("Decrypted Text : "+ decryptedText);
-        out.println("-------------------------------------------------------");
+        out.println(LINE);
     }
 
     /**
@@ -111,7 +113,7 @@ public class Encrypt17 {
         // Decrypt the text
         var decryptedText = encryptor.decrypt(encryptedText);
         out.println("Decrypted Text : "+ decryptedText);
-        out.println("-------------------------------------------------------");
+        out.println(LINE);
     }
 
     /**

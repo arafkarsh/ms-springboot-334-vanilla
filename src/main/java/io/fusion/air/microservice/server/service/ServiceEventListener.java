@@ -34,6 +34,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.slf4j.Logger;
 // Java
 import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.MDC;
 import static org.slf4j.LoggerFactory.getLogger;
 import static java.lang.invoke.MethodHandles.lookup;
@@ -188,7 +190,7 @@ public class ServiceEventListener {
 		TokenManager tokenManager = new TokenManager(serviceConfig, tokenAuthExpiry, tokenRefreshExpiry);
 
 		// Step 4: Generate Authorize Tokens
-		HashMap<String, String> tokens = tokenManager.createAuthorizationToken(subject, null);
+		Map<String, String> tokens = tokenManager.createAuthorizationToken(subject, null);
 		String token = tokens.get("token");
 		String refresh = tokens.get("refresh");
 

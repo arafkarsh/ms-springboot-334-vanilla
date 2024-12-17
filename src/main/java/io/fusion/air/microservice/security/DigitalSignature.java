@@ -15,16 +15,22 @@
  */
 package io.fusion.air.microservice.security;
 
+// Bouncy Castel
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
+// Spring
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+// Java
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
+import java.security.SignatureException;
 
 /**
  * @author: Araf Karsh Hamid
@@ -35,10 +41,22 @@ import java.security.Signature;
 @Service
 public class DigitalSignature {
 
-    private static final String path = "/Users/arafkarsh/ws/IntelliJ/book/ms-springboot-334-vanilla/";
+    private static final String EXTENSION = ".signature";
 
-    @Autowired
+    // Autowired using the Constructor
     private CryptoKeyGenerator cryptoKeyGenerator;
+
+    public DigitalSignature() {
+    }
+
+    /**
+     * Autowired using the Constructor
+     * @param keyGenerator
+     */
+    @Autowired
+    public DigitalSignature(CryptoKeyGenerator keyGenerator) {
+        cryptoKeyGenerator = keyGenerator;
+    }
 
     /**
      * Generate the Public and Private Keys
@@ -69,9 +87,13 @@ public class DigitalSignature {
      * Sign the Document
      *
      * @param documentName
-     * @throws Exception
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws IOException
+     * @throws SignatureException
      */
-    public void signDocument(String documentName)  throws Exception {
+    public void signDocument(String documentName) throws
+            NoSuchAlgorithmException, InvalidKeyException, IOException, SignatureException {
 
         String fileName = documentName.split("\\.")[0];
         // Create a signature instance
@@ -89,8 +111,8 @@ public class DigitalSignature {
         byte[] digitalSignature = signature.sign();
 
         // Write the digital signature to a file
-        System.out.println("Create the Signature = " + fileName + ".signature");
-        Files.write(Paths.get(fileName + ".signature"), digitalSignature);
+        System.out.println("Create the Signature = " + fileName + EXTENSION);
+        Files.write(Paths.get(fileName + EXTENSION), digitalSignature);
 
         // Write the digital signature to a file in PEM format
         writePEMFile(digitalSignature, fileName+".pem", "SIGNATURE");
@@ -98,14 +120,19 @@ public class DigitalSignature {
 
     /**
      * Verify the Signature
+     *
      * @param documentName
-     * @throws Exception
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws IOException
+     * @throws SignatureException
      */
-    public  void verifySignature(String documentName) throws Exception {
+    public  void verifySignature(String documentName) throws
+    NoSuchAlgorithmException, InvalidKeyException, IOException, SignatureException  {
         String fileName = documentName.split("\\.")[0];
 
         // Read the digital signature - Reading Binary Version of the Signature
-        byte[] digitalSignature = Files.readAllBytes(Paths.get(fileName + ".signature"));
+        byte[] digitalSignature = Files.readAllBytes(Paths.get(fileName + EXTENSION));
 
         // Create a signature instance and initialize it with the public key
         Signature signature = Signature.getInstance("SHA256withRSA");
@@ -118,32 +145,24 @@ public class DigitalSignature {
 
         // Verify the signature
         boolean isValid = signature.verify(digitalSignature);
-        System.out.println("Verify the Signature = " + fileName + ".signature");
+        System.out.println("Verify the Signature = " + fileName + EXTENSION);
         System.out.println("Signature Verified   = Status = [" + isValid + "] "+ documentName );
     }
 
     /**
      * Write PEM File for the Signature
-     * @param _fileName
-     * @param _description
+     * @param fileName
+     * @param description
      */
-    private void writePEMFile(byte[] _signature, String _fileName, String _description) {
-        if(_signature == null || _fileName == null) {
+    private void writePEMFile(byte[] signature, String fileName, String description) {
+        if(signature == null || fileName == null) {
             return;
         }
-        PemObject pemObject = new PemObject(_description, _signature);
-        PemWriter pemWriter = null;
-        try {
-            pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(_fileName)));
+        PemObject pemObject = new PemObject(description, signature);
+        try (PemWriter pemWriter  = new PemWriter(new OutputStreamWriter(new FileOutputStream(fileName))) )  {
             pemWriter.writeObject(pemObject);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if(pemWriter != null) {
-                try {
-                    pemWriter.close();
-                } catch (Exception ignored) {}
-            }
         }
     }
 
@@ -153,6 +172,7 @@ public class DigitalSignature {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
+        String path = "/Users/arafkarsh/ws/IntelliJ/book/ms-springboot-334-vanilla/";
         DigitalSignature ds = new DigitalSignature();
         System.out.println("SIGN THE DOCUMENT >------------------------------------------------------");
         ds.signDocument(path + "x509.txt");

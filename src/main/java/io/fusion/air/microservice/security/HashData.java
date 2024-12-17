@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.security;
-
+// Java
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.InputMismatchException;
 
 /**
  * HashData
@@ -60,7 +61,9 @@ public final class HashData {
     private int DEFAULT_ALGO 				= 5;
     private int CURRENT_ALGO 	        	= DEFAULT_ALGO;
 */
-    private final static Algorithms algo = new Algorithms();
+    private static final String UTF = "UTF-8";
+
+    private static final Algorithms algo = new Algorithms();
 
     /**
      * Private Constructor used to make this as a Singleton instance.
@@ -107,11 +110,12 @@ public final class HashData {
      *
      * @param _message
      * @return String (computed hash value)
-     * @throws Exception
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException
      */
-
-    public final static String createHash(final String _message) throws Exception {
-        return createHash(_message, algo.getDefaultMessageDigestAlgorithm(), "UTF-8");
+    public static final String createHash(final String _message)
+            throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        return createHash(_message, algo.getDefaultMessageDigestAlgorithm(), UTF);
     }
 
     /**
@@ -126,13 +130,14 @@ public final class HashData {
      * 4 SHA-384	(384 bit Strong hash - check US export controls)
      * 5 SHA-512	(512 bit Strong hash - check US export controls)
      *
-     * @param _message, int _algo
+     * @param message, algo
      * @return String (computed hash value)
-     * @throws Exception
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException
      */
-
-    public final static String createHash(final String _message, final String _algo) throws Exception {
-        return createHash(_message, _algo, "UTF-8");
+    public static final String createHash(final String message, final String algo)
+            throws NoSuchAlgorithmException, UnsupportedEncodingException{
+        return createHash(message, algo, UTF);
     }
 
     /**
@@ -148,34 +153,29 @@ public final class HashData {
      *
      * String Encoding = UTF-8, UTF-16 etc
      *
-     * @param _message, int _algo, String _encoding
+     * @param message, algo, encoding
      * @return String (computed hash)
-     * @throws Exception
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException
      */
+    public static final String createHash(final String message, final String algo,  String encoding)
+            throws NoSuchAlgorithmException, UnsupportedEncodingException {
 
-    public final static String createHash(final String _message, final String _algo, final String _encoding) throws Exception {
-
-        if(_message == null) {							// Check Input Message
-            throw new Exception("Invalid message for hashing");
+        if(message == null) {							// Check Input Message
+            throw new InputMismatchException("Invalid message for hashing");
         }
-        String encoding = _encoding;
-        if(encoding == null) {								// Check Input Encoding
-            encoding = "UTF-8";
+        if(encoding == null) {							// Check Input Encoding
+            encoding = UTF;
         }
         // Input validation over -------------------------------------------------------------------------------
         MessageDigest mesgDigest = null;
-        try {
-            mesgDigest = MessageDigest.getInstance(_algo); 	// Load the Algorithm
-        } catch(NoSuchAlgorithmException e) { throw e; }
-        try {
-            mesgDigest.update(_message.getBytes(encoding)); 				// Updates the digest
-        } catch(UnsupportedEncodingException e) { throw e; }
-        byte raw[] = mesgDigest.digest(); 									// Hash Computation and reset
-        return base64Encoder(raw); 											// Convert raw data in Base64
+        mesgDigest = MessageDigest.getInstance(algo); 	            // Load the Algorithm
+        mesgDigest.update(message.getBytes(encoding)); 				// Updates the digest
 
+        byte[] raw = mesgDigest.digest(); 								// Hash Computation and reset
+        return base64Encoder(raw); 										// Convert raw data in Base64
         // Hash computing over -------------------------------------------------------------------------------
     }
-
 
     /**
      * Base 64 Encoder
@@ -183,7 +183,7 @@ public final class HashData {
      * @param raw
      * @return String
      */
-    public static String base64Encoder(byte raw[]) {
+    public static String base64Encoder(byte[] raw) {
         return Base64.getEncoder().encodeToString(raw);
     }
 
@@ -204,13 +204,13 @@ public final class HashData {
      * @return String
      */
 
-    public static String hexEncoder(byte raw[]) {
-        char[] HEX_CHARS = "0123456789ABCDEF".toCharArray();
+    public static String hexEncoder(byte[] raw) {
+        char[] hexchars = "0123456789ABCDEF".toCharArray();
 
         StringBuilder sb = new StringBuilder(raw.length * 2);
         for (byte b : raw) {
-            sb.append(HEX_CHARS[(b & 0xF0) >> 4]);
-            sb.append(HEX_CHARS[b & 0x0F]);
+            sb.append(hexchars[(b & 0xF0) >> 4]);
+            sb.append(hexchars[b & 0x0F]);
         }
         String hexValue = sb.toString();
         System.out.println("HEX="+hexValue);
@@ -236,7 +236,7 @@ public final class HashData {
             System.out.println("\nTesting with default Password = MyC0mp13xPa$$w0rd -----------------------\n");
 
             args = new String[2];
-            args[0]	=	new String("MyC0mp13xPa$$w0rd");
+            args[0]	=	"MyC0mp13xPa$$w0rd";
             args[1]	=	"0";
         }
 

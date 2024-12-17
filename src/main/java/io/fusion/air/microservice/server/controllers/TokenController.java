@@ -44,6 +44,7 @@ import org.springframework.http.HttpHeaders;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -167,7 +168,7 @@ public class TokenController extends AbstractController {
 
 		// Step 2: Generate Authorize Tokens
 		HttpHeaders headers = new HttpHeaders();
-		HashMap<String, String> allTokens = tokenManager.createAuthorizationToken(subject, headers);
+		Map<String, String> allTokens = tokenManager.createAuthorizationToken(subject, headers);
 		String txToken = tokenManager.createTXToken(subject, TokenManager.TX_USERS, headers);
 		allTokens.putIfAbsent("TX-Token", txToken);
 		StandardResponse stdResponse = createSuccessResponse("Auth & Refresh Tokens Generated!!!");
