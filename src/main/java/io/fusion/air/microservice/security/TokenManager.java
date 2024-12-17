@@ -252,7 +252,7 @@ public class TokenManager {
         refreshClaims.put("rol", "User");
         refreshClaims.put("jti", UUID.randomUUID().toString());
 
-        HashMap<String, String> tokens = refreshTokens(subject, authClaims, refreshClaims);
+        Map<String, String> tokens = refreshTokens(subject, authClaims, refreshClaims);
         String authToken = tokens.get("token");
         String refreshTkn = tokens.get(AUTH_REFRESH);
         if(headers != null) {
@@ -271,7 +271,7 @@ public class TokenManager {
      * @param refreshTokenClaims
      * @return
      */
-    private HashMap<String, String> refreshTokens(String subject,
+    private Map<String, String> refreshTokens(String subject,
                                                   Map<String, Object> authTokenClaims, Map<String, Object> refreshTokenClaims) {
         tokenAuthExpiry = (tokenAuthExpiry < 10) ? JsonWebTokenConstants.EXPIRE_IN_FIVE_MINS : tokenAuthExpiry;
         tokenRefreshExpiry = (tokenRefreshExpiry < 10) ? JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;

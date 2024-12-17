@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.security;
-
+// Spring
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -49,7 +49,6 @@ public class JsonWebTokenConfig implements Serializable {
     @Value("${server.crypto.private.key:privateKey.pem}")
     private String cryptoPrivateKeyFile;
 
-    // server.token.issuer=${service.org}
     @Value("${server.token.issuer}")
     private String tokenIssuer;
 
@@ -76,45 +75,82 @@ public class JsonWebTokenConfig implements Serializable {
     @Value("${server.secure.data.key:alphaHawk6109871597}")
     private String secureDataKey;
 
-    public JsonWebTokenConfig() {
-    }
-
+    /**
+     * Return Crypto Public Key File
+     * @return
+     */
     public String getCryptoPublicKeyFile() {
         return cryptoPublicKeyFile;
     }
 
+    /**
+     * Return Crypto Private Key File
+     * @return
+     */
     public String getCryptoPrivateKeyFile() {
         return cryptoPrivateKeyFile;
     }
 
+    /**
+     * Returns the Token Issuer
+     * @return
+     */
     public String getTokenIssuer() {
         return tokenIssuer;
     }
 
+    /**
+     * Returns the Token Type
+     * @return
+     */
     public int getTokenType() {
         return tokenType;
     }
 
+    /**
+     * Returns TRUE if the Server Token Test is enabled
+     * @return
+     */
     public boolean isServerTokenTest() {
         return serverTokenTest;
     }
 
+    /**
+     * Returns Auth Token Expiry Time
+     * @return
+     */
     public long getTokenAuthExpiry() {
         return tokenAuthExpiry;
     }
 
+    /**
+     * Returns Refresh Token Expiry Time
+     * @return
+     */
     public long getTokenRefreshExpiry() {
         return tokenRefreshExpiry;
     }
 
+    /**
+     * Returns the Token Key
+     * @return
+     */
     public String getTokenKey() {
         return tokenKey;
     }
 
+    /**
+     * Returns the Secure Data Key
+     * @return
+     */
     public String getSecureDataKey() {
         return secureDataKey;
     }
 
+    /**
+     * Returns the Service Org
+     * @return
+     */
     public String getServiceOrg() {
         return serviceOrg;
     }

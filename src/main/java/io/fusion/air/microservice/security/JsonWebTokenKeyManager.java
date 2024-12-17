@@ -17,6 +17,7 @@
 package io.fusion.air.microservice.security;
 
 // Spring
+import io.fusion.air.microservice.domain.exceptions.SecurityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 // Java
@@ -26,7 +27,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Key;
-import java.security.interfaces.RSAPublicKey;
 // Logger
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -45,30 +45,40 @@ public final class JsonWebTokenKeyManager {
 	// Set Logger -> Lookup will automatically determine the class name.
 	private static final Logger log = getLogger(lookup().lookupClass());
 
-	@Autowired
+	// Autowired using the Constructor
 	private JsonWebTokenConfig jwtConfig;
 
-	@Autowired
+	// Autowired using the Constructor
 	private KeyCloakConfig keycloakConfig;
 
-	@Autowired
+	// Autowired using the Constructor
 	private CryptoKeyGenerator cryptoKeys;
 
 	private int tokenType;
-
+	private String issuer;
 	private Key signingKey;
 	private Key validatorKey;
 	private Key validatorLocalKey;
-
-	// private SignatureAlgorithm algorithm;
-	// public final static SignatureAlgorithm defaultAlgo = SignatureAlgorithm.HS512;
-
-	private String issuer;
 
 	/**
 	 * Initialize the JWT with the Signature Algorithm based on Secret Key or Public / Private Key
 	 */
 	public JsonWebTokenKeyManager() {
+	}
+
+	/**
+	 * Initialize the JWT with the Signature Algorithm based on Secret Key or Public / Private Key
+	 * Autowired using the Constructor
+	 * @param jwtCfg
+	 * @param keyCloakCfg
+	 * @param keyGenerator
+	 */
+	@Autowired
+	public JsonWebTokenKeyManager(JsonWebTokenConfig jwtCfg,
+								  KeyCloakConfig keyCloakCfg, CryptoKeyGenerator keyGenerator ) {
+		jwtConfig = jwtCfg;
+		keycloakConfig = keyCloakCfg;
+		cryptoKeys = keyGenerator;
 	}
 
 	/**
@@ -85,9 +95,9 @@ public final class JsonWebTokenKeyManager {
 	 * settings.
 	 * @return
 	 */
-	public JsonWebTokenKeyManager init(int _tokenType) {
-		tokenType 			= _tokenType;
-		log.debug("JWT-KeyManager: JSON Web Token Type = "+tokenType);
+	public JsonWebTokenKeyManager init(int tknType) {
+		this.tokenType = tknType;
+		log.info("JWT-KeyManager: JSON Web Token Type = {} ", this.tokenType);
 		// Create the Key based on Secret Key or Private Key
 		createSigningKey();
 		issuer				= (jwtConfig != null) ? jwtConfig.getServiceOrg() : "fusion-air";
@@ -101,12 +111,6 @@ public final class JsonWebTokenKeyManager {
 	 */
 	private void createSigningKey() {
 		switch(tokenType) {
-			case JsonWebTokenConstants.SECRET_KEY:
-				log.info("JWT-KeyManager: JSON Web Token based on SECRET KEY....");
-				signingKey = new SecretKeySpec(getTokenKeyBytes(), "HmacSHA512");
-				validatorKey = signingKey;
-				validatorLocalKey = signingKey;
-				break;
 			case JsonWebTokenConstants.PUBLIC_KEY:
 				log.info("JWT-KeyManager: JSON Web Token based on PUBLIC KEY....");
 				getCryptoKeyGenerator()
@@ -119,8 +123,16 @@ public final class JsonWebTokenKeyManager {
 				signingKey = getCryptoKeyGenerator().getPrivateKey();
 				validatorKey = getCryptoKeyGenerator().getPublicKey();
 				validatorLocalKey = validatorKey;
-				System.out.println("Public key format: " + getCryptoKeyGenerator().getPublicKey().getFormat());
-				System.out.println(getCryptoKeyGenerator().getPublicKeyPEMFormat());
+				log.info("\nPublic key format: {} ", getCryptoKeyGenerator().getPublicKey().getFormat());
+				log.info("\n{}",getCryptoKeyGenerator().getPublicKeyPEMFormat());
+				break;
+			case JsonWebTokenConstants.SECRET_KEY:
+				// Fall through to the default case
+			default:
+				log.info("JWT-KeyManager: JSON Web Token based on SECRET KEY....");
+				signingKey = new SecretKeySpec(getTokenKeyBytes(), "HmacSHA512");
+				validatorKey = signingKey;
+				validatorLocalKey = signingKey;
 				break;
 		}
 	}
@@ -134,7 +146,6 @@ public final class JsonWebTokenKeyManager {
 		if(keycloakConfig.isKeyCloakEnabled()) {
 			log.info("JWT-KeyManager: KeyCloak Server Access Enabled.... ");
 			Path filePath = Paths.get(keycloakConfig.getKeyCloakPublicKey());
-			RSAPublicKey key = null;
 			String keyName = "RSA PUBLIC KEY";
 			if (Files.exists(filePath)) {
 				try {
@@ -146,11 +157,10 @@ public final class JsonWebTokenKeyManager {
 					issuer = keycloakConfig.getTokenIssuer();
 					validatorKey = getCryptoKeyGenerator().getPublicKey();
 					String pem = getCryptoKeyGenerator().convertKeyToText(getValidatorKey(), keyName);
-					log.info("KeyCloak Public Key Set. Issuer = "+issuer);
-					// System.out.println("KeyCloak Public Key Set. Issuer = "+issuer);
-					System.out.println(pem);
+					log.info("KeyCloak Public Key Set. Issuer = {}",issuer);
+					log.info("\n{}",pem);
 				} catch (Exception e) {
-					throw new RuntimeException(e);
+					throw new SecurityException(e);
 				}
 			}
 		}
@@ -203,11 +213,11 @@ public final class JsonWebTokenKeyManager {
 
 	/**
 	 * Set the Issuer
-	 * @param _issuer
+	 * @param issuer
 	 * @return
 	 */
-	public JsonWebTokenKeyManager setIssuer(String _issuer) {
-		issuer = _issuer;
+	public JsonWebTokenKeyManager setIssuer(String issuer) {
+		this.issuer = issuer;
 		return this;
 	}
 

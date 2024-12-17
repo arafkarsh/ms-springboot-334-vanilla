@@ -22,9 +22,9 @@ package io.fusion.air.microservice.security;
  */
 public class JsonWebTokenConstants {
 
-    public static String TOKEN = "<([1234567890SecretKey!!??To??Encrypt##Data@12345%6790])>";
+    public static final String TOKEN = "<([1234567890SecretKey!!??To??Encrypt##Data@12345%6790])>";
 
-    public static final long EXPIRE_IN_ONE_MINS 		= 1000 * 60;
+    public static final long EXPIRE_IN_ONE_MINS 		= 1000L * 60;
     public static final long EXPIRE_IN_FIVE_MINS 	    = EXPIRE_IN_ONE_MINS * 5;
     public static final long EXPIRE_IN_TEN_MINS 		= EXPIRE_IN_ONE_MINS * 10;
     public static final long EXPIRE_IN_TWENTY_MINS 	= EXPIRE_IN_ONE_MINS * 20;
@@ -55,4 +55,6 @@ public class JsonWebTokenConstants {
 
     public static final int LOCAL_KEY 				        = 1;
     public static final int KEYCLOAK_KEY 			        = 2;
+
+    private JsonWebTokenConstants() {}
 }

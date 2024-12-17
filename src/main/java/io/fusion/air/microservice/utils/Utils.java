@@ -607,6 +607,22 @@ public final class Utils {
 	}
 
 	/**
+	 * Print to Standard Out
+	 * @param msg
+	 */
+	public static final void println(String msg) {
+		System.out.println(msg);
+	}
+
+	/**
+	 * Print to Standard Out
+	 * @param msg
+	 */
+	public static final void println(Object msg) {
+		System.out.println(msg.toString());
+	}
+
+	/**
 	 * For Testing ONLY
 	 * @param args
 	 * @throws Exception

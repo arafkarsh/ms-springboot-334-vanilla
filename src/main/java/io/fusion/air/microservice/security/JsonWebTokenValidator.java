@@ -16,6 +16,7 @@
 
 package io.fusion.air.microservice.security;
 // JWT
+import io.fusion.air.microservice.utils.Utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -28,6 +29,8 @@ import java.util.Date;
 import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+// Custom
+import static io.fusion.air.microservice.utils.Utils.println;
 
 /**
  *  JSON Web Token Validator
@@ -38,8 +41,7 @@ import java.util.stream.Collectors;
 @Service
 public final class JsonWebTokenValidator {
 
-	// Set Logger -> Lookup will automatically determine the class name.
-	//  private static final Logger log = getLogger(lookup().lookupClass());
+	public static final String DOUBLE_LINE = "===============================================================================";
 
 	/**
 	 * Initialize the JWT with the Signature Algorithm based on Secret Key or Public / Private Key
@@ -54,83 +56,82 @@ public final class JsonWebTokenValidator {
 	/**
 	 * Validate User Id with Token
 	 *
-	 * @param _userId
-	 * @param _token
+	 * @param userId
+	 * @param token
 	 * @return
 	 */
-	public boolean validateToken(String _userId, TokenData _token) {
-		return (!isTokenExpired(_token) &&
-				getSubjectFromToken(_token).equals(_userId));
+	public boolean validateToken(String userId, TokenData token) {
+		return (!isTokenExpired(token) &&
+				getSubjectFromToken(token).equals(userId));
 	}
 
 	/**
 	 * Returns True if the Token is expired
 	 *
-	 * @param _token
+	 * @param token
 	 * @return
 	 */
-	public boolean isTokenExpired(TokenData _token) {
-		return getExpiryDateFromToken(_token).before(new Date());
+	public boolean isTokenExpired(TokenData token) {
+		return getExpiryDateFromToken(token).before(new Date());
 	}
 
 	/**
 	 * Get the User / Subject from the Token
 	 *
-	 * @param _token
+	 * @param token
 	 * @return
 	 */
-	public String getSubjectFromToken(TokenData _token) {
-		return getClaimFromToken(_token, Claims::getSubject);
+	public String getSubjectFromToken(TokenData token) {
+		return getClaimFromToken(token, Claims::getSubject);
 	}
 
 	/**
 	 * Get the Expiry Date of the Token
 	 *
-	 * @param _token
+	 * @param token
 	 * @return
 	 */
-	public Date getExpiryDateFromToken(TokenData _token) {
-		return getClaimFromToken(_token, Claims::getExpiration);
+	public Date getExpiryDateFromToken(TokenData token) {
+		return getClaimFromToken(token, Claims::getExpiration);
 	}
 
 	/**
 	 * Token Should not be used before this Date.
 	 *
-	 * @param _token
+	 * @param token
 	 * @return
 	 */
-	public Date getNotBeforeDateFromToken(TokenData _token) {
-		return getClaimFromToken(_token, Claims::getNotBefore);
+	public Date getNotBeforeDateFromToken(TokenData token) {
+		return getClaimFromToken(token, Claims::getNotBefore);
 	}
 	/**
 	 * Get the Token Issue Date
 	 *
-	 * @param _token
+	 * @param token
 	 * @return
 	 */
-	public Date getIssuedAtFromToken(TokenData _token) {
-		return getClaimFromToken(_token, Claims::getIssuedAt);
+	public Date getIssuedAtFromToken(TokenData token) {
+		return getClaimFromToken(token, Claims::getIssuedAt);
 	}
 
 	/**
 	 * Get the Issuer from the Token
 	 *
-	 * @param _token
+	 * @param token
 	 * @return
 	 */
-	public String getIssuerFromToken(TokenData _token) {
-		return getClaimFromToken(_token, Claims::getIssuer);
+	public String getIssuerFromToken(TokenData token) {
+		return getClaimFromToken(token, Claims::getIssuer);
 	}
 
 	/**
 	 * Get the Audience from the Token
 	 *
-	 * @param _token
+	 * @param token
 	 * @return
 	 */
-	public String getAudienceFromToken(TokenData _token) {
-		// return getClaimFromToken(_token, Claims::getAudience);
-		return getClaimFromToken(_token, Claims::getAudience)
+	public String getAudienceFromToken(TokenData token) {
+		return getClaimFromToken(token, Claims::getAudience)
 				.stream()
 				.map(String::valueOf) // Convert each element to a string (if needed)
 				.collect(Collectors.joining(", "));
@@ -154,27 +155,27 @@ public final class JsonWebTokenValidator {
 		return (puser == null) ? subject: puser;
 	}
 
-	public <T> T getClaimFromToken(TokenData _token,
-								   Function<Claims, T> _claimsResolver) {
-		return _claimsResolver.apply(getAllClaims(_token));
+	public <T> T getClaimFromToken(TokenData token,
+								   Function<Claims, T> claimsResolver) {
+		return claimsResolver.apply(getAllClaims(token));
 	}
 
-	public Claims getAllClaims(TokenData _token) {
-		return getJws(_token).getPayload();
+	public Claims getAllClaims(TokenData token) {
+		return getJws(token).getPayload();
 	}
 
-	public Jws<Claims> getJws(TokenData _token) {
-		return (_token.getKeyType()  == JsonWebTokenConstants.PUBLIC_KEY) ?
+	public Jws<Claims> getJws(TokenData token) {
+		return (token.getKeyType()  == JsonWebTokenConstants.PUBLIC_KEY) ?
 				Jwts.parser()
-						.verifyWith( (PublicKey) _token.getValidatoryKey() )
-						.requireIssuer(_token.getIssuer())
+						.verifyWith( (PublicKey) token.getValidatoryKey() )
+						.requireIssuer(token.getIssuer())
 						.build()
-						.parseSignedClaims(_token.getToken())
+						.parseSignedClaims(token.getToken())
 				: Jwts.parser()
-				.verifyWith( (SecretKey) _token.getValidatoryKey() )
-				.requireIssuer(_token.getIssuer())
+				.verifyWith( (SecretKey) token.getValidatoryKey() )
+				.requireIssuer(token.getIssuer())
 				.build()
-				.parseSignedClaims(_token.getToken());
+				.parseSignedClaims(token.getToken());
 		/**
 		return Jwts.parserBuilder()
 				.setSigningKey(_token.getValidatoryKey())
@@ -187,12 +188,12 @@ public final class JsonWebTokenValidator {
 	/**
 	 * Return Payload as JSON String
 	 *
-	 * @param _token
+	 * @param token
 	 * @return
 	 */
-	public String getPayload(TokenData _token) {
+	public String getPayload(TokenData token) {
 		StringBuilder sb = new StringBuilder();
-		Claims claims = getAllClaims(_token);
+		Claims claims = getAllClaims(token);
 		int x=1;
 		int size=claims.size();
 		sb.append("{");
@@ -234,46 +235,48 @@ public final class JsonWebTokenValidator {
 	 * @param showPayload
 	 */
     public void tokenStats(TokenData token, boolean showClaims, boolean showPayload) {
-		System.out.println("-------------- aaa.bbb.ccc ------------------- 1 -");
-		System.out.println(token);
-		System.out.println("-------------- ----------- ------------------- 2 -");
-		System.out.println("Subject  = "+getSubjectFromToken(token));
-		System.out.println("Audience = "+getAudienceFromToken(token));
-		System.out.println("Issuer   = "+getIssuerFromToken(token));
-		System.out.println("IssuedAt = "+getIssuedAtFromToken(token));
-		System.out.println("Expiry   = "+getExpiryDateFromToken(token));
-		System.out.println("Expired  = "+isTokenExpired(token));
-		System.out.println("---------------------------------------------- 3 -");
+		println("-------------- aaa.bbb.ccc ------------------- 1 -");
+		println(token);
+		println("-------------- ----------- ------------------- 2 -");
+		println("Subject  = "+getSubjectFromToken(token));
+		println("Audience = "+getAudienceFromToken(token));
+		println("Issuer   = "+getIssuerFromToken(token));
+		println("IssuedAt = "+getIssuedAtFromToken(token));
+		println("Expiry   = "+getExpiryDateFromToken(token));
+		println("Expired  = "+isTokenExpired(token));
+		println("---------------------------------------------- 3 -");
 		Jws<Claims> jws = getJws(token);
-		System.out.println("Header       : " + jws.getHeader());
-		System.out.println("Body         : " + jws.getPayload());
-		System.out.println("Content      : " + jws.toString());
+		println("Header       : " + jws.getHeader());
+		println("Body         : " + jws.getPayload());
+		println("Content      : " + jws.toString());
 		if(showClaims) {
 			Claims claims = getAllClaims(token);
 			int x = 1;
 			for (Entry<String, Object> o : claims.entrySet()) {
-				System.out.println(x + "> " + o);
+				println(x + "> " + o);
 				x++;
 			}
 		}
-		System.out.println("---------------------------------------------- 4 -");
+		println("---------------------------------------------- 4 -");
 		if(showPayload) {
-			System.out.println("Payload=" + getPayload(token));
-			System.out.println("---------------------------------------------- 5 -");
+			println("Payload=" + getPayload(token));
+			println("---------------------------------------------- 5 -");
 		}
 
     }
 
 	/**
 	 * Returns Expiry Time in Days:Hours:Mins
-	 * @param _time
+	 * @param time
 	 * @return
 	 */
-	public static String printExpiryTime(long _time) {
-		String ms="0", hs="0", ds="0";
-		long m = _time / (1000 * 60);
-		long h = _time / (1000 * 60 * 60);
-		long d = _time / (1000 * 60 * 60 * 24);
+	public static String printExpiryTime(long time) {
+		String ms="0";
+		String hs="0";
+		String ds="0";
+		long m = time / (1000 * 60);
+		long h = time / (1000 * 60 * 60);
+		long d = time / (1000 * 60 * 60 * 24);
 		if(m > 59) { m = m-(h*60); }
 		if(h > 23) { h = h-(d*24);}
 		ms = (m<10) ? ms + m : ""+m;
@@ -289,14 +292,14 @@ public final class JsonWebTokenValidator {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		System.out.println("===============================================================================");
-		System.out.println("Generate Json Web Tokens Based on SECRET KEYS");
-		System.out.println("===============================================================================");
+		println(DOUBLE_LINE);
+		println("Generate Json Web Tokens Based on SECRET KEYS");
+		println(DOUBLE_LINE);
 		// testJWTCreation(JsonWebTokenValidator.SECRET_KEY);
-		System.out.println("===============================================================================");
-		System.out.println("Generate Json Web Tokens Based on PUBLIC/PRIVATE KEYS");
-		System.out.println("===============================================================================");
+		println(DOUBLE_LINE);
+		println("Generate Json Web Tokens Based on PUBLIC/PRIVATE KEYS");
+		println(DOUBLE_LINE);
 		// testJWTCreation(JsonWebTokenValidator.PUBLIC_KEY);
-		System.out.println("===============================================================================");
+		println(DOUBLE_LINE);
 	}
 }

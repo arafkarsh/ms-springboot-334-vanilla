@@ -164,7 +164,7 @@ public class TokenController extends AbstractController {
 
 		// Claims authTokenClaims = jwtUtil.getAllClaims(authToken);
 		Claims refreshTokenClaims = jsonWebToken.getAllClaims(refreshToken);
-		HashMap<String, String> tokens = refreshTokens(subject, refreshTokenClaims, refreshTokenClaims);
+		Map<String, String> tokens = refreshTokens(subject, refreshTokenClaims, refreshTokenClaims);
 
 		// Step 2: Generate Authorize Tokens
 		HttpHeaders headers = new HttpHeaders();
@@ -199,7 +199,7 @@ public class TokenController extends AbstractController {
 	 * @param refreshTokenClaims
 	 * @return
 	 */
-	private HashMap<String, String> refreshTokens(String subject,
+	private Map<String, String> refreshTokens(String subject,
 												  Claims authTokenClaims, Claims refreshTokenClaims) {
 		tokenAuthExpiry = (tokenAuthExpiry < 5) ? JsonWebTokenConstants.EXPIRE_IN_FIVE_MINS : tokenAuthExpiry;
 		tokenRefreshExpiry = (tokenRefreshExpiry < 30) ? JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;
