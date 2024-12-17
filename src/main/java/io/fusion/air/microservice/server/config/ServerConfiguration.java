@@ -1,7 +1,5 @@
 package io.fusion.air.microservice.server.config;
-
-import org.apache.catalina.connector.Connector;
-import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
+// Spring
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +22,19 @@ public class ServerConfiguration implements WebServerFactoryCustomizer<TomcatSer
 
     @Override
     public void customize(TomcatServletWebServerFactory factory) {
+        factory.addConnectorCustomizers(connector ->
+                connector.setProperty("maxHttpResponseHeaderSize", "100000")
+        );
+    }
+
+    /**
+     * The Following code is converted into a Lambda
+     * @param factory
+     */
+    /**
+     * Shown here only for the demo purpose.
+    @Override
+    public void customize(TomcatServletWebServerFactory factory) {
         factory.addConnectorCustomizers(new TomcatConnectorCustomizer() {
             @Override
             public void customize(Connector connector) {
@@ -31,4 +42,5 @@ public class ServerConfiguration implements WebServerFactoryCustomizer<TomcatSer
             }
         });
     }
+    */
 }

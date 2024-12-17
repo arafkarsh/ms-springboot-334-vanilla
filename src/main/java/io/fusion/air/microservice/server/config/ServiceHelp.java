@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.server.config;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
+// Java
+import java.util.List;
+import java.util.Map;
+// Jakarta
 import jakarta.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
+// Spring
 import org.springframework.stereotype.Component;
-
 // Logging System
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -42,7 +40,7 @@ public class ServiceHelp {
 	
 	private static int counter;
 	
-	@Autowired
+	// Autowired using the Constructor
 	private ServiceConfiguration serviceConfig;
 	
 	public static final String NL = System.getProperty("line.separator");
@@ -70,8 +68,12 @@ public class ServiceHelp {
 	+"=====================================================================================================" + NL;
 
 
-
-	public ServiceHelp() {
+	/**
+	 * Autowired using the Constructor
+	 * @param serviceCfg
+	 */
+	public ServiceHelp(ServiceConfiguration serviceCfg) {
+		serviceConfig = serviceCfg;
 		counter++;
 	}
 	
@@ -88,26 +90,24 @@ public class ServiceHelp {
 	 */
 	@PostConstruct
 	public void printProperties() {
-		HashMap<String, String> sysProps = serviceConfig.systemProperties();
-
 		// Environment Variables
-		for(String key: sysProps.keySet()) {
-			log.debug("|System Property Key   = "+key+" | Value = "+sysProps.get(key));
-			// System.out.println(LocalDateTime.now()+"|System Property List  = "+key);
+		for (Map.Entry<String, String> entry : serviceConfig.systemProperties().entrySet()) {
+			String key = entry.getKey();
+			String value = entry.getValue();
+			log.debug("|System Property Key   = {}  | Value = {} ", key, value);
 		}
 
 		// Property Map (Application.Properties)
-		HashMap<String, String> map = serviceConfig.getAppPropertyMap();
-		for(String k : map.keySet()) {
-			log.info("|Service Property Key  = "+k+" | Value = "+map.get(k));
-			// System.out.println(LocalDateTime.now()+"|Service Property Map  = "+k+" | Value = "+map.get(k));
+		for (Map.Entry<String, String> entry : serviceConfig.getAppPropertyMap().entrySet()) {
+			String key = entry.getKey();
+			String value = entry.getValue();
+			log.debug("|System Property Key   = {}  | Value = {} ", key, value);
 		}
 
 		// Property List (Application.properties)
-		ArrayList<String> properties = serviceConfig.getAppPropertyProductList();
+		List<String> properties = serviceConfig.getAppPropertyProductList();
 		for(String p: properties) {
-			log.info("|Service Property List = "+p);
-			// System.out.println(LocalDateTime.now()+"|Service Property List = "+p);
+			log.info("|Service Property List = {} ", p);
 		}
  	}
 }

@@ -33,7 +33,7 @@ public class CacheDefaultConfig {
 
     public static final String RATE_LIMIT_CACHE = "RateLimitCache";
 
-    @Bean(name="RateLimitCacheManager")
+    @Bean(name="rateLimitCacheManager")
     public CacheManager cacheManager() {
         return new ConcurrentMapCacheManager(RATE_LIMIT_CACHE);
         // Redis Cache Manager

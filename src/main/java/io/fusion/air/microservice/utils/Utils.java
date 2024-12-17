@@ -348,6 +348,7 @@ public final class Utils {
 	 * @see #createSecureCookie(String, String)
 	 * @return
 	 */
+	@Deprecated(since="0.1.2", forRemoval=true)
 	public static Cookie createSecureCookie(HttpServletRequest request, String key, String value) {
 		Cookie c = new Cookie(key, value);
 		// c.setDomain(serviceConfig.getServerHost());
@@ -368,6 +369,7 @@ public final class Utils {
 	 * @deprecated Use createSecureCookie(String _key, String value)
 	 *  @see #createSecureCookie(String, String, String, int)
 	 */
+	@Deprecated(since="0.1.2", forRemoval=true)
 	public static Cookie createSecureCookie(HttpServletRequest request, String key, String value, int age) {
 		Cookie c = new Cookie(key, value);
 		// c.setDomain(serviceConfig.getServerHost());

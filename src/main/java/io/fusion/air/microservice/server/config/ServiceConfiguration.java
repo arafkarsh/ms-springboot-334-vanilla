@@ -18,9 +18,12 @@ package io.fusion.air.microservice.server.config;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.fusion.air.microservice.utils.Utils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -58,6 +61,27 @@ public class ServiceConfiguration implements Serializable {
 	private ConfigMap configMap = new ConfigMap();
 
 	/**
+	 * To be used outside SpringBoot Context
+	 * For WireMock Testing the External Services
+	 */
+	@Autowired
+	public ServiceConfiguration() {
+		this("localhost", 8080);
+	}
+
+	/**
+	 * To be used outside SpringBoot Context
+	 * For WireMock Testing the External Services
+	 *
+	 * @param rHost
+	 * @param rPort
+	 */
+	public ServiceConfiguration(String rHost, int rPort) {
+		this.remoteHost = rHost;
+		this.remotePort = rPort;
+	}
+
+	/**
 	 * Returns the ConfigMap
 	 * @return
 	 */
@@ -80,7 +104,6 @@ public class ServiceConfiguration implements Serializable {
 		configMap.setAppPropertyMap( appPropertyMap);
 		return configMap;
 	}
-
 
 	/**
 	 * Return the JSON String
@@ -156,7 +179,6 @@ public class ServiceConfiguration implements Serializable {
 	@Value("${server.host:localhost}")
 	private String serverHost;
 
-	// server.resources.url=${service.url}${service.api.path}
 	@Value("${server.resources.url}")
 	private String serverResourceUrl;
 
@@ -199,7 +221,6 @@ public class ServiceConfiguration implements Serializable {
 	@Value("${server.crypto.private.key:privateKey.pem}")
 	private String cryptoPrivateKeyFile;
 
-	// server.token.issuer=${service.org}
 	@Value("${server.token.issuer}")
 	private String tokenIssuer;
 
@@ -257,9 +278,6 @@ public class ServiceConfiguration implements Serializable {
 	@Value("${spring.jpa.database-platform:org.hibernate.dialect.H2Dialect}")
 	private String dataSourceDialect;
 
-	// @Value("${logging.level}")
-	// private String loggingLevel;
-	
 	@Value("${spring.codec.max-in-memory-size:3MB}")
 	private String springCodecMaxMemory;
 
@@ -286,26 +304,6 @@ public class ServiceConfiguration implements Serializable {
 	@JsonIgnore
 	@Value("#{${app.property.map}}")
 	private HashMap<String, String> appPropertyMap;
-	
-	/**
-	 * To be used outside SpringBoot Context
-	 * For WireMock Testing the External Services
-	 */
-	public ServiceConfiguration() {
-		this("localhost", 8080);
-	}
-	
-	/**
-	 * To be used outside SpringBoot Context
-	 * For WireMock Testing the External Services
-	 * 
-	 * @param rHost
-	 * @param rPort
-	 */
-	public ServiceConfiguration(String rHost, int rPort) {
-		this.remoteHost = rHost;
-		this.remotePort = rPort;
-	}
 
 	/**
 	 * Returns Service Details as HTML
@@ -430,7 +428,7 @@ public class ServiceConfiguration implements Serializable {
 	/**
 	 * @return the appPropertyProductList
 	 */
-	public ArrayList<String> getAppPropertyProductList() {
+	public List<String> getAppPropertyProductList() {
 		return appPropertyProductList;
 	}
 
@@ -438,21 +436,21 @@ public class ServiceConfiguration implements Serializable {
 	 * Get Property List
 	 * @return
 	 */
-	public ArrayList<String> getAppPropertyList() {
+	public List<String> getAppPropertyList() {
 		return appPropertyList;
 	}
 
 	/**
 	 * @return the appPropertyMap
 	 */
-	public HashMap<String, String> getAppPropertyMap() {
+	public Map<String, String> getAppPropertyMap() {
 		return appPropertyMap;
 	}
 	
 	/**
 	 * @return the systemProperties
 	 */
-	public HashMap<String, String> systemProperties() {
+	public Map<String, String> systemProperties() {
 		return getSystemProperties();
 	}
 
@@ -501,7 +499,7 @@ public class ServiceConfiguration implements Serializable {
 	 * @return
 	 */
 	public String getServiceAPIErrorPrefix() {
-		return (getServiceApiErrorPrefix() != null) ? getServiceApiErrorPrefix() : "99";
+		return (serviceApiErrorPrefix != null) ? serviceApiErrorPrefix : "99";
 	}
 
 	/**
@@ -664,16 +662,8 @@ public class ServiceConfiguration implements Serializable {
 	 * Returns System Properties
 	 * @return
 	 */
-	public HashMap<String, String> getSystemProperties() {
+	public Map<String, String> getSystemProperties() {
 		return systemProperties;
-	}
-
-	/**
-	 * Returns the Service API Error Prefix
-	 * @return
-	 */
-	public String getServiceApiErrorPrefix() {
-		return serviceApiErrorPrefix;
 	}
 
 	/**

@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.server.config.ConfigMap;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.config.ServiceHelp;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +35,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.invoke.MethodHandles.lookup;
@@ -89,7 +87,7 @@ public class ConfigController extends AbstractController {
 	@ResponseBody
 	public ResponseEntity<StandardResponse> getEnv(HttpServletRequest request) throws Exception {
 		log.info(name()+"|Request to Get Environment Vars Check.. ");
-		HashMap<String, String> sysProps = serviceConfig.systemProperties();
+		Map<String, String> sysProps = serviceConfig.systemProperties();
 		StandardResponse stdResponse = createSuccessResponse("System Properties Ready!");
 		stdResponse.setPayload(sysProps);
 		return ResponseEntity.ok(stdResponse);

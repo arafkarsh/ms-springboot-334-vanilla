@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.server.config;
-
-
 // Spring
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,8 +44,16 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableTransactionManagement
 public class DatabaseSetup {
 
-    @Autowired
+    // Autowired using the Constructor
     private DatabaseConfig dbConfig;
+
+    /**
+     * Autowired using the Constructor
+     * @param dbCfg
+     */
+    public DatabaseSetup(DatabaseConfig dbCfg) {
+        dbConfig = dbCfg;
+    }
 
     /**
      * Create the DataSource for H2 Database
@@ -60,10 +65,11 @@ public class DatabaseSetup {
                 return h2DataSource();
             case DatabaseConfig.DB_POSTGRESQL:
                 return postgreSQLDataSource();
+            default:
+                // Returns H2 Database if Nothing Matches
+                EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+                return builder.setType(EmbeddedDatabaseType.H2).build();
         }
-        // Returns H2 Database if Nothing Matches
-        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-        return builder.setType(EmbeddedDatabaseType.H2).build();
     }
 
     /**

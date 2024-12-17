@@ -72,12 +72,12 @@ public class TimeTrackerServerAspect {
 
     /**
      * Track Time
-     * @param _method
+     * @param method
      * @param joinPoint
      * @return
      * @throws Throwable
      */
-    private Object trackTime(String _method, ProceedingJoinPoint joinPoint) throws Throwable {
+    private Object trackTime(String method, ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         String status = "STATUS=SUCCESS";
         try {
@@ -86,18 +86,18 @@ public class TimeTrackerServerAspect {
             status = "STATUS=ERROR:"+e.getMessage();
             throw e;
         } finally {
-            logTime(_method, startTime, status, joinPoint);
+            logTime(method, startTime, status, joinPoint);
         }
     }
 
     /**
      * Log Time Taken to Execute the Function
-     * @param _startTime
-     * @param _status
+     * @param startTime
+     * @param status
      * @param joinPoint
      */
-    private void logTime(String _method, long _startTime, String _status, ProceedingJoinPoint joinPoint) {
-        long timeTaken=System.currentTimeMillis() - _startTime;
-        log.info("3|{}|TIME={} ms|{}|CLASS={}|",_method, timeTaken, _status,joinPoint);
+    private void logTime(String method, long startTime, String status, ProceedingJoinPoint joinPoint) {
+        long timeTaken=System.currentTimeMillis() - startTime;
+        log.info("3|{}|TIME={} ms|{}|CLASS={}|",method, timeTaken, status,joinPoint);
     }
 }
