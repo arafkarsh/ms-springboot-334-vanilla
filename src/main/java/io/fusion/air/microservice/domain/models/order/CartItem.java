@@ -19,13 +19,13 @@ import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 /**
- * Cart item Request
+ * CartItem item Request
  *
  * @author: Araf Karsh Hamid
  * @version:
  * @date:
  */
-public class Cart {
+public class CartItem {
 
     @NotBlank(message = "The Customer ID is required.")
     private String customerId;
@@ -39,7 +39,7 @@ public class Cart {
 
     private BigDecimal quantity;
 
-    public Cart() {
+    public CartItem() {
         // Nothing to instantiate
     }
 

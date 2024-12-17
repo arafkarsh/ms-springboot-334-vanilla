@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 // Java
 import jakarta.validation.Valid;
+import org.springframework.web.util.HtmlUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -58,7 +59,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * Order Controller to Save the Order and Process the Payments.
  * This is to demonstrate certain concepts in Exception Handling ONLY.
- * Order, Product, Cart all must be part of 3 different Microservices.
+ * Order, Product, CartItem all must be part of 3 different Microservices.
  *
  * @author arafkarsh
  * @version 1.0
@@ -115,7 +116,7 @@ public class OrderControllerImpl extends AbstractController {
 	}
 
 	/**
-	 * GET Method Call to Get Cart for the Customer
+	 * GET Method Call to Get CartItem for the Customer
 	 * 
 	 * @return
 	 */
@@ -131,8 +132,9 @@ public class OrderControllerImpl extends AbstractController {
 	@GetMapping("/customer/{customerId}")
 	@MetricsCounter(endpoint = "/customer")
 	public ResponseEntity<StandardResponse> fetchOrder(@PathVariable("customerId") String customerId) throws AbstractServiceException {
-		log.debug("| {} |Request to Get Order For the Customer {} ",serviceName, customerId);
-		List<OrderEntity> orders = orderService.findByCustomerId(customerId);
+		String safeCustomerId = HtmlUtils.htmlEscape(customerId);
+		log.debug("| {} |Request to Get Order For the Customer {} ",serviceName, safeCustomerId);
+		List<OrderEntity> orders = orderService.findByCustomerId(safeCustomerId);
 		StandardResponse stdResponse = createSuccessResponse("Order Retrieved. Orders =  "+orders.size());
 		stdResponse.setPayload(orders);
 		return ResponseEntity.ok(stdResponse);

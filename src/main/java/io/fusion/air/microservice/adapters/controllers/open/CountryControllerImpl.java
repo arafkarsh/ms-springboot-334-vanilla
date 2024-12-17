@@ -48,7 +48,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * Country Controller for the Country Service
  * This is to demonstrate certain concepts in Exception Handling ONLY.
- * Order, Product, Cart all must be part of 3 different Microservices.
+ * Order, Product, CartItem all must be part of 3 different Microservices.
  *
  * This is to demonstrate Certain Spring Data Capabilities like Pagination.
  *

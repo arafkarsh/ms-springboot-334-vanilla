@@ -19,7 +19,7 @@ package io.fusion.air.microservice.adapters.service;
 import io.fusion.air.microservice.adapters.repository.CartRepository;
 import io.fusion.air.microservice.domain.entities.order.CartEntity;
 import io.fusion.air.microservice.domain.exceptions.DataNotFoundException;
-import io.fusion.air.microservice.domain.models.order.Cart;
+import io.fusion.air.microservice.domain.models.order.CartItem;
 import io.fusion.air.microservice.domain.ports.services.CartService;
 import io.fusion.air.microservice.utils.Utils;
 // Spring
@@ -90,7 +90,7 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * Find Cart by Customer ID
+     * Find CartItem by Customer ID
      * @param customerId
      * @return
      */
@@ -155,21 +155,21 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * Save the Cart
+     * Save the CartItem
      *
-     * @param cartModel
+     * @param cartItemModel
      * @return
      */
     @Override
     @Transactional
-    public CartEntity save(Cart cartModel) {
-        CartEntity cart = new CartEntity(cartModel);
-        meterRegistry.counter("cart.saved", "status", "Cart Saved!").increment();
+    public CartEntity save(CartItem cartItemModel) {
+        CartEntity cart = new CartEntity(cartItemModel);
+        meterRegistry.counter("cart.saved", "status", "CartItem Saved!").increment();
         return cartRepository.save(cart);
     }
 
     /**
-     * De Activate the Cart item
+     * De Activate the CartItem item
      *
      * @param customerId
      * @param cartItemUUID
@@ -184,11 +184,11 @@ public class CartServiceImpl implements CartService {
             cartRepository.saveAndFlush(cartItem.get());
             return cartItem.get();
         }
-        throw new DataNotFoundException("Cart Item Not Found");
+        throw new DataNotFoundException("CartItem Item Not Found");
     }
 
     /**
-     * Activate the Cart item
+     * Activate the CartItem item
      * @param customerId
      * @param cartItemUUID
      * @return
@@ -202,10 +202,10 @@ public class CartServiceImpl implements CartService {
             cartRepository.saveAndFlush(cartItem.get());
             return cartItem.get();
         }
-        throw new DataNotFoundException("Cart Item Not Found");    }
+        throw new DataNotFoundException("CartItem Item Not Found");    }
 
     /**
-     * Delete the Cart item (Permanently Deletes the Item)
+     * Delete the CartItem item (Permanently Deletes the Item)
      * @param customerId
      * @param cartItemUUID
      */

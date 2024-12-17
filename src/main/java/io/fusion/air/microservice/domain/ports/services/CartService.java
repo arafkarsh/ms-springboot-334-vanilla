@@ -16,7 +16,7 @@
 package io.fusion.air.microservice.domain.ports.services;
 
 import io.fusion.air.microservice.domain.entities.order.CartEntity;
-import io.fusion.air.microservice.domain.models.order.Cart;
+import io.fusion.air.microservice.domain.models.order.CartItem;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Cart Service
+ * CartItem Service
  *
  * @author: Araf Karsh Hamid
  * @version:
@@ -40,7 +40,7 @@ public interface CartService {
     public List<CartEntity> findAll();
 
     /**
-     * Find Cart by Customer ID
+     * Find CartItem by Customer ID
      * @param customerId
      * @return
      */
@@ -81,21 +81,21 @@ public interface CartService {
     public List<CartEntity> findByItemNameContains(String customerId, String name);
 
     /**
-     * Save the Cart Item
-     * @param cart
+     * Save the CartItem Item
+     * @param cartItem
      * @return
      */
-    public CartEntity save(Cart cart);
+    public CartEntity save(CartItem cartItem);
 
     /**
-     * De Activate the Cart item
+     * De Activate the CartItem item
      * @param cartItem
      * @return
      */
     public CartEntity deActivateCartItem(String customerId, UUID cartItem);
 
     /**
-     * Activate the Cart item
+     * Activate the CartItem item
      * @param customerId
      * @param cartItem
      * @return
@@ -103,7 +103,7 @@ public interface CartService {
     public CartEntity activateCartItem(String customerId, UUID cartItem);
 
     /**
-     * Delete the Cart item (Permanently Deletes the Item)
+     * Delete the CartItem item (Permanently Deletes the Item)
      * @param customerId
      * @param cartItem
      */

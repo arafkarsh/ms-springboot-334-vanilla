@@ -16,7 +16,7 @@
 package io.fusion.air.microservice.domain.entities.order;
 
 import io.fusion.air.microservice.domain.entities.core.AbstractBaseEntityWithUUID;
-import io.fusion.air.microservice.domain.models.order.Cart;
+import io.fusion.air.microservice.domain.models.order.CartItem;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +27,7 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
 /**
- * Cart Entity with Abstract UUID with Spring Data
+ * CartItem Entity with Abstract UUID with Spring Data
  *
  * @author: Araf Karsh Hamid
  * @version:
@@ -66,15 +66,15 @@ public class CartEntity extends AbstractBaseEntityWithUUID {
     public CartEntity() {}
 
     /**
-     * Create Cart Entity from Cart Request
-     * @param cart
+     * Create CartItem Entity from CartItem Request
+     * @param cartItem
      */
-    public CartEntity(Cart cart) {
-        this.customerId = cart.getCustomerId();
-        this.productId = cart.getProductId();
-        this.productName = cart.getProductName();
-        this.price = cart.getPrice();
-        this.quantity = cart.getQuantity();
+    public CartEntity(CartItem cartItem) {
+        this.customerId = cartItem.getCustomerId();
+        this.productId = cartItem.getProductId();
+        this.productName = cartItem.getProductName();
+        this.price = cartItem.getPrice();
+        this.quantity = cartItem.getQuantity();
     }
 
     /**

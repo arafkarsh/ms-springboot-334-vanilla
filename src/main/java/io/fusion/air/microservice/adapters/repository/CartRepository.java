@@ -28,7 +28,7 @@ import java.util.UUID;
 
 /**
  * Example
- * Cart Repository Impl
+ * CartItem Repository Impl
  *
  * @author arafkarsh
  */
@@ -44,7 +44,7 @@ public interface CartRepository extends JpaRepository<CartEntity, UUID> {
     public Optional<CartEntity> findByuuidAndCustomerId(UUID itemId, String customerId);
 
     /**
-     * Find Cart by Customer ID
+     * Find CartItem by Customer ID
      * @param customerId
      * @return
      */

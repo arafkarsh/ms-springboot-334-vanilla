@@ -45,6 +45,8 @@ import org.springframework.web.context.annotation.RequestScope;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.web.util.HtmlUtils;
+
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -54,7 +56,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * Product Controller for the Product Service
  * This is to demonstrate certain concepts in Exception Handling ONLY.
- * Order, Product, Cart all must be part of 3 different Microservices.
+ * Order, Product, CartItem all must be part of 3 different Microservices.
  *
  * Only Selected Methods will be secured in this packaged - which are Annotated with
  * @AuthorizationRequired
@@ -213,9 +215,10 @@ public class ProductControllerImpl extends AbstractController {
 			@NotBlank(message = "The Product Name is  required.")
 			@Size(min = 3, max = 32, message = "The length of Product Name must be between 3 and 32 characters.")
 			String productName) {
+		String safeProductName = HtmlUtils.htmlEscape(productName);
 		log.debug("| {} |Request to Search the Product By Name ...  {} ", serviceName, productName);
-		List<ProductEntity> products = productServiceImpl.fetchProductsByName(productName);
-		StandardResponse stdResponse = createSuccessResponse("Products Found For Search Term = "+productName);
+		List<ProductEntity> products = productServiceImpl.fetchProductsByName(safeProductName);
+		StandardResponse stdResponse = createSuccessResponse("Products Found For Search Term = "+safeProductName);
 		stdResponse.setPayload(products);
 		return ResponseEntity.ok(stdResponse);
 	}

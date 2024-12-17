@@ -21,7 +21,7 @@ import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.entities.order.CartEntity;
 import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.domain.models.order.Cart;
+import io.fusion.air.microservice.domain.models.order.CartItem;
 import io.fusion.air.microservice.domain.ports.services.CartService;
 import io.fusion.air.microservice.server.controllers.AbstractController;
 // Swagger - Open API
@@ -50,9 +50,9 @@ import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Cart Controller for the Cart Service
+ * CartItem Controller for the CartItem Service
  * This is to demonstrate certain concepts in Exception Handling ONLY.
- * Order, Product, Cart all must be part of 3 different Microservices.
+ * Order, Product, CartItem all must be part of 3 different Microservices.
  *
  * @author arafkarsh
  * @version 1.0
@@ -65,7 +65,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @RequestMapping("${service.api.path}/cart")
 @RequestScope
 @MetricsPath(name = "fusion.air.cart")
-@Tag(name = "Cart API", description = "CRUD Operations for Cart, Cart Items, Add to Cart, Delete item...")
+@Tag(name = "CartItem API", description = "CRUD Operations for CartItem, CartItem Items, Add to CartItem, Delete item...")
 public class CartControllerImpl extends AbstractController {
 
 	// Set Logger -> Lookup will automatically determine the class name.
@@ -76,7 +76,7 @@ public class CartControllerImpl extends AbstractController {
 	// Autowired using the Constructor
 	private CartService cartService;
 
-	private static final String CART_RETRIEVED = "Cart Retrieved. Items =  ";
+	private static final String CART_RETRIEVED = "CartItem Retrieved. Items =  ";
 
 	/**
 	 * Autowired using the Constructor
@@ -95,16 +95,16 @@ public class CartControllerImpl extends AbstractController {
 	@Operation(summary = "Get The Carts")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200",
-					description = "Cart Retrieved!",
+					description = "CartItem Retrieved!",
 					content = {@Content(mediaType = "application/json")}),
 			@ApiResponse(responseCode = "400",
-					description = "Invalid Cart ID",
+					description = "Invalid CartItem ID",
 					content = @Content)
 	})
 	@GetMapping("/all")
 	@MetricsCounter(endpoint = "/all", tags = {"layer", "ws", "public", "yes"})
 	public ResponseEntity<StandardResponse> fetchCarts() throws AbstractServiceException {
-		log.debug("| {} |Request to Get Cart For the Customers ", serviceName);
+		log.debug("| {} |Request to Get CartItem For the Customers ", serviceName);
 		List<CartEntity> cart = cartService.findAll();
 		StandardResponse stdResponse = createSuccessResponse(CART_RETRIEVED+cart.size());
 		stdResponse.setPayload(cart);
@@ -112,17 +112,17 @@ public class CartControllerImpl extends AbstractController {
 	}
 
 	/**
-	 * GET Method Call to Get Cart for the Customer
+	 * GET Method Call to Get CartItem for the Customer
 	 * 
 	 * @return
 	 */
-    @Operation(summary = "Get The Cart for the Customer")
+    @Operation(summary = "Get The CartItem for the Customer")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-            description = "Cart Retrieved!",
+            description = "CartItem Retrieved!",
             content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400",
-            description = "Invalid Cart ID",
+            description = "Invalid CartItem ID",
             content = @Content)
     })
 	@GetMapping("/customer/{customerId}")
@@ -130,7 +130,7 @@ public class CartControllerImpl extends AbstractController {
 	public ResponseEntity<StandardResponse> fetchCart(@PathVariable("customerId") String customerId) throws AbstractServiceException {
 
 		String safeCustomerId = HtmlUtils.htmlEscape(customerId);
-		log.debug("| {} |Request to Get Cart For the Customer {} ", serviceName, safeCustomerId);
+		log.debug("| {} |Request to Get CartItem For the Customer {} ", serviceName, safeCustomerId);
 		List<CartEntity> cart = cartService.findByCustomerId(safeCustomerId);
 		StandardResponse stdResponse = createSuccessResponse(CART_RETRIEVED+cart.size());
 		stdResponse.setPayload(cart);
@@ -138,19 +138,19 @@ public class CartControllerImpl extends AbstractController {
 	}
 
 	/**
-	 * GET Method Call to Get Cart for the Customer for the Price Greater Than
+	 * GET Method Call to Get CartItem for the Customer for the Price Greater Than
 	 *
 	 * @param customerId
 	 * @return
 	 * @throws Exception
 	 */
-	@Operation(summary = "Get The Cart For Items Price Greater Than")
+	@Operation(summary = "Get The CartItem For Items Price Greater Than")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200",
-					description = "Cart Retrieved!",
+					description = "CartItem Retrieved!",
 					content = {@Content(mediaType = "application/json")}),
 			@ApiResponse(responseCode = "400",
-					description = "Invalid Cart ID",
+					description = "Invalid CartItem ID",
 					content = @Content)
 	})
 	@GetMapping("/customer/{customerId}/price/{price}")
@@ -158,7 +158,7 @@ public class CartControllerImpl extends AbstractController {
 	public ResponseEntity<StandardResponse> fetchCartForItems(@PathVariable("customerId") String customerId,
 															  @PathVariable("price") BigDecimal price) throws AbstractServiceException {
 		String safeCustomerId = HtmlUtils.htmlEscape(customerId);
-		log.debug("| {} |Request to Get Cart For the Customer {} ",serviceName ,safeCustomerId);
+		log.debug("| {} |Request to Get CartItem For the Customer {} ",serviceName ,safeCustomerId);
 		List<CartEntity> cart = cartService.fetchProductsByPriceGreaterThan(safeCustomerId, price);
 		StandardResponse stdResponse = createSuccessResponse(CART_RETRIEVED+cart.size());
 		stdResponse.setPayload(cart);
@@ -166,37 +166,38 @@ public class CartControllerImpl extends AbstractController {
 	}
 
 	/**
-	 * Add Cart Item to Cart
+	 * Add CartItem Item to CartItem
 	 */
-	@Operation(summary = "Add Item to Cart")
+	@Operation(summary = "Add Item to CartItem")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200",
-					description = "Add the Cart Item",
+					description = "Add the CartItem Item",
 					content = {@Content(mediaType = "application/json")}),
 			@ApiResponse(responseCode = "404",
-					description = "Unable to Add the Cart Item",
+					description = "Unable to Add the CartItem Item",
 					content = @Content)
 	})
 	@PostMapping("/add")
 	@MetricsCounter(endpoint = "/add", tags = {"layer", "ws", "public", "yes"})
-	public ResponseEntity<StandardResponse> addToCart(@Valid @RequestBody Cart cart) {
-		log.debug("| {} |Request to Add Cart Item... {} ", serviceName, cart.getProductName());
-		CartEntity cartItem = cartService.save(cart);
-		StandardResponse stdResponse = createSuccessResponse("Cart Item Added!");
-		stdResponse.setPayload(cartItem);
+	public ResponseEntity<StandardResponse> addToCart(@Valid @RequestBody CartItem cartItem) {
+		String safeProductName = HtmlUtils.htmlEscape(cartItem.getProductName());
+		log.debug("| {} |Request to Add CartItem Item... {} ", serviceName, safeProductName);
+		CartEntity cartItemEntity = cartService.save(cartItem);
+		StandardResponse stdResponse = createSuccessResponse("CartItem Item Added!");
+		stdResponse.setPayload(cartItemEntity);
 		return ResponseEntity.ok(stdResponse);
 	}
 
 	/**
-	 * De-Activate the Cart Item
+	 * De-Activate the CartItem Item
 	 */
-	@Operation(summary = "De-Activate Cart Item")
+	@Operation(summary = "De-Activate CartItem Item")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200",
-					description = "Cart Item De-Activated",
+					description = "CartItem Item De-Activated",
 					content = {@Content(mediaType = "application/json")}),
 			@ApiResponse(responseCode = "400",
-					description = "Unable to De-Activate the Cart item",
+					description = "Unable to De-Activate the CartItem item",
 					content = @Content)
 	})
 	@PutMapping("/deactivate/customer/{customerId}/cartItem/{cartId}")
@@ -204,23 +205,23 @@ public class CartControllerImpl extends AbstractController {
 	public ResponseEntity<StandardResponse> deActivateCartItem(@PathVariable("customerId") String customerId,
 									@PathVariable("cartId") UUID cartId) {
 		String safeCustomerId = HtmlUtils.htmlEscape(customerId);
-		log.debug("| {} |Request to De-Activate the Cart item...{}  ", serviceName, cartId);
+		log.debug("| {} |Request to De-Activate the CartItem item...{}  ", serviceName, cartId);
 		CartEntity product = cartService.deActivateCartItem(safeCustomerId, cartId);
-		StandardResponse stdResponse = createSuccessResponse("Cart Item De-Activated");
+		StandardResponse stdResponse = createSuccessResponse("CartItem Item De-Activated");
 		stdResponse.setPayload(product);
 		return ResponseEntity.ok(stdResponse);
 	}
 
 	/**
-	 * Activate the Cart Item
+	 * Activate the CartItem Item
 	 */
-	@Operation(summary = "Activate Cart Item")
+	@Operation(summary = "Activate CartItem Item")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200",
-					description = "Cart Item Activated",
+					description = "CartItem Item Activated",
 					content = {@Content(mediaType = "application/json")}),
 			@ApiResponse(responseCode = "400",
-					description = "Unable to Activate the Cart item",
+					description = "Unable to Activate the CartItem item",
 					content = @Content)
 	})
 	@PutMapping("/activate/customer/{customerId}/cartItem/{cartId}")
@@ -228,24 +229,24 @@ public class CartControllerImpl extends AbstractController {
 	public ResponseEntity<StandardResponse> activateCartItem(@PathVariable("customerId") String customerId,
 															   @PathVariable("cartId") UUID cartId) {
 		String safeCustomerId = HtmlUtils.htmlEscape(customerId);
-		log.debug("| {} |Request to Activate the Cart item...{}  ",serviceName, cartId);
+		log.debug("| {} |Request to Activate the CartItem item...{}  ",serviceName, cartId);
 		CartEntity product = cartService.activateCartItem(customerId, cartId);
-		StandardResponse stdResponse = createSuccessResponse("Cart Item Activated");
+		StandardResponse stdResponse = createSuccessResponse("CartItem Item Activated");
 		stdResponse.setPayload(product);
 		return ResponseEntity.ok(stdResponse);
 	}
 
 	/**
-	 * Delete the Cart Item
+	 * Delete the CartItem Item
 	 */
 	@AuthorizationRequired(role = "User")
-	@Operation(summary = "Delete Cart Item", security = { @SecurityRequirement(name = "bearer-key") })
+	@Operation(summary = "Delete CartItem Item", security = { @SecurityRequirement(name = "bearer-key") })
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200",
-					description = "Cart Item Deleted",
+					description = "CartItem Item Deleted",
 					content = {@Content(mediaType = "application/json")}),
 			@ApiResponse(responseCode = "400",
-					description = "Unable to Delete the Cart item",
+					description = "Unable to Delete the CartItem item",
 					content = @Content)
 	})
 	@DeleteMapping("/delete/customer/{customerId}/cartItem/{cartId}")
@@ -253,9 +254,9 @@ public class CartControllerImpl extends AbstractController {
 	public ResponseEntity<StandardResponse> deleteCartItem(@PathVariable("customerId") String customerId,
 															 @PathVariable("cartId") UUID cartId) {
 		String safeCustomerId = HtmlUtils.htmlEscape(customerId);
-		log.debug("| {} |Request to Delete the Cart item...  {} ",serviceName, cartId);
+		log.debug("| {} |Request to Delete the CartItem item...  {} ",serviceName, cartId);
 		cartService.deleteCartItem(safeCustomerId, cartId);
-		StandardResponse stdResponse = createSuccessResponse("Cart Item Deleted");
+		StandardResponse stdResponse = createSuccessResponse("CartItem Item Deleted");
 		return ResponseEntity.ok(stdResponse);
 	}
 
