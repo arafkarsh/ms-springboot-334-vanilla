@@ -10,9 +10,9 @@ because the password is encrypted within the application’s properties file, wi
 stored externally, outside the application’s context. However, quality standards mandate that 
 passwords should be securely stored in a vault, such as HashiCorp Vault, for enhanced security.
 
-Encrypted H2 Password
+Encrypted H2 (In Memory) Database Password
 ![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/encrypt/Security-H2-psd.jpg)
-Encrypted PostgreSQL Password
+Encrypted PostgreSQL Database Password
 ![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/encrypt/Security-PostgreSQL-psd.jpg)
 Password can be decrypted only using an Encryption Key stored in System Enviornment variable
 ![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/encrypt/Security-Encryption-pro.jpg)

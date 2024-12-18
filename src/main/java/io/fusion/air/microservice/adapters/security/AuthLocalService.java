@@ -18,6 +18,7 @@ package io.fusion.air.microservice.adapters.security;
 // Custom
 import io.fusion.air.microservice.domain.exceptions.SecurityException;
 import io.fusion.air.microservice.domain.models.auth.Token;
+import io.fusion.air.microservice.domain.ports.services.UserService;
 import io.fusion.air.microservice.security.CryptoKeyGenerator;
 import io.fusion.air.microservice.security.TokenManager;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
@@ -53,6 +54,9 @@ public class AuthLocalService {
     // Autowired using Constructor
     private final TokenManager tokenManager;
 
+    // Autowired using Constructor
+    private final UserService userService;
+
     @Value("${server.token.auth.expiry:300000}")
     private long tokenAuthExpiry;
 
@@ -61,15 +65,18 @@ public class AuthLocalService {
 
     /**
      * Autowired using Constructor
-     * @param serviceCfg
-     * @param crypto
-     * @param tm
+     *
+     * @param serviceConfig
+     * @param cryptoKeys
+     * @param tokenManager
+     * @param userService
      */
-    public  AuthLocalService(ServiceConfiguration serviceCfg,
-                             CryptoKeyGenerator crypto, TokenManager tm ) {
-        serviceConfig = serviceCfg;
-        cryptoKeys = crypto;
-        tokenManager = tm;
+    public  AuthLocalService(ServiceConfiguration serviceConfig, CryptoKeyGenerator cryptoKeys,
+                             TokenManager tokenManager, UserService userService ) {
+        this.serviceConfig = serviceConfig;
+        this.cryptoKeys = cryptoKeys;
+        this.tokenManager = tokenManager;
+        this.userService = userService;
     }
 
     public Map<String,String> getPublicKey() throws SecurityException {
@@ -100,7 +107,7 @@ public class AuthLocalService {
     }
 
     /**
-     * Authenticate User with KeyCloak using User Credentials
+     * Authenticate User with Local Authentication using User Credentials
      * Returns Token if the user is authenticated
      * @param username
      * @param password
@@ -110,7 +117,11 @@ public class AuthLocalService {
         // Validate the User ID & Password with DB
         log.debug("Authenticate user with credentials {} ", username);
         // .....
+        // Authenticate the User using username & password.
+        // The following is pseudo service for demo purpose
+        userService.authenticateUser(username, password);
         // If Validation is Successful then Create the Tokens (Auth & Refresh Tokens)
+        // Once Authenticated Generate the Token as follows
         HttpHeaders headers = new HttpHeaders();
         Map<String, String> tokens = tokenManager.createAuthorizationToken(username, headers);
         // TX - Token
