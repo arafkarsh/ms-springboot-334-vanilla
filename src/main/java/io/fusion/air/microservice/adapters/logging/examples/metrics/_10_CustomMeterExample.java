@@ -26,13 +26,14 @@
  * as published by the Apache Software Foundation.
  */
 package io.fusion.air.microservice.adapters.logging.examples.metrics;
-
+// Custom
 import io.fusion.air.microservice.utils.Std;
-import io.fusion.air.microservice.utils.Utils;
+// Micrometer
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+// Spring
 import org.springframework.stereotype.Component;
-
+// Java
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 

@@ -29,13 +29,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 // Spring
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.annotation.RequestScope;
 // Java
 import jakarta.servlet.http.HttpServletRequest;
 // Logging System
@@ -50,11 +48,9 @@ import static java.lang.invoke.MethodHandles.lookup;
  * @version 1.0
  * 
  */
-@Configuration
 @RestController
 // "/service-name/api/v1/service"
 @RequestMapping("${service.api.path}"+ ServiceConfiguration.HEALTH_PATH)
-@RequestScope
 @Tag(name = "System - Health", description = "Health (Liveness, Readiness, ReStart.. etc)")
 public class HealthController extends AbstractController {
 

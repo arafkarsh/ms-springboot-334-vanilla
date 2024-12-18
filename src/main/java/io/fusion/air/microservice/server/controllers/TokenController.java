@@ -34,11 +34,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 // Spring
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.http.HttpHeaders;
 // Java
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,11 +57,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @version 1.0
  * 
  */
-@Configuration
 @RestController
 // "/service-name/api/v1/tokens
 @RequestMapping("${service.api.path}/tokens")
-@RequestScope
 @Tag(name = "System - Tokens", description = "Token (Auth Token, Refresh Tokens")
 public class TokenController extends AbstractController {
 

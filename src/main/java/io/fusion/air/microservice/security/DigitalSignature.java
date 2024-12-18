@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.security;
-
-// Bouncy Castel
+// Custom
 import io.fusion.air.microservice.utils.Std;
-import io.fusion.air.microservice.utils.Utils;
+// Bouncy Castel
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 // Spring

@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.server.controllers;
-
-
+// Custom
 import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
 import io.fusion.air.microservice.domain.exceptions.InputDataException;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
@@ -23,19 +22,18 @@ import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.models.EchoData;
 import io.fusion.air.microservice.server.models.EchoResponseData;
 import io.fusion.air.microservice.server.service.examples.*;
+// Swagger
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.springframework.context.annotation.Configuration;
+// Spring
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
-
+// Java
 import jakarta.servlet.http.HttpServletRequest;
-
+import org.slf4j.Logger;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -49,11 +47,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @version 1.0
  * 
  */
-@Configuration
 @RestController
 // "/service-name/api/v1/service"
 @RequestMapping("${service.api.path}"+ ServiceConfiguration.HEALTH_PATH)
-@RequestScope
 @Tag(name = "System - Echo", description = "Echo Tests (Get/Post) Request Scope, Session Scope, App Scope... ")
 public class EchoController extends AbstractController {
 

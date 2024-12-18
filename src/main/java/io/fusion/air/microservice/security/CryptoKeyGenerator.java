@@ -26,7 +26,6 @@ import java.security.spec.X509EncodedKeySpec;
 // Custom
 import io.fusion.air.microservice.domain.exceptions.SecurityException;
 import io.fusion.air.microservice.utils.Std;
-import io.fusion.air.microservice.utils.Utils;
 // Security
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;

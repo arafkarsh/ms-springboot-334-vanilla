@@ -24,7 +24,6 @@ import io.fusion.air.microservice.domain.ports.services.ProductService;
 // Spring
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.annotation.RequestScope;
 // Java
 import java.math.BigDecimal;
 import java.sql.SQLException;

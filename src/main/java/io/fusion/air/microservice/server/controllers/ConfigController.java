@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.server.controllers;
-
 // Custom
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
@@ -28,10 +27,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 // Spring
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
 // Java
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -45,11 +42,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author arafkarsh
  * @version 1.0
  */
-@Configuration
 @RestController
 //  "/service-name/api/v1/config"
 @RequestMapping("${service.api.path}"+ ServiceConfiguration.CONFIG_PATH)
-@RequestScope
 @Tag(name = "System - Config", description = "Config (Environment, Secrets, ConfigMap.. etc)")
 public class ConfigController extends AbstractController {
 

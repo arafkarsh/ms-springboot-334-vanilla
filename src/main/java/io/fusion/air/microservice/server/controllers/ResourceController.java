@@ -23,13 +23,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 // Spring
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
 // Java
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,11 +38,9 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author arafkarsh
  * @version 1.0
  */
-@Configuration
 @RestController
 //  "/service-name/api/v1/"
 @RequestMapping("${service.api.path}")
-@RequestScope
 @Tag(name = "System - Resources", description = "Static Files / Images / Videos etc")
 public class ResourceController extends AbstractController {
 

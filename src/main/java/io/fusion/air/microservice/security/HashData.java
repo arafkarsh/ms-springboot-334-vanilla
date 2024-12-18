@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.security;
-// Java
+// Custom
 import io.fusion.air.microservice.utils.Std;
-
+// Java
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.InputMismatchException;
-// Custom
 
 /**
  * HashData
@@ -206,17 +205,14 @@ public final class HashData {
      * @param raw
      * @return String
      */
-
     public static String hexEncoder(byte[] raw) {
         char[] hexchars = "0123456789ABCDEF".toCharArray();
-
         StringBuilder sb = new StringBuilder(raw.length * 2);
         for (byte b : raw) {
             sb.append(hexchars[(b & 0xF0) >> 4]);
             sb.append(hexchars[b & 0x0F]);
         }
-        String hexValue = sb.toString();
-        return hexValue;
+        return  sb.toString();
     }
 
     /**
