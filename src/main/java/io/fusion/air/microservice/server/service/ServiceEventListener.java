@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.server.service;
-
 // Custom
 import io.fusion.air.microservice.security.*;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
@@ -23,7 +22,6 @@ import io.fusion.air.microservice.utils.CPU;
 // Spring
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -33,9 +31,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 //Logging System
 import org.slf4j.Logger;
 // Java
-import java.util.HashMap;
 import java.util.Map;
-
 import org.slf4j.MDC;
 import static org.slf4j.LoggerFactory.getLogger;
 import static java.lang.invoke.MethodHandles.lookup;
@@ -53,21 +49,6 @@ public class ServiceEventListener {
 	// Set Logger -> Lookup will automatically determine the class name.
 	private static final Logger log = getLogger(lookup().lookupClass());
 
-	@Autowired
-	private ServiceConfiguration serviceConfig;
-
-	@Autowired
-	private JsonWebToken jsonWebToken;
-
-	@Autowired
-	private JsonWebTokenValidator jsonWebTokenValidator;
-
-	@Autowired
-	private JsonWebTokenKeyManager jsonWebTokenKeyManager;
-
-	@Autowired
-	private  MeterRegistry meterRegistry;
-
 	@Value("${server.token.test}")
 	private boolean serverTokenTest;
 
@@ -82,15 +63,49 @@ public class ServiceEventListener {
 	@Value("${spring.profiles.default:dev}")
 	private String activeProfile;
 
-	@Autowired
+	// Autowired using the Constructor
+	private ServiceConfiguration serviceConfig;
+
+	// Autowired using the Constructor
+	private JsonWebToken jsonWebToken;
+
+	// Autowired using the Constructor
+	private JsonWebTokenValidator jsonWebTokenValidator;
+
+	// Autowired using the Constructor
+	private JsonWebTokenKeyManager jsonWebTokenKeyManager;
+
+	// Autowired using the Constructor
+	private  MeterRegistry meterRegistry;
+
+	// Autowired using the Constructor
 	private ConfigurableEnvironment environment;
+
+	/**
+	 * Autowired using the Constructor
+	 * @param serviceConfig
+	 * @param jsonWebToken
+	 * @param jsonWebTokenValidator
+	 * @param jsonWebTokenKeyManager
+	 * @param meterRegistry
+	 * @param environment
+	 */
+	public ServiceEventListener(ServiceConfiguration serviceConfig, JsonWebToken jsonWebToken,
+								JsonWebTokenValidator jsonWebTokenValidator, JsonWebTokenKeyManager jsonWebTokenKeyManager,
+								MeterRegistry meterRegistry, ConfigurableEnvironment environment) {
+		this.serviceConfig = serviceConfig;
+		this.jsonWebToken = jsonWebToken;
+		this.jsonWebTokenValidator = jsonWebTokenValidator;
+		this.jsonWebTokenKeyManager = jsonWebTokenKeyManager;
+		this.meterRegistry = meterRegistry;
+		this.environment = environment;
+	}
 
 	/**
 	 * Check the Dev Mode
 	 * @return
 	 */
 	private boolean  getDevMode() {
-		// System.out.println("<><><><1> Profile = "+devMode);
 		activeProfile = getActiveProfile();
 		return (activeProfile != null && activeProfile.equalsIgnoreCase("prod")) ? false : true;
 	}
@@ -100,19 +115,16 @@ public class ServiceEventListener {
 	 * @return
 	 */
 	private String getActiveProfile() {
-		// System.out.println("Total Profiles = "+environment.getActiveProfiles().length);
-		// System.out.println("Checking Active Profiles.... ");
 		if (environment.getActiveProfiles().length == 0) {
-			log.info("Spring Profile is missing, so defaulting to "+ activeProfile +" Profile!");
+			log.info("Spring Profile is missing, so defaulting to {}  Profile!", activeProfile);
 			environment.addActiveProfile(activeProfile);
 		}
-		// System.out.println("Total Profiles = "+environment.getActiveProfiles().length);
 		StringBuilder sb = new StringBuilder();
 		for(String profile : environment.getActiveProfiles()) {
 			sb.append(profile).append(" ");
 		}
-		String profile = sb.toString().trim().replaceAll(" ", ", ");
-		log.debug("Profiles = "+profile);
+		String profile = sb.toString().trim().replace(" ", ", ");
+		log.debug("Profiles = {} ", profile);
 		return profile;
 	}
 
@@ -123,14 +135,14 @@ public class ServiceEventListener {
 		int totalApis = 0;
 		String apiClass = serviceConfig.getAppPropertyProduct();
 		for(String apiName : serviceConfig.getAppPropertyProductList()) {
-			String fullCounterName = apiClass + (apiName.isEmpty() ? "" : apiName.replaceAll("/", "."));
+			String fullCounterName = apiClass + (apiName.isEmpty() ? "" : apiName.replace("/", "."));
 			// Create and Register the counter
 			Counter counter = Counter
 					.builder(fullCounterName)
 					.register(meterRegistry);
 			totalApis++;
 		}
-		log.info("Total fusion.air.product APIs registered with MicroMeter = "+totalApis);
+		log.info("Total fusion.air.product APIs registered with MicroMeter = {} ", totalApis);
 	}
 
 	/**
@@ -141,10 +153,11 @@ public class ServiceEventListener {
 	@EventListener(ApplicationReadyEvent.class)
 	public void doSomethingAfterStartup() {
 		log.info("Service is getting ready. Getting the CPU Stats ... ");
-		log.info(CPU.printCpuStats());
+		String s = CPU.printCpuStats();
+		log.info("{}", s);
 		showLogo();
 		// Register the APIs with Micrometer
-		// registerAPICallsForMicroMeter();
+		registerAPICallsForMicroMeter();
 		// Initialize the Key Manager
 		jsonWebTokenKeyManager.init(serviceConfig.getTokenType());
 		jsonWebTokenKeyManager.setKeyCloakPublicKey();
@@ -157,8 +170,6 @@ public class ServiceEventListener {
 		// Initialize the KeyCloak Public Key
 		jsonWebToken.setKeyCloakPublicKey();
 	}
-
-
 
 	/**
 	 * ----------------------------------------------------------------------------------------------------------
@@ -193,21 +204,21 @@ public class ServiceEventListener {
 		Map<String, String> tokens = tokenManager.createAuthorizationToken(subject, null);
 		String token = tokens.get("token");
 		String refresh = tokens.get("refresh");
-
-		log.info("Auth Token Expiry in Days:Hours:Mins  {}   Tkn-1 <>", JsonWebToken.printExpiryTime(tokenAuthExpiry));
+		String jStats = JsonWebToken.printExpiryTime(tokenAuthExpiry);
+		log.info("Auth Token Expiry in Days:Hours:Mins  {}   Tkn-1 <>", jStats);
 		jsonWebToken.tokenStats(token, false, false);
 		log.info("Auth Token.... END ................................... Tkn-1 <>");
-
-		log.info("Refresh Token Expiry in Days:Hours:Mins  {} Tkn-2 <>", JsonWebToken.printExpiryTime(tokenRefreshExpiry));
+		jStats = JsonWebToken.printExpiryTime(tokenRefreshExpiry);
+		log.info("Refresh Token Expiry in Days:Hours:Mins  {} Tkn-2 <>", jStats);
 		jsonWebToken.tokenStats(refresh, false, false);
 		log.info("Refresh Token.... END ............................... Tkn-2 <>");
-
-		log.info("Tx-Token Expiry in Days:Hours:Mins  {}    Tkn-3 <>", JsonWebToken.printExpiryTime(tokenRefreshExpiry));
+		jStats = JsonWebToken.printExpiryTime(tokenRefreshExpiry);
+		log.info("Tx-Token Expiry in Days:Hours:Mins  {}    Tkn-3 <>", jStats);
 		String txToken = tokenManager.createTXToken(subject, type, null);
 		jsonWebToken.tokenStats(txToken, false, false);
 		log.info("Tx Token.... END ....................................... Tkn-3 <>");
-
-		log.info("Admin Token Expiry in Days:Hours:Mins  {} Tkn-4 <>", JsonWebToken.printExpiryTime(tokenRefreshExpiry));
+		jStats = JsonWebToken.printExpiryTime(tokenRefreshExpiry);
+		log.info("Admin Token Expiry in Days:Hours:Mins  {} Tkn-4 <>", jStats);
 		String admToken = tokenManager.adminToken(subject, issuer);
 		jsonWebToken.tokenStats(admToken, false, false);
 		log.info("Admin Token.... END ................................. Tkn-4 <>");
@@ -219,38 +230,46 @@ public class ServiceEventListener {
 	 * Shows the Service Logo and Version Details.
 	 */
 	public void showLogo() {
-		String version="v0.1.0", name="NoName", javaVersion="21", sbVersion="3.1.0";
+		String version="v0.1.0";
+		String name="NoName";
+		String javaVersion="21";
+		String sbVersion="3.1.0";
+		int buildNo = 0;
+		String buildDt = "";
+		String apiURL = "";
+		String depModel = geDeploymentMode();
 
 		if(serviceConfig != null) {
 			version = serviceConfig.getServerVersion();
 			name =serviceConfig.getServiceName();
 			javaVersion = System.getProperty("java.version");
 			sbVersion = SpringBootVersion.getVersion();
+			buildNo = serviceConfig.getBuildNumber();
+			buildDt = serviceConfig.getBuildDate();
+			apiURL = serviceConfig.apiURL();
 		}
 		MDC.put("Service", name);
 		String logo =ServiceHelp.LOGO
-				.replaceAll("SIGMA", name)
-				.replaceAll("MSVERSION", version)
-				.replaceAll("JAVAVERSION", javaVersion)
-				.replaceAll("SPRINGBOOTVERSION", sbVersion);
-		log.info(name+" Service is ready! ... .."
-				+ logo
-				+ "Build No. = "+serviceConfig.getBuildNumber()
-				+ " :: Build Date = "+serviceConfig.getBuildDate()
-				+ " :: Mode = "+geDeploymentMode()
-				+ " :: Restart = "+ServiceHelp.getCounter()
-				+ ServiceHelp.NL + ServiceHelp.DL);
+				.replace("SIGMA", name)
+				.replace("MSVERSION", version)
+				.replace("JAVAVERSION", javaVersion)
+				.replace("SPRINGBOOTVERSION", sbVersion);
+		log.info("{} Service is ready! ... .. {}"
+				+ "Build No. = {} "
+				+ " :: Build Date = {} "
+				+ " :: Mode = {} "
+				+ " :: Restart = {} {} {} ",
+				name, logo, buildNo, buildDt, depModel, ServiceHelp.getCounter(), ServiceHelp.NL , ServiceHelp.DL);
 		// if(getDevMode() ) {
-			log.info(ServiceHelp.NL + "API URL : " + serviceConfig.apiURL() + ServiceHelp.NL + ServiceHelp.DL
-			);
+			log.info("{} API URL : {} {} {} ", ServiceHelp.NL, apiURL, ServiceHelp.NL, ServiceHelp.DL);
 		//}
 	}
 	private String geDeploymentMode() {
 		return switch (getActiveProfile()) {
-            case "dev" -> "Development";
             case "staging" -> "Staging";
             case "prod" -> "Production";
-            default -> "Development";
+			case "dev" -> "Development";
+			default -> "Development";
         };
 	}
 }
