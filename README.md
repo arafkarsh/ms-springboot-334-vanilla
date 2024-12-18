@@ -25,16 +25,31 @@ context.
 To know more about how to setup these passwords (for H2 & PostgreSQL) and environment variables 
 checkout Session 1.2
 
-### What the Template Provides out of the box
+## What the Template Provides out of the box
 
-1. SpringBoot App with Swagger Docs (...adapters.controllers)
-2. Exception Handling with Exception Framework using AOP ( ..adapters.aop)
-3. Log Management using Logback  (...adapters.filters)
+### Microservice Package Structure
+
+![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Pkg-Structure.jpg)
+
+io.fusion.air.microservice
+- adapters
+- domain
+- security
+- server
+- utils
+
+### Template Features
+
+1. SpringBoot App with Swagger Docs (...microservice.adapters.controllers)
+2. Exception Handling with Exception Framework using AOP ( ..microservice.adapters.aop)
+3. Log Management (json and text formats) using Logback  (...adapters.filters)
 4. Standardized REST Responses (...domain.models.StandardResponse)
-5. Security using JWT Tokens (...adapters.security)
-6. Encrypting Sensitive Data using Encryption Algorithms (...security)
+5. Security using JWT Tokens (...microservice.adapters.security, ...microservice.security)
+6. Encrypting Sensitive Data using Encryption Algorithms (...microservice.security)
 7. JPA configurations for H2 and PostgreSQL (...server.config)
 8. Observability Using Micrometer, Prometheus and Open Telemetry.
+9. Database Password Encryption using Jasypt. Checkout the shell programs encrypt and decrypt.
+10. Digital Signatures using Standard Java Cryptography. 
 
 ## Template Tutorials - Java 23, SpringBoot 3.3.4 & Jakarta 10 Series
 1. [Java 23, SpringBoot 3.3.4 & Jakarta 10 — Part 1](https://arafkarsh.medium.com/java-23-springboot-3-3-4-jakarta-10-125bc815d6c1)
@@ -50,11 +65,6 @@ checkout Session 1.2
 11. [Java 23, SpringBoot 3.3.4: CRUD — Part 11 Coming Soon
 12. [Java 23, SpringBoot 3.3.4: CRUD Queries & Page Sort — Part 12 Coming Soon
 
-## Microservice Structure
-
-![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Pkg-Structure.jpg)
-
-
 ### Pre-Requisites
 
 1. SpringBoot 3.3.4
@@ -62,15 +72,6 @@ checkout Session 1.2
 3. Jakarta EE 10 (jakarta.servlet.*, jakarta.persistence.*, javax.validation.*)
 4. Maven 3.8.6
 5. Git 2.31
-
-### Microservice Vanilla Template gives you a 
-
-1. SpringBoot App template with 
-2. Open API 3 Ex, 
-3. Spring Actuator, 
-4. Spring Sleuth and
-5. H2 In Memory Database
-6. Dockerfile for containerisation.
 
 ## 1. Setting up the Template
 

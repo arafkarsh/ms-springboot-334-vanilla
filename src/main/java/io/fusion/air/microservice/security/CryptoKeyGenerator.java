@@ -311,7 +311,6 @@ public class CryptoKeyGenerator {
         Utils.println("Public key format: " + pubKey.getFormat());
         Utils.println(keys.getPublicKeyPEMFormat());
 
-        // Utils.println("<><><>\n");
         // Utils.println("Write to Files");
         // keys.writePEMFile(pubKey, "publicKey", "RSA PUBLIC KEY");
         // keys.writePEMFile(priKey, "privateKey", "RSA PRIVATE KEY");
