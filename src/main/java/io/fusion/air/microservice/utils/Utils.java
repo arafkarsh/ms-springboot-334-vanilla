@@ -25,6 +25,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
+
+import io.fusion.air.microservice.domain.exceptions.InvalidInputException;
 import org.slf4j.MDC;
 // FasterXML
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -48,6 +50,8 @@ import jakarta.servlet.http.HttpServletRequest;
 public final class Utils {
 
 	private static final char[] hexArray = "0123456789ABCDEF".toCharArray();
+
+	private static Random random = new Random();
 
 	/**
 	 * Returns UUID Object from a Byte Array
@@ -140,7 +144,6 @@ public final class Utils {
 	 * @return
 	 */
 	public static long get64LeastSignificantBitsForVersion1() {
-		Random random = new Random();
 		long random63BitLong = random.nextLong() & 0x3FFFFFFFFFFFFFFFL;
 		long variant3BitFlag = 0x8000000000000000L;
 		return random63BitLong + variant3BitFlag;
@@ -166,7 +169,7 @@ public final class Utils {
 	 * @param bytes
 	 * @return
 	 */
-	private static String bytesToHex(byte[] bytes) {
+	public static String bytesToHex(byte[] bytes) {
 		final char[] hexChars = new char[bytes.length * 2];
 		for (int j = 0; j < bytes.length; j++) {
 			final int v = bytes[j] & 0xFF;
@@ -289,7 +292,7 @@ public final class Utils {
 		try {
 			return objectMapper.readValue(jsonString, targetClass);
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException("Failed to convert JSON string to object: " + e.getMessage(), e);
+			throw new InvalidInputException("Failed to convert JSON string to object: " + e.getMessage(), e);
 		}
 	}
 
@@ -348,6 +351,7 @@ public final class Utils {
 	 * @see #createSecureCookie(String, String)
 	 * @return
 	 */
+	/**
 	@Deprecated(since="0.1.2", forRemoval=true)
 	public static Cookie createSecureCookie(HttpServletRequest request, String key, String value) {
 		Cookie c = new Cookie(key, value);
@@ -358,6 +362,7 @@ public final class Utils {
 		// c.setPath(request.getRequestURI());
 		return c;
 	}
+	*/
 
 	/**
 	 * Create Cookie
@@ -369,6 +374,7 @@ public final class Utils {
 	 * @deprecated Use createSecureCookie(String _key, String value)
 	 *  @see #createSecureCookie(String, String, String, int)
 	 */
+	/**
 	@Deprecated(since="0.1.2", forRemoval=true)
 	public static Cookie createSecureCookie(HttpServletRequest request, String key, String value, int age) {
 		Cookie c = new Cookie(key, value);
@@ -379,6 +385,7 @@ public final class Utils {
 		c.setPath(request.getRequestURI());
 		return c;
 	}
+	*/
 
 	/**
 	 * Create Secure Cookie

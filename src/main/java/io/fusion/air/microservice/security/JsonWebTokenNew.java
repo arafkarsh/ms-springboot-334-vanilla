@@ -681,7 +681,7 @@ public final class JsonWebTokenNew {
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args)   {
 		println(DOUBLE_LINE);
 		println("Generate Json Web Tokens Based on SECRET KEYS");
 		println(DOUBLE_LINE);
