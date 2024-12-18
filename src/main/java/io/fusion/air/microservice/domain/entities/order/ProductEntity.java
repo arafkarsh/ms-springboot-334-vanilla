@@ -54,7 +54,7 @@ public class ProductEntity extends AbstractBaseEntityWithUUID {
 
     @NotBlank(message = "The Product ZipCode is required.")
     @Column(name = "productLocationZipCode")
-    @Pattern(regexp = "^\\d]{5}\\b", message = "Zip Code Must be 5 Digits")
+    @Pattern(regexp = "^\\d{5}$", flags = { Pattern.Flag.CASE_INSENSITIVE, Pattern.Flag.MULTILINE }, message = "ZIP CODE MUST BE 5 DIGITS.")
     private String productLocationZipCode;
 
     /**

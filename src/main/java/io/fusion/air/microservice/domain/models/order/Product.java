@@ -49,7 +49,7 @@ public class Product implements Serializable {
     private BigDecimal productPrice;
 
     @NotBlank(message = "The Product Location Zip code is required.")
-    @Pattern(regexp = "^\\d{1,5}$", flags = { Flag.CASE_INSENSITIVE, Flag.MULTILINE }, message = "The Zip code is invalid.")
+    @Pattern(regexp = "^\\d{5}$", flags = { Flag.CASE_INSENSITIVE, Flag.MULTILINE }, message = "The Zip code is invalid (Need 5 Digits).")
     private String productLocationZipCode;
 
     /**
