@@ -60,6 +60,9 @@ public class ServiceEventListener {
 	@Value("${server.token.refresh.expiry:1800000}")
 	private long tokenRefreshExpiry;
 
+	@Value("${server.api.url.print}")
+	private boolean serverPrintAPIUrl;
+
 	@Value("${spring.profiles.default:dev}")
 	private String activeProfile;
 
@@ -260,9 +263,9 @@ public class ServiceEventListener {
 				+ " :: Mode = {} "
 				+ " :: Restart = {} {} {} ",
 				name, logo, buildNo, buildDt, depModel, ServiceHelp.getCounter(), ServiceHelp.NL , ServiceHelp.DL);
-		// if(getDevMode() ) {
+		if(serverPrintAPIUrl) {
 			log.info("{} API URL : {} {} {} ", ServiceHelp.NL, apiURL, ServiceHelp.NL, ServiceHelp.DL);
-		//}
+		}
 	}
 	private String geDeploymentMode() {
 		return switch (getActiveProfile()) {

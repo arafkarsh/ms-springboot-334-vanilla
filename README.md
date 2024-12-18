@@ -10,10 +10,20 @@ because the password is encrypted within the application’s properties file, wi
 stored externally, outside the application’s context. However, quality standards mandate that 
 passwords should be securely stored in a vault, such as HashiCorp Vault, for enhanced security.
 
+Encrypted H2 Password
+![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/encrypt/Security-H2-psd.jpg)
+Encrypted PostgreSQL Password
+![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/encrypt/Security-PostgreSQL-psd.jpg)
+Password can be decrypted only using an Encryption Key stored in System Enviornment variable
+![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/encrypt/Security-Encryption-pro.jpg)
+
 To simplify the demonstration of various features, an encrypted password is utilized for connecting 
 to H2 and PostgreSQL databases. The template includes utilities for encrypting and decrypting 
 passwords, ensuring that the encryption key is securely stored outside the application’s runtime 
-context.
+context. 
+
+To know more about how to setup these passwords (for H2 & PostgreSQL) and environment variables 
+checkout Session 1.2
 
 ### What the Template Provides out of the box
 
