@@ -1,0 +1,33 @@
+<included>
+	<!-- Define Logstash TCP Appender -->
+	<appender name="TCP_JSON" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+		<!-- The address of your Logstash server -->
+		<!-- Change to your Logstash host and port -->
+		<destination>logstash-host:5000</destination>
+
+		<!-- Optional: Encoder for JSON format -->
+		<encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+			<providers>
+				<timestamp />
+				<loggerName />
+				<threadName />
+				<logLevel />
+				<message />
+				<mdc />
+				<stackTrace />
+			</providers>
+		</encoder>
+
+		<!-- Optional: Keep retrying if Logstash is temporarily unreachable -->
+		<connectionStrategy class="net.logstash.logback.appender.retry.ConnectionStrategy">
+			<minDelay>5000</minDelay>  <!-- Retry after 5 seconds -->
+			<maxDelay>60000</maxDelay> <!-- Maximum retry delay of 60 seconds -->
+		</connectionStrategy>
+
+		<!-- Optional: Set a reconnection delay in case of connection loss -->
+		<reconnectionDelay>5000</reconnectionDelay> <!-- Reconnect every 5 seconds if disconnected -->
+
+		<!-- Optional: Set the queue size -->
+		<queueSize>5000</queueSize>  <!-- Log events to queue if Logstash is unavailable -->
+	</appender>
+</included>

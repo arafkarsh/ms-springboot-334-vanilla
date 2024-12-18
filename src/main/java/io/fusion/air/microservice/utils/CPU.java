@@ -98,7 +98,7 @@ public class CPU {
 	 */
 	public static void printAllCpuStats() {
 		for(String methodName : methodsMap.keySet()) {
-			System.out.println(methodName+"() = "+invoke(methodName, osMXBean));
+			Utils.println(methodName+"() = "+invoke(methodName, osMXBean));
 		}
 	}
 
@@ -172,7 +172,7 @@ public class CPU {
 	public static long getOpenFileDescriptorCount() {
 		try {	return  (Long) invoke("getOpenFileDescriptorCount", osMXBean); }
 		catch (Exception ignored) {
-			/* ignored.printStackTrace(); */
+			Utils.println(ignored.getMessage());
 		}
 		return 0;
 	}
@@ -184,7 +184,8 @@ public class CPU {
 	public static long getMaxFileDescriptorCount() {
 		try {	return  (Long) invoke("getMaxFileDescriptorCount", osMXBean); }
 		catch (Exception ignored) {
-			/* ignored.printStackTrace(); */}
+			Utils.println(ignored.getMessage());
+		}
 		return 0;
 	}
 
@@ -203,7 +204,9 @@ public class CPU {
 
 	public static Object getSystemCpuLoad() {
 		try {	return  invoke("getSystemCpuLoad", osMXBean); }
-		catch (Exception ignored) { ignored.printStackTrace(); }
+		catch (Exception ignored) {
+			Utils.println(ignored.getMessage());
+		}
 		return "0.0";
 	}
 
@@ -213,7 +216,9 @@ public class CPU {
 	 */
 	public static double getProcessCpuLoad2() {
 		try {	return  (Double) invoke("getProcessCpuLoad", osMXBean); }
-		catch (Exception ignored) { ignored.printStackTrace(); }
+		catch (Exception ignored) {
+			Utils.println(ignored.getMessage());
+		}
 		return 0.0;
 	}
 	public static Object getProcessCpuLoad() {

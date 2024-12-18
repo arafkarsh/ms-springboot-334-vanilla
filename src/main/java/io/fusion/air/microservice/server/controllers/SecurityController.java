@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.server.controllers;
-
-// Swagger Open API
-
+// Custom
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
+// Swagger Open API
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,7 +25,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.iv.RandomIvGenerator;
 import org.jasypt.salt.RandomSaltGenerator;
-import org.jasypt.salt.ZeroSaltGenerator;
 import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,12 +32,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.annotation.RequestScope;
-
+// Java
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-
-import static java.lang.System.out;
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -59,7 +55,6 @@ public class SecurityController {
 
 	// Set Logger -> Lookup will automatically determine the class name.
 	private static final Logger log = getLogger(lookup().lookupClass());
-
 
 	/**
 	 * Get Method Call to Convert Plain Text to Encrypted Text of the App
@@ -91,13 +86,13 @@ public class SecurityController {
 			//  Add Random IV and Salt
 			textEncryptor.setIvGenerator(new RandomIvGenerator());
 			textEncryptor.setSaltGenerator(new RandomSaltGenerator());
-			out.println("Algorithm Used: "+algo);
+			log.info("Algorithm Used: {} ",algo);
 			String encryptedText = textEncryptor.encrypt(text); // String to encrypt
-			out.println("Encrypted Text: ENC(" + encryptedText + ")");
+			log.info("Encrypted Text: ENC({})", encryptedText);
 			// Decrypt the text
 			String decryptedText = textEncryptor.decrypt(encryptedText);
-			out.println("Decrypted Text: " + decryptedText);
-			HashMap<String, String> data = new LinkedHashMap<String, String>();
+			log.info("Decrypted Text: {} ", decryptedText);
+			HashMap<String, String> data = new LinkedHashMap<>();
 			data.put("algo", algo);
 			data.put("text", text);
 			data.put("encrypted", encryptedText);

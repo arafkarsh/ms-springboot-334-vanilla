@@ -16,7 +16,6 @@
 
 package io.fusion.air.microservice.security;
 // JWT
-import io.fusion.air.microservice.utils.Utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -47,6 +46,7 @@ public final class JsonWebTokenValidator {
 	 * Initialize the JWT with the Signature Algorithm based on Secret Key or Public / Private Key
 	 */
 	public JsonWebTokenValidator() {
+		// Nothing to instantiate
 	}
 
 	// =============================================================================================
@@ -291,7 +291,7 @@ public final class JsonWebTokenValidator {
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		println(DOUBLE_LINE);
 		println("Generate Json Web Tokens Based on SECRET KEYS");
 		println(DOUBLE_LINE);

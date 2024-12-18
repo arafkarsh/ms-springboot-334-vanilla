@@ -16,6 +16,7 @@
 package io.fusion.air.microservice.security;
 
 // Bouncy Castel
+import io.fusion.air.microservice.utils.Utils;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 // Spring
@@ -103,7 +104,7 @@ public class DigitalSignature {
         signature.initSign(getCrypto().getPrivateKey());
 
         // Read and sign the document
-        System.out.println("Sign the Document    = " + documentName);
+        Utils.println("Sign the Document    = " + documentName);
         byte[] document = Files.readAllBytes(Paths.get( documentName));
         // Set the Doc in the Signature
         signature.update(document);
@@ -111,7 +112,7 @@ public class DigitalSignature {
         byte[] digitalSignature = signature.sign();
 
         // Write the digital signature to a file
-        System.out.println("Create the Signature = " + fileName + EXTENSION);
+        Utils.println("Create the Signature = " + fileName + EXTENSION);
         Files.write(Paths.get(fileName + EXTENSION), digitalSignature);
 
         // Write the digital signature to a file in PEM format
@@ -145,8 +146,8 @@ public class DigitalSignature {
 
         // Verify the signature
         boolean isValid = signature.verify(digitalSignature);
-        System.out.println("Verify the Signature = " + fileName + EXTENSION);
-        System.out.println("Signature Verified   = Status = [" + isValid + "] "+ documentName );
+        Utils.println("Verify the Signature = " + fileName + EXTENSION);
+        Utils.println("Signature Verified   = Status = [" + isValid + "] "+ documentName );
     }
 
     /**
@@ -174,10 +175,10 @@ public class DigitalSignature {
     public static void main(String[] args) throws Exception {
         String path = "/Users/arafkarsh/ws/IntelliJ/book/ms-springboot-334-vanilla/";
         DigitalSignature ds = new DigitalSignature();
-        System.out.println("SIGN THE DOCUMENT >------------------------------------------------------");
+        Utils.println("SIGN THE DOCUMENT >------------------------------------------------------");
         ds.signDocument(path + "x509.txt");
 
-        System.out.println("VERIFY DOCUMENT   >------------------------------------------------------");
+        Utils.println("VERIFY DOCUMENT   >------------------------------------------------------");
         ds.verifySignature(path + "x509.txt");
     }
 

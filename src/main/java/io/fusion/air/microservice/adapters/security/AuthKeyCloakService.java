@@ -72,7 +72,7 @@ public class AuthKeyCloakService {
                                CryptoKeyGenerator cryptoKeyGen ) {
             keyCloakConfig = keyCloakCfg;
             cryptoKeyGenerator = cryptoKeyGen;
-            restTemplate =  new RestTemplate();;
+            restTemplate =  new RestTemplate();
     }
 
     /**

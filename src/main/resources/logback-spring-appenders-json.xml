@@ -8,7 +8,6 @@
 				<logLevel/>
 				<message/>
 				<threadName/>
-				<!-- <context/> -->
 				<mdc/>
 			</providers>
 		</encoder>
@@ -28,7 +27,6 @@
 			<!-- Specify file size Cap -->
 			<totalSizeCap>${LOG_FILE_SIZE_CAP}</totalSizeCap>
 		</rollingPolicy>
-		<!-- <encoder class="net.logstash.logback.encoder.LogstashEncoder"/> -->
 		<encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
 			<providers>
 				<timestamp/>
@@ -36,7 +34,6 @@
 				<logLevel/>
 				<message/>
 				<threadName/>
-				<!-- <context/> -->
 				<mdc/>
 			</providers>
 		</encoder>

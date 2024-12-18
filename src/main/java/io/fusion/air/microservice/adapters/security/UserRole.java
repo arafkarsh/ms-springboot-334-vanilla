@@ -18,12 +18,15 @@ package io.fusion.air.microservice.adapters.security;
 /**
  * These Roles are compared with Role Defined in the JWT Token
  *
+ * User Roles refactored on Dec 18, 2024.
+ * All the Roles names were capitalized to match the coding standards.
+ *
  * @author: Araf Karsh Hamid
  * @version:
  * @date:
  */
 public enum UserRole {
-    User,
-    Admin,
-    Public
+    USER,
+    ADMIN,
+    PUBLIC
 }

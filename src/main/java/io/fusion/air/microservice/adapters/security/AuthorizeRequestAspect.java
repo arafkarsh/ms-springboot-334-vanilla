@@ -334,9 +334,9 @@ public class AuthorizeRequestAspect {
         }
         log.info("Step 3: Role Check Role = {},  Claims Role = {} ", annotationRole, role);
         // If the Role in the Token is User and Required is Admin then Reject the request
-        if(role.trim().equalsIgnoreCase(UserRole.User.toString())
+        if(role.trim().equalsIgnoreCase(UserRole.USER.toString())
                 && annotationRole != null
-                && annotationRole.equals(UserRole.Admin.toString())) {
+                && annotationRole.equals(UserRole.ADMIN.toString())) {
             throw new AuthorizationException("Invalid User Role!");
         }
     }
