@@ -20,6 +20,7 @@ import io.fusion.air.microservice.adapters.security.AuthorizeRequestAspect;
 import io.fusion.air.microservice.adapters.security.ClaimsManager;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 // Spring
+import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -253,6 +254,28 @@ public class TokenManager {
         refreshClaims.put("jti", UUID.randomUUID().toString());
 
         Map<String, String> tokens = refreshTokens(subject, authClaims, refreshClaims);
+        String authToken = tokens.get("token");
+        String refreshTkn = tokens.get(AUTH_REFRESH);
+        if(headers != null) {
+            headerManager.setResponseHeader(AuthorizeRequestAspect.AUTH_TOKEN, BEARER + authToken);
+            headerManager.setResponseHeader(AuthorizeRequestAspect.REFRESH_TOKEN, BEARER + refreshTkn);
+        }
+        return tokens;
+    }
+
+    /**
+     * Create Authorization Tokens based on existing Claims (Refresh Tokens)
+     * @param subject
+     * @param headers
+     * @param claims
+     * @return
+     */
+    public Map<String, String>  createAuthorizationToken(String subject, HttpHeaders headers, Claims claims) {
+        Map<String, Object> newClaims = new LinkedHashMap<>();
+        for (Map.Entry<String, Object> entry : claims.entrySet()) {
+            newClaims.put(entry.getKey(), entry.getValue());
+        }
+        Map<String, String> tokens = refreshTokens(subject, newClaims, newClaims);
         String authToken = tokens.get("token");
         String refreshTkn = tokens.get(AUTH_REFRESH);
         if(headers != null) {

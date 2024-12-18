@@ -22,7 +22,6 @@ import io.fusion.air.microservice.adapters.security.AuthorizeRequestAspect;
 import io.fusion.air.microservice.adapters.security.ValidateRefreshToken;
 import io.fusion.air.microservice.security.CryptoKeyGenerator;
 import io.fusion.air.microservice.security.JsonWebToken;
-import io.fusion.air.microservice.security.JsonWebTokenConstants;
 import io.fusion.air.microservice.security.TokenManager;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 // Swagger
@@ -167,18 +166,20 @@ public class TokenController extends AbstractController {
 	@GetMapping("/refresh")
 	public ResponseEntity<StandardResponse> generate(HttpServletRequest request) throws AbstractServiceException {
 		log.debug("{} |Request to Generate Refresh Tokens... ", serviceName);
-
 		// Step 1:
 		final String refreshToken = getToken(request.getHeader(AuthorizeRequestAspect.REFRESH_TOKEN));
 		String subject = jsonWebToken.getSubjectFromToken(refreshToken);
 		Claims refreshTokenClaims = jsonWebToken.getAllClaims(refreshToken);
-		Map<String, String> tokens = refreshTokens(subject, refreshTokenClaims, refreshTokenClaims);
 
-		// Step 2: Generate Authorize Tokens
+		// Step 2: Generate Authorize Tokens (Auth and Refresh Tokens)
 		HttpHeaders headers = new HttpHeaders();
-		Map<String, String> allTokens = tokenManager.createAuthorizationToken(subject, headers);
+		Map<String, String> allTokens = tokenManager.createAuthorizationToken(subject, headers, refreshTokenClaims);
+
+		// Step 3: Generate Tx Tokens
 		String txToken = tokenManager.createTXToken(subject, TokenManager.TX_USERS, headers);
 		allTokens.putIfAbsent("TX-Token", txToken);
+
+		// Step 4: Create a Payload with all the Tokens
 		StandardResponse stdResponse = createSuccessResponse("Auth & Refresh Tokens Generated!!!");
 		// Send the Token in the Body (This is NOT Required and ONLY for Testing Purpose)
 		stdResponse.setPayload(allTokens);
@@ -196,24 +197,6 @@ public class TokenController extends AbstractController {
 		}
 		String msg = "Access Denied: Unable to extract token from Header = ";
 		throw new JWTTokenExtractionException(msg);
-	}
-
-	/**
-	 * Refresh Tokens
-	 * 1. Auth Token
-	 * 2. Refresh Token
-	 * @param subject
-	 * @param authTokenClaims
-	 * @param refreshTokenClaims
-	 * @return
-	 */
-	private Map<String, String> refreshTokens(String subject,
-												  Claims authTokenClaims, Claims refreshTokenClaims) {
-		tokenAuthExpiry = (tokenAuthExpiry < 5) ? JsonWebTokenConstants.EXPIRE_IN_FIVE_MINS : tokenAuthExpiry;
-		tokenRefreshExpiry = (tokenRefreshExpiry < 30) ? JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;
-		return jsonWebToken
-				.init(serviceConfig.getTokenType())
-				.generateTokens(subject, serviceConfig.getServiceOrg(), tokenAuthExpiry, tokenRefreshExpiry);
 	}
  }
 
