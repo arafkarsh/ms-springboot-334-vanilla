@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -51,7 +52,7 @@ public final class Utils {
 
 	private static final char[] hexArray = "0123456789ABCDEF".toCharArray();
 
-	private static Random random = new Random();
+	private static final SecureRandom random = new SecureRandom();
 
 	/**
 	 * Returns UUID Object from a Byte Array
