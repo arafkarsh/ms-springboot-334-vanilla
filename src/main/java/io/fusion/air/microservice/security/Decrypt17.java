@@ -30,9 +30,8 @@ package io.fusion.air.microservice.security;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.iv.RandomIvGenerator;
 import org.jasypt.salt.RandomSaltGenerator;
-
+// Custom
 import static java.lang.System.out;
-
 /**
  * Text Decryptor for Decrypting Sensitive Data
  * This code requires Java 17+

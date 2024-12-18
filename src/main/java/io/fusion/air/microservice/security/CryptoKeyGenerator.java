@@ -16,14 +16,17 @@
 
 package io.fusion.air.microservice.security;
 
-
+// Java Security
 import java.io.*;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-
+// Custom
+import io.fusion.air.microservice.domain.exceptions.SecurityException;
+import io.fusion.air.microservice.utils.Utils;
+// Security
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -193,8 +196,8 @@ public class CryptoKeyGenerator {
      * Print All Keys
      */
     public void printAllKeys() {
-        System.out.println(getPublicKeyPEMFormat());
-        System.out.println(getPrivateKeyPEMFormat());
+        Utils.println(getPublicKeyPEMFormat());
+        Utils.println(getPrivateKeyPEMFormat());
     }
 
     /**
@@ -256,16 +259,18 @@ public class CryptoKeyGenerator {
      * @return
      * @throws Exception
      */
-    public RSAPublicKey readPublicKey(File file) throws Exception {
-        KeyFactory factory = KeyFactory.getInstance("RSA");
-
+    public RSAPublicKey readPublicKey(File file) throws SecurityException {
         try (var keyReader = new FileReader(file);
              var pemReader = new PemReader(keyReader)) {
 
             var pemObject = pemReader.readPemObject();
             byte[] content = pemObject.getContent();
             var pubKeySpec = new X509EncodedKeySpec(content);
+
+            KeyFactory factory = KeyFactory.getInstance("RSA");
             return (RSAPublicKey) factory.generatePublic(pubKeySpec);
+        } catch (Exception e) {
+            throw new SecurityException("Unable to read public key",e);
         }
     }
 
@@ -275,16 +280,18 @@ public class CryptoKeyGenerator {
      * @return
      * @throws Exception
      */
-    public RSAPrivateKey readPrivateKey(File file) throws Exception {
-        KeyFactory factory = KeyFactory.getInstance("RSA");
-
+    public RSAPrivateKey readPrivateKey(File file) throws SecurityException {
         try (var keyReader = new FileReader(file);
              var pemReader = new PemReader(keyReader)) {
 
             var pemObject = pemReader.readPemObject();
             byte[] content = pemObject.getContent();
             var privKeySpec = new PKCS8EncodedKeySpec(content);
+
+            KeyFactory factory = KeyFactory.getInstance("RSA");
             return (RSAPrivateKey) factory.generatePrivate(privKeySpec);
+        } catch (Exception e) {
+            throw new SecurityException("Unable to read private key",e);
         }
     }
 
@@ -299,27 +306,27 @@ public class CryptoKeyGenerator {
         Key pubKey = keys.getPublicKey();
         Key priKey = keys.getPrivateKey();
 
-        System.out.println("Private key format: " + priKey.getFormat());
-        System.out.println(keys.getPrivateKeyPEMFormat());
-        System.out.println("Public key format: " + pubKey.getFormat());
-        System.out.println(keys.getPublicKeyPEMFormat());
+        Utils.println("Private key format: " + priKey.getFormat());
+        Utils.println(keys.getPrivateKeyPEMFormat());
+        Utils.println("Public key format: " + pubKey.getFormat());
+        Utils.println(keys.getPublicKeyPEMFormat());
 
-        // System.out.println("<><><>\n");
-        // System.out.println("Write to Files");
+        // Utils.println("<><><>\n");
+        // Utils.println("Write to Files");
         // keys.writePEMFile(pubKey, "publicKey", "RSA PUBLIC KEY");
         // keys.writePEMFile(priKey, "privateKey", "RSA PRIVATE KEY");
 
-        System.out.println("<><><>\n");
+        Utils.println("<><><>\n");
 
-        System.out.println("Read Public PEM File ..... ");
+        Utils.println("Read Public PEM File ..... ");
         pubKey = keys.readPublicKey(new File("publicKey.pem"));
-        System.out.println("Public  key format: " + pubKey.getFormat());
-        System.out.println(keys.getPublicKeyPEMFormat());
+        Utils.println("Public  key format: " + pubKey.getFormat());
+        Utils.println(keys.getPublicKeyPEMFormat());
 
-        System.out.println("Read Private PEM File ..... ");
+        Utils.println("Read Private PEM File ..... ");
         priKey = keys.readPrivateKey(new File("privateKey.pem"));
-        System.out.println("Private key format: " + priKey.getFormat());
-        System.out.println(keys.getPrivateKeyPEMFormat());
+        Utils.println("Private key format: " + priKey.getFormat());
+        Utils.println(keys.getPrivateKeyPEMFormat());
     }
 
     public boolean isPublicKeyFileExists() {
