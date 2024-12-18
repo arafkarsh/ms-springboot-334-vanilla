@@ -16,6 +16,7 @@
 package io.fusion.air.microservice.security;
 // Custom
 import io.fusion.air.microservice.domain.exceptions.CryptoSecurityException;
+import io.fusion.air.microservice.utils.Utils;
 // Crypto
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -23,6 +24,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 // Java
+import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Arrays;
 import org.slf4j.Logger;
@@ -161,13 +163,27 @@ public class SecureData {
             SecretKeyData secretKeyData = createSecretKeySpec(secret, algo, encryptAlgo);
             if(secretKeyData != null) {
                 Cipher cipher = Cipher.getInstance(cipherAlgo);
+                byte[] ivBytes = null; // To hold the IV bytes
                 if(cipherAlgo.contains("CBC")) {
-                    IvParameterSpec ivSpec = new IvParameterSpec(secretKeyData.getKeyBytesForIVSpecs() );
+                    // Dynamically generate IV
+                    ivBytes = new byte[cipher.getBlockSize()]; // Get block size dynamically
+                    SecureRandom secureRandom = new SecureRandom();
+                    secureRandom.nextBytes(ivBytes); // Generate secure random IV
+                    IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
                     cipher.init(Cipher.ENCRYPT_MODE, secretKeyData.getSecretKeySpec(),ivSpec);
                 } else {
                     cipher.init(Cipher.ENCRYPT_MODE, secretKeyData.getSecretKeySpec());
                 }
-                return Base64.getEncoder().encodeToString(cipher.doFinal(data.getBytes(StandardCharsets.UTF_8)));
+                byte[] encryptedData = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
+                // Encode IV and ciphertext for storage or transmission
+                if (ivBytes != null) {
+                    byte[] combined = new byte[ivBytes.length + encryptedData.length];
+                    System.arraycopy(ivBytes, 0, combined, 0, ivBytes.length);
+                    System.arraycopy(encryptedData, 0, combined, ivBytes.length, encryptedData.length);
+                    return Base64.getEncoder().encodeToString(combined);
+                } else {
+                    return Base64.getEncoder().encodeToString(encryptedData);
+                }
             }
             log.info("SecretKeyData Generation Failed for Encryption.... ");
         } catch (Exception e) {
@@ -229,36 +245,43 @@ public class SecureData {
 
     /**
      * Decrypt the Data using AES or TripleDES
-     * @param data
+     * @param encryptedData
      * @param cipherAlgo (AES/CBC/PKCS5PADDING, TripleDES/CBC/PKCS5Padding)
      * @param secret
      * @param digestAlgo (MD5, SHA-1, SHA-256, SHA-384, SHA-512)
      * @param encryptAlgo (AES, DES, TripleDES))
      * @return
      */
-    public static String decrypt(String data, String cipherAlgo, String secret, String digestAlgo, String encryptAlgo) {
-        if(data == null) { return ""; }
+    public static String decrypt(String encryptedData, String cipherAlgo, String secret, String digestAlgo, String encryptAlgo) {
+        if(encryptedData == null) { return ""; }
         cipherAlgo = (cipherAlgo == null) ? DEFAULT_ALGORITHM : cipherAlgo;
         try {
             SecretKeyData secretKeyData = createSecretKeySpec(secret, digestAlgo, encryptAlgo);
             if(secretKeyData != null) {
                 Cipher cipher = Cipher.getInstance(cipherAlgo);
+                byte[] combined = Base64.getDecoder().decode(encryptedData);
                 if(cipherAlgo.contains("CBC")) {
-                    IvParameterSpec ivSpec = new IvParameterSpec(secretKeyData.getKeyBytesForIVSpecs());
-                    cipher.init(Cipher.DECRYPT_MODE, secretKeyData.getSecretKeySpec(),ivSpec);
+                    // Dynamically generate IV
+                    int blockSize = cipher.getBlockSize();
+                    byte[] ivBytes = Arrays.copyOfRange(combined, 0, blockSize);
+                    byte[] cipherBytes = Arrays.copyOfRange(combined, blockSize, combined.length);
+                    IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
+                    cipher.init(Cipher.DECRYPT_MODE, secretKeyData.getSecretKeySpec(), ivSpec);
+                    return new String(cipher.doFinal(cipherBytes), StandardCharsets.UTF_8);
                 } else {
                     cipher.init(Cipher.DECRYPT_MODE, secretKeyData.getSecretKeySpec());
                 }
-                return new String(cipher.doFinal(Base64.getDecoder().decode(data)));
+                return new String(cipher.doFinal(Base64.getDecoder().decode(encryptedData)));
             }
             log.info("SecretKeyData Generation Failed for Decryption.... ");
         } catch (Exception e) {
             log.info("Unable to Decrypt the data: {} ", e.toString());
             e.printStackTrace();
-
         }
         return null;
     }
+
+    public static final String SINGLE_LINE = "----------------------------------------------------------------------------------------";
 
     /**
      * ONLY FOR TESTING PURPOSE
@@ -266,19 +289,22 @@ public class SecureData {
      * @param args
      */
     public static void main(String[] args) {
-        System.out.println("----------------------------------------------------------------------------------------");
+        Utils.println(SINGLE_LINE);
 
         testEncryptAESWithMD();
         testEncryptAES();
         testEncryptAES2();
-        testEncryyptTripleDES();
-        testEncryyptTripleDES2();
-        testEncryyptAESusingCBC();
-        testEncryyptAESusingECB();
+        testEncryptTripleDES();
+        testEncryptTripleDES2();
+        testEncryptAESusingCBC();
+        testEncryptAESusingECB();
 
+        Utils.println(SINGLE_LINE);
         for(int x=1; x<2; x++) {
-            testEncryption(x);
+             testEncryptionECB(x);
         }
+        Utils.println(SINGLE_LINE);
+
     }
 
     public static final String RAW_DATA = "0123456789";
@@ -303,19 +329,19 @@ public class SecureData {
         printResult(2, RAW_DATA,  encKey,  Algorithms.AES_CBC_PKCS_5_PADDING,  "", Algorithms.AES, rdEncrypt,  rdDecrypt);
     }
 
-    public static void testEncryyptTripleDES() {
+    public static void testEncryptTripleDES() {
         String rdEncrypt = SecureData.encryptTripleDES(RAW_DATA, ENC_KEY);
         String rdDecrypt = SecureData.decryptTripleDES(rdEncrypt, ENC_KEY);
         printResult(3, RAW_DATA, ENC_KEY,  Algorithms.TRIPLE_DES_CBC_PKCS_5_PADDING,  "", Algorithms.TRIPLE_DES, rdEncrypt,  rdDecrypt);
     }
 
-    public static void testEncryyptTripleDES2() {
+    public static void testEncryptTripleDES2() {
         String encKey   = "as323";
         String rdEncrypt = SecureData.encryptTripleDES(RAW_DATA, encKey);
         String rdDecrypt = SecureData.decryptTripleDES(rdEncrypt, encKey);
         printResult(3, RAW_DATA,  encKey,  Algorithms.TRIPLE_DES_CBC_PKCS_5_PADDING,  "", Algorithms.TRIPLE_DES, rdEncrypt,  rdDecrypt);
     }
-    public static void testEncryyptAESusingCBC() {
+    public static void testEncryptAESusingCBC() {
         String cipher   = Algorithms.AES_CBC_PKCS_5_PADDING;
         String mdAlgo  = Algorithms.SHA_512;
         String enAlgo  = Algorithms.AES;
@@ -324,7 +350,7 @@ public class SecureData {
         printResult(4, RAW_DATA, ENC_KEY,  cipher,  mdAlgo, enAlgo, rdEncrypt,  rdDecrypt);
     }
 
-    public static void testEncryyptAESusingECB() {
+    public static void testEncryptAESusingECB() {
         String cipher   = Algorithms.AES_ECB_PKCS_5_PADDING;
         String mdAlgo  = Algorithms.SHA_512;
         String enAlgo  = Algorithms.AES;
@@ -337,7 +363,7 @@ public class SecureData {
      * Test Encryption Decryption
      * @param cnt
      */
-    public static void testEncryption(int cnt) {
+    public static void testEncryptionECB(int cnt) {
         String rawData = "My Name is Lincoln Hawk from the Galaxy Andromeda!";
         String encKey = "<([SecretKey!!To??Encrypt##Data@12345%6790])>-" + cnt;
         String cipher = Algorithms.AES_ECB_PKCS_5_PADDING;
@@ -373,13 +399,13 @@ public class SecureData {
      */
     public static void printResult(int testNo, String rawData, String encKey, String cipher, String mdAlgo,
                                    String encryptAlgo, String rdEncrypt, String rdDecrypt) {
-        System.out.println("MD Algorithm : "+mdAlgo);
-        System.out.println("Cipher Suite : "+cipher);
-        System.out.println("Encrypt Algo : "+encryptAlgo);
-        System.out.println("Enc Key   : "+encKey);
-        System.out.println("Plain String : "+rawData);
-        System.out.println("Encrypted "+testNo+"  : "+rdEncrypt);
-        System.out.println("Decrypted "+testNo+"  : "+rdDecrypt);
-        System.out.println("========================================================================================");
+        Utils.println("MD Algorithm : "+mdAlgo);
+        Utils.println("Cipher Suite : "+cipher);
+        Utils.println("Encrypt Algo : "+encryptAlgo);
+        Utils.println("Enc Key   : "+encKey);
+        Utils.println("Plain String : "+rawData);
+        Utils.println("Encrypted "+testNo+"  : "+rdEncrypt);
+        Utils.println("Decrypted "+testNo+"  : "+rdDecrypt);
+        Utils.println("========================================================================================");
     }
 }

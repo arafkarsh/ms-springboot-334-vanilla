@@ -15,8 +15,11 @@
  */
 package io.fusion.air.microservice.security;
 
+import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Base64;
 
 /**
  * @author: Araf Karsh Hamid
@@ -64,5 +67,31 @@ public class SecretKeyData {
     public byte[] getKeyBytesForIVSpecs() {
         return (encryptAlgo.equalsIgnoreCase(Algorithms.TRIPLE_DES))
                 ? Arrays.copyOf(keyBytes, 8) : keyBytes;
+    }
+
+    /**
+     * Get Secure Random IV Specs for  Encryption
+     *
+     * @param cipher
+     * @return
+     */
+    public byte[] getKeyBytesEncryptRandomIVSpecs(Cipher cipher) {
+        byte[] ivBytes = null; // To hold the IV bytes
+        ivBytes = new byte[cipher.getBlockSize()]; // Get block size dynamically
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(ivBytes); // Generate secure random IV
+        return ivBytes;
+    }
+
+    /**
+     * Get Secure Random IV Specs for Decryption
+     *
+     * @param cipher
+     * @return
+     */
+    public byte[] getKeyBytesDecryptRandomIVSpecs(Cipher cipher, String encryptedData) {
+        byte[] combined = Base64.getDecoder().decode(encryptedData);
+        int blockSize = cipher.getBlockSize();
+        return Arrays.copyOfRange(combined, 0, blockSize);
     }
 }
