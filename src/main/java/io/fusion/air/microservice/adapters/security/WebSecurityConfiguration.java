@@ -24,6 +24,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
@@ -61,10 +62,8 @@ public class WebSecurityConfiguration {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Forces All Request to be Secured (HTTPS)
-        // http.requiresChannel().anyRequest().requiresSecure();
-        authorizeRequests(http);              // Set Authorization Policies
-        // authorizeRequestsNew(http);         // Set Authorization Policies
+        // enableSecureChannel(http);           // Forces All Request to be Secured (HTTPS)
+        authorizeHttpRequests(http);         // Set Authorization Policies
         csrfProtection(http);                   // Set CSRF Protection
         xFrameProtection(http);               // Set X-Frame Protection
         contentSecurityPolicy(http);          // Set Content Security Policy
@@ -72,26 +71,14 @@ public class WebSecurityConfiguration {
     }
 
     /**
-     * Configures HTTP security to authorize requests based on the API documentation path.
-     * It permits all requests matching the API documentation path and redirects unauthorized
-     * access attempts to a custom access denied page.
-     *
-     * @param http the {@link HttpSecurity} object to configure HTTP security for the application
-     * @throws Exception if there is a problem during configuration
+     * To Run your Web Application on SSL/TLS
+     * @param http
+     * @throws Exception
      */
-    private void authorizeRequests(HttpSecurity http) throws Exception {
-        String apiPath = serviceConfig.getApiDocPath();
-        http.authorizeRequests()
-                .requestMatchers(apiPath + "/**")
-                .permitAll()
-                .and()
-                // This configures exception handling, specifically specifying that when a user tries to access a page
-                // they're not authorized to view, they're redirected to "/403" (typically an "Access Denied" page).
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .accessDeniedPage("/403"))
-                // Make sure to add stateless session management since it's a microservice
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    public void enableSecureChannel(HttpSecurity http) throws Exception {
+        http.requiresChannel(channel -> channel
+                .anyRequest().requiresSecure()
+        );
     }
 
     /**
@@ -102,13 +89,12 @@ public class WebSecurityConfiguration {
      * @param http the {@link HttpSecurity} object to configure HTTP security for the application
      * @throws Exception if there is a problem during configuration
      */
-    private void authorizeRequestsNew(HttpSecurity http) throws Exception {
+    private void authorizeHttpRequests(HttpSecurity http) throws Exception {
         String apiPath = serviceConfig.getApiDocPath();
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(apiPath + "/**")
-                        .permitAll()
+                        .requestMatchers(apiPath + "/**").permitAll()
                         // Require authentication for any other requests
-                        // .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 // This configures exception handling, specifically specifying that when a user tries to access a page
                 // they're not authorized to view, they're redirected to "/403" (typically an "Access Denied" page).
@@ -157,9 +143,8 @@ public class WebSecurityConfiguration {
         // Clickjacking is a malicious technique of tricking web users into revealing confidential information or taking
         // control of their interaction with the website, by loading your website in an iframe of another website and
         // then overlaying it with additional content.
-        //                 .frameOptions(frameOptions -> frameOptions.deny())
         http.headers(headers -> headers
-                .frameOptions(frameOptions -> frameOptions.deny())
+                .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
                 .contentSecurityPolicy(csp -> csp
                         .policyDirectives("default-src 'self'; frame-ancestors 'none'")
                 )

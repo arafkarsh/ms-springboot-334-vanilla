@@ -190,7 +190,7 @@ public class ProductControllerImpl extends AbstractController {
 			productList = createFallBackProducts();
 			stdResponse = createSuccessResponse("201","Fallback Data!");
 		} else {
-			stdResponse = createSuccessResponse("Data Fetch Success!");
+			stdResponse = createSuccessResponse("Data Fetch Success! Records = "+productList.size());
 		}
 		stdResponse.setPayload(productList);
 		return ResponseEntity.ok(stdResponse);
@@ -401,7 +401,6 @@ public class ProductControllerImpl extends AbstractController {
 		StandardResponse stdResponse = createSuccessResponse("Product Deleted!");
 		return ResponseEntity.ok(stdResponse);
 	}
-
 
 	/**
 	 * Create Fall Back Product for Testing Purpose ONLY
