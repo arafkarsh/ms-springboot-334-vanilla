@@ -296,6 +296,22 @@ public class CryptoKeyGenerator {
     }
 
     /**
+     * Returns True if the Public Key File Exists
+     * @return
+     */
+    public boolean isPublicKeyFileExists() {
+        return publicKeyFileExists;
+    }
+
+    /**
+     * Returns True if the Private Key File Exists
+     * @return
+     */
+    public boolean isPrivateKeyFileExists() {
+        return privateKeyFileExists;
+    }
+
+    /**
      * For Testing Purpose ONLY
      * Generate the Public / Private Key Pairs
      * @param args
@@ -315,8 +331,6 @@ public class CryptoKeyGenerator {
         // keys.writePEMFile(pubKey, "publicKey", "RSA PUBLIC KEY");
         // keys.writePEMFile(priKey, "privateKey", "RSA PRIVATE KEY");
 
-        Utils.println("<><><>\n");
-
         Utils.println("Read Public PEM File ..... ");
         pubKey = keys.readPublicKey(new File("publicKey.pem"));
         Utils.println("Public  key format: " + pubKey.getFormat());
@@ -326,13 +340,5 @@ public class CryptoKeyGenerator {
         priKey = keys.readPrivateKey(new File("privateKey.pem"));
         Utils.println("Private key format: " + priKey.getFormat());
         Utils.println(keys.getPrivateKeyPEMFormat());
-    }
-
-    public boolean isPublicKeyFileExists() {
-        return publicKeyFileExists;
-    }
-
-    public boolean isPrivateKeyFileExists() {
-        return privateKeyFileExists;
     }
 }
