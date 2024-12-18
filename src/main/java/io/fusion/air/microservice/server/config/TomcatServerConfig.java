@@ -27,6 +27,7 @@
  */
 package io.fusion.air.microservice.server.config;
 
+import org.apache.coyote.ProtocolHandler;
 import org.springframework.boot.web.embedded.tomcat.TomcatProtocolHandlerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,8 +36,29 @@ import java.util.concurrent.Executors;
 
 /**
  * ms-springboot-334-vanilla / TomcatServerConfig
- *
  * Configuring the Virtual Threads
+ * ------------------------------------------------------------------------------------------
+ * This Spring Bean is a TomcatProtocolHandlerCustomizer that customizes the Tomcat server’s
+ * protocol handler by setting a custom executor. Specifically, it sets the executor to a virtual
+ * thread executor, which leverages the virtual threads introduced in Java 19+ (in preview) and
+ * fully supported in Java 21.
+ *
+ * Key Features
+ * 	•	TomcatProtocolHandlerCustomizer<?>: This is a generic interface that allows customization
+ * 	    of Tomcat’s protocol handler.
+ * 	•	Executors.newVirtualThreadPerTaskExecutor(): This creates a virtual thread executor, where
+ * 	    each task is run on a lightweight virtual thread. Virtual threads provide a scalable and efficient
+ * 	    alternative to traditional platform threads, making them suitable for high-concurrency applications.
+ *
+ * This bean allows Tomcat to use virtual threads for handling incoming HTTP requests, improving
+ * concurrency and scalability for I/O-bound applications.
+ *
+ * When to Use Virtual Threads in Tomcat
+ *
+ * Virtual threads are highly efficient for I/O-bound workloads (e.g., handling many HTTP requests),
+ * as they reduce memory overhead compared to traditional threads. Use this customization if:
+ * 	•	Your application is I/O-bound (e.g., many database or network calls).
+ * 	•	You are running on Java 19+ with virtual threads enabled.
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
@@ -46,9 +68,8 @@ import java.util.concurrent.Executors;
 public class TomcatServerConfig {
 
         @Bean
-        public TomcatProtocolHandlerCustomizer<?> protocolHandlerVirtualThreadExecutorCustomizer() {
-            return protocolHandler -> {
+        public TomcatProtocolHandlerCustomizer<ProtocolHandler> protocolHandlerVirtualThreadExecutorCustomizer() {
+            return protocolHandler ->
                 protocolHandler.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
-            };
         }
 }
