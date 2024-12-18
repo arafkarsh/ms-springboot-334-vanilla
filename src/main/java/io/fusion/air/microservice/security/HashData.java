@@ -15,13 +15,14 @@
  */
 package io.fusion.air.microservice.security;
 // Java
+import io.fusion.air.microservice.utils.Std;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.InputMismatchException;
 // Custom
-import static io.fusion.air.microservice.utils.Utils.println;
 
 /**
  * HashData
@@ -215,7 +216,6 @@ public final class HashData {
             sb.append(hexchars[b & 0x0F]);
         }
         String hexValue = sb.toString();
-        println("HEX="+hexValue);
         return hexValue;
     }
 
@@ -224,18 +224,18 @@ public final class HashData {
      */
     public static void main(String[] args) throws Exception {
 
-        println("12345 = "+HashData.createHash("12345"));
+        Std.println("12345 = "+HashData.createHash("12345"));
         // Usage
         if(args.length == 0) {
-            println("\n0 - Print all the Algorithms to create Hash.\n");
-            println("1 - MD5   (128 bit)");
-            println("2 - SHA_1 (160 bit)");
-            println("3 - SHA_256");
-            println("4 - SHA_384");
-            println("5 - SHA_512\n");
-            println("java HashingAlgorithms string algorithm_number (default is 5 = SHA_512, use 0 to print all Hash values)");
+            Std.println("\n0 - Print all the Algorithms to create Hash.\n");
+            Std.println("1 - MD5   (128 bit)");
+            Std.println("2 - SHA_1 (160 bit)");
+            Std.println("3 - SHA_256");
+            Std.println("4 - SHA_384");
+            Std.println("5 - SHA_512\n");
+            Std.println("java HashingAlgorithms string algorithm_number (default is 5 = SHA_512, use 0 to print all Hash values)");
 
-            println("\nTesting with default Password = MyC0mp13xPa$$w0rd -----------------------\n");
+            Std.println("\nTesting with default Password = MyC0mp13xPa$$w0rd -----------------------\n");
 
             args = new String[2];
             args[0]	=	"MyC0mp13xPa$$w0rd";
@@ -248,12 +248,12 @@ public final class HashData {
         // Print all the algorithms computed hash value of the input message if the algo code == ZERO
         for(int x = 0; x< Algorithms.ALGOS.length; x++) {
             passwordHash = HashData.createHash(password, Algorithms.ALGOS[x]);
-            println(Algorithms.ALGOS[x]+"\tPassword = ( "+password+" )"+" { "+passwordHash+" }");
+            Std.println(Algorithms.ALGOS[x]+"\tPassword = ( "+password+" )"+" { "+passwordHash+" }");
         }
-        println("-----------------------------------------------\n");
+        Std.println("-----------------------------------------------\n");
         for(int x = 0; x< Algorithms.ALGOS.length; x++) {
             passwordHash = HashData.createHash("Hello", Algorithms.ALGOS[x]);
-            println(Algorithms.ALGOS[x]+"\tPassword = ( Hello )"+" { "+passwordHash+" }");
+            Std.println(Algorithms.ALGOS[x]+"\tPassword = ( Hello )"+" { "+passwordHash+" }");
         }
     }
 }

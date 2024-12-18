@@ -48,7 +48,6 @@ import io.micrometer.core.instrument.Timer;
  * @date:
  */
 @Service
-@RequestScope
 @Transactional
 public class ProductServiceImpl implements ProductService {
 

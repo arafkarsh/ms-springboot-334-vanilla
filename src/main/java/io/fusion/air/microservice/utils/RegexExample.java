@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  */
 public class RegexExample {
     public static void main(String[] args) {
-        Utils.println("===============================================");
+        Std.println("===============================================");
         // The regex pattern for zip code validation
         String regex = "^[0-9]{5}$";
         doTest(regex, "Zip Code:1");
@@ -52,13 +52,13 @@ public class RegexExample {
     public static void doTest(String regex, String name) {
         // Compile the regex pattern
         Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-        Utils.println("Testing the regex: " + regex);
+        Std.println("Testing the regex: " + regex);
         for (String code : getZipCodes()) {
             Matcher matcher = pattern.matcher(code);
             boolean isValid = matcher.matches();
-            Utils.println(name+": \"" + code + "\" is " + (isValid ? "VALID" : "INVALID"));
+            Std.println(name+": \"" + code + "\" is " + (isValid ? "VALID" : "INVALID"));
         }
-        Utils.println("----------------------------------------------");
+        Std.println("----------------------------------------------");
     }
 
     /**

@@ -27,6 +27,7 @@
  */
 package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
+import io.fusion.air.microservice.utils.Std;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.micrometer.prometheusmetrics.PrometheusConfig;
@@ -59,12 +60,12 @@ public class _15_GlobalRegistryExample {
         Metrics.counter("fusion.air.example.15.GlobalRegistry", "type", "test").increment();
 
         // Print the metrics in SimpleMeterRegistry
-        System.out.println("Metrics in SimpleMeterRegistry:");
-        simpleRegistry.getMeters().forEach(meter -> System.out.println(meter.getId()));
+        Std.println("Metrics in SimpleMeterRegistry:");
+        simpleRegistry.getMeters().forEach(meter -> Std.println(meter.getId()));
 
         // Print the metrics in PrometheusMeterRegistry
-        System.out.println("\nMetrics in PrometheusMeterRegistry:");
-        System.out.println(prometheusRegistry.scrape());
+        Std.println("\nMetrics in PrometheusMeterRegistry:");
+        Std.println(prometheusRegistry.scrape());
 
     }
 }

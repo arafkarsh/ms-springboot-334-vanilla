@@ -18,7 +18,7 @@ package io.fusion.air.microservice.security;
 
 // Custom
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import static io.fusion.air.microservice.utils.Utils.println;
+import static io.fusion.air.microservice.utils.Std.println;
 // Spring
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

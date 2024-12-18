@@ -29,7 +29,6 @@ import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.annotation.RequestScope;
 // Java
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +49,6 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @date:
  */
 @Service
-@RequestScope
 public class OrderServiceImpl implements OrderService {
 
     // Set Logger -> Lookup will automatically determine the class name.

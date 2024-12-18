@@ -27,6 +27,7 @@
  */
 package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
+import io.fusion.air.microservice.utils.Std;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.TimeGauge;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -62,11 +63,11 @@ public class _9_TimeGaugeExample {
         _9_TimeGaugeExample tmEx = new _9_TimeGaugeExample(meterRegistry);
 
         // Output initial value of the TimeGauge
-        System.out.println("Initial TimeGauge value: " + tmEx.timeGauge.value(TimeUnit.MILLISECONDS) + " ms");
+        Std.println("Initial TimeGauge value: " + tmEx.timeGauge.value(TimeUnit.MILLISECONDS) + " ms");
         // Simulate a change in the tracked object's total time
         tmEx.timedObject.setTotalTime(6000);
         // Output updated value of the TimeGauge
-        System.out.println("Updated TimeGauge value: " + tmEx.timeGauge.value(TimeUnit.MILLISECONDS) + " ms");
+        Std.println("Updated TimeGauge value: " + tmEx.timeGauge.value(TimeUnit.MILLISECONDS) + " ms");
 
         // Print all registered meters and their measurements
         UtilsMeter.printStats(meterRegistry);

@@ -31,11 +31,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 // Spring
 import org.slf4j.Logger;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
 // Java
 import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,11 +53,10 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @version 1.0
  * 
  */
-@Configuration
+@Validated // This enables validation for method parameters
 @RestController
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/payment")
-@RequestScope
 @MetricsPath(name = "fusion.air.payment")
 @Tag(name = "Secured Payments API", description = "")
 public class PaymentControllerImpl extends AbstractController {

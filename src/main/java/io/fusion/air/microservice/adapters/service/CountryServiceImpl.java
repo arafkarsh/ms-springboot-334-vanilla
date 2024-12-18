@@ -24,7 +24,6 @@ import io.fusion.air.microservice.domain.ports.services.CountryService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.RequestScope;
 // Java
 import java.util.List;
 
@@ -34,7 +33,6 @@ import java.util.List;
  * @date:
  */
 @Service
-@RequestScope
 public class CountryServiceImpl implements CountryService {
 
     // Autowired using Constructor

@@ -98,7 +98,7 @@ public class CPU {
 	 */
 	public static void printAllCpuStats() {
 		for(String methodName : methodsMap.keySet()) {
-			Utils.println(methodName+"() = "+invoke(methodName, osMXBean));
+			Std.println(methodName+"() = "+invoke(methodName, osMXBean));
 		}
 	}
 
@@ -172,7 +172,7 @@ public class CPU {
 	public static long getOpenFileDescriptorCount() {
 		try {	return  (Long) invoke("getOpenFileDescriptorCount", osMXBean); }
 		catch (Exception ignored) {
-			Utils.println(ignored.getMessage());
+			Std.println(ignored.getMessage());
 		}
 		return 0;
 	}
@@ -184,7 +184,7 @@ public class CPU {
 	public static long getMaxFileDescriptorCount() {
 		try {	return  (Long) invoke("getMaxFileDescriptorCount", osMXBean); }
 		catch (Exception ignored) {
-			Utils.println(ignored.getMessage());
+			Std.println(ignored.getMessage());
 		}
 		return 0;
 	}
@@ -195,7 +195,7 @@ public class CPU {
 	 * @return
 	 */
 	public static double getSystemCpuLoad2() {
-		// System.out.println("getSystemCpuLoad() <=> "+invoke("getSystemCpuLoad"));
+		// Std.println("getSystemCpuLoad() <=> "+invoke("getSystemCpuLoad"));
 		try {	return  (Double) invoke("getSystemCpuLoad",osMXBean); }
 		catch (Exception ignored) {
 			/* ignored.printStackTrace(); */}
@@ -205,7 +205,7 @@ public class CPU {
 	public static Object getSystemCpuLoad() {
 		try {	return  invoke("getSystemCpuLoad", osMXBean); }
 		catch (Exception ignored) {
-			Utils.println(ignored.getMessage());
+			Std.println(ignored.getMessage());
 		}
 		return "0.0";
 	}
@@ -217,7 +217,7 @@ public class CPU {
 	public static double getProcessCpuLoad2() {
 		try {	return  (Double) invoke("getProcessCpuLoad", osMXBean); }
 		catch (Exception ignored) {
-			Utils.println(ignored.getMessage());
+			Std.println(ignored.getMessage());
 		}
 		return 0.0;
 	}
@@ -321,11 +321,11 @@ public class CPU {
 
 		int sleepTime = 3000;
 		for(int x=0; x<7; x++) {
-			System.out.println(x+")> Sleeping for "+sleepTime+" ms : "+new Date());
+			Std.println(x+")> Sleeping for "+sleepTime+" ms : "+new Date());
 			Thread.sleep(sleepTime);
-			System.out.println(new Date()+printCpuStats());
+			Std.println(new Date()+printCpuStats());
 		}
-		System.out.println(new Date()+printCpuStats());
+		Std.println(new Date()+printCpuStats());
 	}
 
 }

@@ -16,7 +16,6 @@
 package io.fusion.air.microservice.security;
 // Custom
 import io.fusion.air.microservice.domain.exceptions.CryptoSecurityException;
-import io.fusion.air.microservice.utils.Utils;
 // Crypto
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -27,6 +26,8 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Arrays;
+
+import io.fusion.air.microservice.utils.Std;
 import org.slf4j.Logger;
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -289,7 +290,7 @@ public class SecureData {
      * @param args
      */
     public static void main(String[] args) {
-        Utils.println(SINGLE_LINE);
+        Std.println(SINGLE_LINE);
 
         testEncryptAESWithMD();
         testEncryptAES();
@@ -299,11 +300,11 @@ public class SecureData {
         testEncryptAESusingCBC();
         testEncryptAESusingECB();
 
-        Utils.println(SINGLE_LINE);
+        Std.println(SINGLE_LINE);
         for(int x=1; x<2; x++) {
              testEncryptionECB(x);
         }
-        Utils.println(SINGLE_LINE);
+        Std.println(SINGLE_LINE);
 
     }
 
@@ -399,13 +400,13 @@ public class SecureData {
      */
     public static void printResult(int testNo, String rawData, String encKey, String cipher, String mdAlgo,
                                    String encryptAlgo, String rdEncrypt, String rdDecrypt) {
-        Utils.println("MD Algorithm : "+mdAlgo);
-        Utils.println("Cipher Suite : "+cipher);
-        Utils.println("Encrypt Algo : "+encryptAlgo);
-        Utils.println("Enc Key   : "+encKey);
-        Utils.println("Plain String : "+rawData);
-        Utils.println("Encrypted "+testNo+"  : "+rdEncrypt);
-        Utils.println("Decrypted "+testNo+"  : "+rdDecrypt);
-        Utils.println("========================================================================================");
+        Std.println("MD Algorithm : "+mdAlgo);
+        Std.println("Cipher Suite : "+cipher);
+        Std.println("Encrypt Algo : "+encryptAlgo);
+        Std.println("Enc Key   : "+encKey);
+        Std.println("Plain String : "+rawData);
+        Std.println("Encrypted "+testNo+"  : "+rdEncrypt);
+        Std.println("Decrypted "+testNo+"  : "+rdDecrypt);
+        Std.println("========================================================================================");
     }
 }

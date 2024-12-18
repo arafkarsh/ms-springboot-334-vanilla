@@ -27,6 +27,7 @@
  */
 package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
+import io.fusion.air.microservice.utils.Std;
 import io.fusion.air.microservice.utils.Utils;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -91,13 +92,13 @@ public class _10_CustomMeterExample {
         _10_CustomMeterExample meterEx = new _10_CustomMeterExample(meterRegistry);
 
         // Output initial value of the TimeGauge
-        Utils.println("Initial Meter value: " + meterEx.meter.toString() + " ms");
+        Std.println("Initial Meter value: " + meterEx.meter.toString() + " ms");
         // Simulate a change in the tracked object's total
         for(int x=0; x<10; x++) { meterEx.recordSuccess(); }
         for(int x=0; x<2; x++) { meterEx.recordFailure(); }
 
         // Output updated value of the TimeGauge
-        Utils.println("Updated Meter value: " + meterEx.meter.toString() + " ms");
+        Std.println("Updated Meter value: " + meterEx.meter.toString() + " ms");
 
         // Print all registered meters and their measurements
         UtilsMeter.printStats(meterRegistry);

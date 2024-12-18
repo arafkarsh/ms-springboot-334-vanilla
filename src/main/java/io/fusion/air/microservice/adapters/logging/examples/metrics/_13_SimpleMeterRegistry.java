@@ -27,6 +27,7 @@
  */
 package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
+import io.fusion.air.microservice.utils.Std;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -53,6 +54,6 @@ public class _13_SimpleMeterRegistry {
         counter.increment(3);
 
         // Print the current value
-        System.out.println("Name: "+counter.getId().getName()+" Counter Value: " + counter.count());
+        Std.println("Name: "+counter.getId().getName()+" Counter Value: " + counter.count());
     }
 }

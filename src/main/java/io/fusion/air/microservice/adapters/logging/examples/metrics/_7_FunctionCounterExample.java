@@ -27,6 +27,7 @@
  */
 package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
+import io.fusion.air.microservice.utils.Std;
 import io.micrometer.core.instrument.FunctionCounter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -69,7 +70,7 @@ public class _7_FunctionCounterExample {
 
         // Access and print the FunctionCounter value
         double itemsProcessed = meterRegistry.get("fusion.air.example.7.functionCounter").functionCounter().count();
-        System.out.println("Items processed: " + itemsProcessed);
+        Std.println("Items processed: " + itemsProcessed);
     }
 }
 

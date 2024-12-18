@@ -601,7 +601,7 @@ public final class Utils {
 
 	public static void generateUUIDs() {
 		for(int x=0; x<10; x++) {
-			println(x+" UUID = "+UUID.randomUUID());
+			Std.println(x+" UUID = "+UUID.randomUUID());
 		}
 	}
 
@@ -614,22 +614,6 @@ public final class Utils {
 		StringWriter stringWriter = new StringWriter();
 		e.printStackTrace(new PrintWriter(stringWriter));
 		return stringWriter.toString();
-	}
-
-	/**
-	 * Print to Standard Out
-	 * @param msg
-	 */
-	public static final void println(String msg) {
-		System.out.println(msg);
-	}
-
-	/**
-	 * Print to Standard Out
-	 * @param msg
-	 */
-	public static final void println(Object msg) {
-		System.out.println(msg.toString());
 	}
 
 	/**

@@ -27,6 +27,7 @@
  */
 package io.fusion.air.microservice.adapters.logging.examples.metrics;
 
+import io.fusion.air.microservice.utils.Std;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -63,10 +64,10 @@ public class _14_CompositeMeterRegistry {
         counter.increment(5);
 
         // Print the current value from SimpleMeterRegistry
-        System.out.println("Name: "+counter.getId().getName()+" Counter Value: " + counter.count());
+        Std.println("Name: "+counter.getId().getName()+" Counter Value: " + counter.count());
 
         // Print the metrics output from PrometheusMeterRegistry
-        System.out.println("\nMetrics in Prometheus Format:");
-        System.out.println(prometheusRegistry.scrape());
+        Std.println("\nMetrics in Prometheus Format:");
+        Std.println(prometheusRegistry.scrape());
     }
 }

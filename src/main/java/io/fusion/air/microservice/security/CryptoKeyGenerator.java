@@ -25,6 +25,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 // Custom
 import io.fusion.air.microservice.domain.exceptions.SecurityException;
+import io.fusion.air.microservice.utils.Std;
 import io.fusion.air.microservice.utils.Utils;
 // Security
 import org.bouncycastle.util.io.pem.PemObject;
@@ -196,8 +197,8 @@ public class CryptoKeyGenerator {
      * Print All Keys
      */
     public void printAllKeys() {
-        Utils.println(getPublicKeyPEMFormat());
-        Utils.println(getPrivateKeyPEMFormat());
+        Std.println(getPublicKeyPEMFormat());
+        Std.println(getPrivateKeyPEMFormat());
     }
 
     /**
@@ -322,23 +323,23 @@ public class CryptoKeyGenerator {
         Key pubKey = keys.getPublicKey();
         Key priKey = keys.getPrivateKey();
 
-        Utils.println("Private key format: " + priKey.getFormat());
-        Utils.println(keys.getPrivateKeyPEMFormat());
-        Utils.println("Public key format: " + pubKey.getFormat());
-        Utils.println(keys.getPublicKeyPEMFormat());
+        Std.println("Private key format: " + priKey.getFormat());
+        Std.println(keys.getPrivateKeyPEMFormat());
+        Std.println("Public key format: " + pubKey.getFormat());
+        Std.println(keys.getPublicKeyPEMFormat());
 
-        // Utils.println("Write to Files");
+        // Std.println("Write to Files");
         // keys.writePEMFile(pubKey, "publicKey", "RSA PUBLIC KEY");
         // keys.writePEMFile(priKey, "privateKey", "RSA PRIVATE KEY");
 
-        Utils.println("Read Public PEM File ..... ");
+        Std.println("Read Public PEM File ..... ");
         pubKey = keys.readPublicKey(new File("publicKey.pem"));
-        Utils.println("Public  key format: " + pubKey.getFormat());
-        Utils.println(keys.getPublicKeyPEMFormat());
+        Std.println("Public  key format: " + pubKey.getFormat());
+        Std.println(keys.getPublicKeyPEMFormat());
 
-        Utils.println("Read Private PEM File ..... ");
+        Std.println("Read Private PEM File ..... ");
         priKey = keys.readPrivateKey(new File("privateKey.pem"));
-        Utils.println("Private key format: " + priKey.getFormat());
-        Utils.println(keys.getPrivateKeyPEMFormat());
+        Std.println("Private key format: " + priKey.getFormat());
+        Std.println(keys.getPrivateKeyPEMFormat());
     }
 }

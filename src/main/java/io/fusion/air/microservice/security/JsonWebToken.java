@@ -18,7 +18,7 @@ package io.fusion.air.microservice.security;
 
 // Custom
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import static io.fusion.air.microservice.utils.Utils.println;
+import static io.fusion.air.microservice.utils.Std.println;
 // JWT
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

@@ -16,6 +16,7 @@
 package io.fusion.air.microservice.security;
 
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.utils.Std;
 
 /**
  * Password Manager Decrypts the Encrypted DB Credentials in the property file
@@ -79,9 +80,9 @@ public class PasswordManager {
         String psd = "SigmaHawk.1901";
         String uEnc = SecureData.encrypt(un, seed);
         String pEnc = SecureData.encrypt(psd, seed);
-        System.out.println("U="+un+" | Encrypted="+uEnc);
-        System.out.println("U="+un+" | Decrypted="+SecureData.decrypt(uEnc, seed));
-        System.out.println("P="+psd+" | Encrypted="+pEnc);
-        System.out.println("U="+psd+" | Decrypted="+SecureData.decrypt(pEnc, seed));
+        Std.println("U="+un+" | Encrypted="+uEnc);
+        Std.println("U="+un+" | Decrypted="+SecureData.decrypt(uEnc, seed));
+        Std.println("P="+psd+" | Encrypted="+pEnc);
+        Std.println("U="+psd+" | Decrypted="+SecureData.decrypt(pEnc, seed));
     }
 }

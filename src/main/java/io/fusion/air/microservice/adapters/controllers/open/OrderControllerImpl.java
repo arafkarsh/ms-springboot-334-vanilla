@@ -39,11 +39,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 // Spring
 import org.slf4j.Logger;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
 // Java
 import jakarta.validation.Valid;
 import org.springframework.web.util.HtmlUtils;
@@ -65,12 +63,10 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @version 1.0
  * 
  */
-@Configuration
 @Validated // This enables validation for method parameters
 @RestController
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/order")
-@RequestScope
 @MetricsPath(name = "fusion.air.order")
 @Tag(name = "Order API", description = "To Manage (Add/Update/Delete/Search) Order CRUD Operations")
 public class OrderControllerImpl extends AbstractController {

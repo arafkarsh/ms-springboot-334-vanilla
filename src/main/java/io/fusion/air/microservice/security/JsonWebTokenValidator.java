@@ -29,7 +29,7 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 // Custom
-import static io.fusion.air.microservice.utils.Utils.println;
+import static io.fusion.air.microservice.utils.Std.println;
 
 /**
  *  JSON Web Token Validator

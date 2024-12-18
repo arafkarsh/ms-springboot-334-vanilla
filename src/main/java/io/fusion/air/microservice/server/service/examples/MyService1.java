@@ -15,6 +15,7 @@
  */
 package io.fusion.air.microservice.server.service.examples;
 
+import io.fusion.air.microservice.utils.Std;
 import io.fusion.air.microservice.utils.Utils;
 import org.springframework.stereotype.Component;
 
@@ -49,8 +50,8 @@ public class MyService1 {
     }
 
     public void printData() {
-        Utils.println("MyService1:Request-Scope: " + Utils.toJsonString(echoService.getEchoData()));
-        Utils.println("MyService1:Session-Scope: " + Utils.toJsonString(echoSessionService.getEchoData()));
-        Utils.println("MyService1:Apps----Scope: " + Utils.toJsonString(echoAppService.getEchoData()));
+        Std.println("MyService1:Request-Scope: " + Utils.toJsonString(echoService.getEchoData()));
+        Std.println("MyService1:Session-Scope: " + Utils.toJsonString(echoSessionService.getEchoData()));
+        Std.println("MyService1:Apps----Scope: " + Utils.toJsonString(echoAppService.getEchoData()));
     }
 }

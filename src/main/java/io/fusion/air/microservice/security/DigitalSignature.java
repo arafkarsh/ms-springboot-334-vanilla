@@ -16,6 +16,7 @@
 package io.fusion.air.microservice.security;
 
 // Bouncy Castel
+import io.fusion.air.microservice.utils.Std;
 import io.fusion.air.microservice.utils.Utils;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -98,13 +99,13 @@ public class DigitalSignature {
 
         String fileName = documentName.split("\\.")[0];
         // Create a signature instance
-        System.out.println("Creating Signature Instance for the Algo = SHA256withRSA");
+        Std.println("Creating Signature Instance for the Algo = SHA256withRSA");
         Signature signature = Signature.getInstance("SHA256withRSA");
         // Initialize the Signature with Private Key Previously Generated
         signature.initSign(getCrypto().getPrivateKey());
 
         // Read and sign the document
-        Utils.println("Sign the Document    = " + documentName);
+        Std.println("Sign the Document    = " + documentName);
         byte[] document = Files.readAllBytes(Paths.get( documentName));
         // Set the Doc in the Signature
         signature.update(document);
@@ -112,7 +113,7 @@ public class DigitalSignature {
         byte[] digitalSignature = signature.sign();
 
         // Write the digital signature to a file
-        Utils.println("Create the Signature = " + fileName + EXTENSION);
+        Std.println("Create the Signature = " + fileName + EXTENSION);
         Files.write(Paths.get(fileName + EXTENSION), digitalSignature);
 
         // Write the digital signature to a file in PEM format
@@ -146,8 +147,8 @@ public class DigitalSignature {
 
         // Verify the signature
         boolean isValid = signature.verify(digitalSignature);
-        Utils.println("Verify the Signature = " + fileName + EXTENSION);
-        Utils.println("Signature Verified   = Status = [" + isValid + "] "+ documentName );
+        Std.println("Verify the Signature = " + fileName + EXTENSION);
+        Std.println("Signature Verified   = Status = [" + isValid + "] "+ documentName );
     }
 
     /**
@@ -173,13 +174,14 @@ public class DigitalSignature {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        String path = "/Users/arafkarsh/ws/IntelliJ/book/ms-springboot-334-vanilla/";
+        // Get the current working directory dynamically
+        String path = System.getProperty("user.dir");
         DigitalSignature ds = new DigitalSignature();
-        Utils.println("SIGN THE DOCUMENT >------------------------------------------------------");
-        ds.signDocument(path + "x509.txt");
+        Std.println("SIGN THE DOCUMENT >------------------------------------------------------");
+        ds.signDocument(path + "/x509.txt");
 
-        Utils.println("VERIFY DOCUMENT   >------------------------------------------------------");
-        ds.verifySignature(path + "x509.txt");
+        Std.println("VERIFY DOCUMENT   >------------------------------------------------------");
+        ds.verifySignature(path + "/x509.txt");
     }
 
 }

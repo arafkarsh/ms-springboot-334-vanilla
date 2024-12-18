@@ -31,12 +31,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 // Spring
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
 // Java
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -56,12 +54,10 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @version 1.0
  * 
  */
-@Configuration
 @Validated // This enables validation for method parameters
 @RestController
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/country")
-@RequestScope
 @MetricsPath(name = "fusion.air.country")
 @Tag(name = "Country API", description = "Spring Examples with Pagination")
 public class CountryControllerImpl extends AbstractController {

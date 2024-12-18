@@ -36,11 +36,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
 // Java
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -66,12 +64,10 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @version 1.0
  * 
  */
-@Configuration
 @Validated // This enables validation for method parameters
 @RestController
 // "/ms-vanilla/api/v1"
 @RequestMapping("${service.api.path}/product")
-@RequestScope
 @MetricsPath(name = "fusion.air.product")
 @Tag(name = "Product API", description = "Search Products, Create Products, Activate / DeActivate, Delete & Update Product")
 public class ProductControllerImpl extends AbstractController {
@@ -415,8 +411,8 @@ public class ProductControllerImpl extends AbstractController {
 		try {
 			productServiceImpl.createProductsEntity(productList);
 			productList = productServiceImpl.getAllProduct();
-		} catch (Exception ignored) {
-			log.debug(Utils.getStackTraceAsString(ignored));
+		} catch (Exception e) {
+			log.debug(Utils.getStackTraceAsString(e));
 		}
 		return productList;
 	}
