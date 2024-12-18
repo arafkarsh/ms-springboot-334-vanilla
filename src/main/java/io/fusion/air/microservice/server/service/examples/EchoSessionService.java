@@ -31,8 +31,8 @@ public class EchoSessionService {
 
     private EchoResponseData echoData;
 
-    public void setEchoData(EchoResponseData _data) {
-        echoData = _data;
+    public void setEchoData(EchoResponseData data) {
+        echoData = data;
     }
 
     public EchoResponseData getEchoData() {
