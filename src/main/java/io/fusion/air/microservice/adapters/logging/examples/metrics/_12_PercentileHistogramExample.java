@@ -33,7 +33,6 @@ import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 import java.security.SecureRandom;
-import java.util.Random;
 
 /**
  * ms-springboot-334-vanilla / _12_PercentileHistogramExample

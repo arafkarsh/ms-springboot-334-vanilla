@@ -132,6 +132,14 @@ public class Std {
     }
 
     /**
+     * Print Error
+     * @param msg
+     */
+    public static final void printError(Object msg) {
+        System.out.println("Error: "+msg);
+    }
+
+    /**
      * Print formated text to Standard out
      * @param format
      * @param args
