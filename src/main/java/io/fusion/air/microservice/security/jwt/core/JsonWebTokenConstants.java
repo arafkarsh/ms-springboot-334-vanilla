@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.fusion.air.microservice.security;
+package io.fusion.air.microservice.security.jwt.core;
 
 /**
  * @author: Araf Karsh Hamid
@@ -55,6 +55,26 @@ public class JsonWebTokenConstants {
 
     public static final int LOCAL_KEY 				        = 1;
     public static final int KEYCLOAK_KEY 			        = 2;
+
+    public static final String AUTH                           = "auth";
+    public static final String AUTH_REFRESH               = "refresh";
+    public static final String TX_USERS                     = "tx-users";
+    public static final String TX_SERVICE                   = "tx-internal";
+    public static final String TX_EXTERNAL                 = "tx-external";
+    public static final String BEARER                         = "Bearer ";
+
+    public static final String REFRESH_TOKEN              = "Refresh-Token";
+    public static final String AUTH_TOKEN                  = "Authorization";
+    public static final String SINGLE_TOKEN                = "Authorization";
+    public static final String TX_TOKEN                     = "TX-TOKEN";
+
+    public static final int CONSUMERS                       = 1;
+    public static final int INTERNAL_SERVICES            = 2;
+    public static final int EXTERNAL_SERVICES            = 3;
+
+    public static final String ROLE_USER                    = "USER";
+    public static final String ROLE_ADMIN                  = "ADMIN";
+    public static final String ROLE_PUBLIC                  = "PUBLIC";
 
     private JsonWebTokenConstants() {}
 }

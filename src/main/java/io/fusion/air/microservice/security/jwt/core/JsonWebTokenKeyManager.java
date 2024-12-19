@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package io.fusion.air.microservice.security;
-
-// Spring
+package io.fusion.air.microservice.security.jwt.core;
+// Custom
 import io.fusion.air.microservice.domain.exceptions.SecurityException;
+// Spring
+import io.fusion.air.microservice.security.crypto.CryptoKeyGenerator;
+import io.fusion.air.microservice.security.crypto.HashData;
+import io.fusion.air.microservice.security.jwt.server.JsonWebTokenKeyStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 // Java
 import javax.crypto.spec.SecretKeySpec;
@@ -46,13 +50,13 @@ public final class JsonWebTokenKeyManager {
 	private static final Logger log = getLogger(lookup().lookupClass());
 
 	// Autowired using the Constructor
-	private JsonWebTokenConfig jwtConfig;
+	private final JsonWebTokenConfig jwtConfig;
 
 	// Autowired using the Constructor
-	private KeyCloakConfig keycloakConfig;
+	private final KeyCloakConfig keycloakConfig;
 
 	// Autowired using the Constructor
-	private CryptoKeyGenerator cryptoKeys;
+	private final CryptoKeyGenerator cryptoKeys;
 
 	private int tokenType;
 	private String issuer;
@@ -60,11 +64,7 @@ public final class JsonWebTokenKeyManager {
 	private Key validatorKey;
 	private Key validatorLocalKey;
 
-	/**
-	 * Initialize the JWT with the Signature Algorithm based on Secret Key or Public / Private Key
-	 */
-	public JsonWebTokenKeyManager() {
-	}
+	private final JsonWebTokenKeyStore jwtKeyStore;
 
 	/**
 	 * Initialize the JWT with the Signature Algorithm based on Secret Key or Public / Private Key
@@ -74,11 +74,28 @@ public final class JsonWebTokenKeyManager {
 	 * @param keyGenerator
 	 */
 	@Autowired
-	public JsonWebTokenKeyManager(JsonWebTokenConfig jwtCfg,
-								  KeyCloakConfig keyCloakCfg, CryptoKeyGenerator keyGenerator ) {
-		jwtConfig = jwtCfg;
-		keycloakConfig = keyCloakCfg;
-		cryptoKeys = keyGenerator;
+	public JsonWebTokenKeyManager(JsonWebTokenConfig jwtCfg, KeyCloakConfig keyCloakCfg,
+								  CryptoKeyGenerator keyGenerator, @Value("${server.token.type:1}") int tokenType ) {
+		this.jwtConfig = jwtCfg;
+		this.keycloakConfig = keyCloakCfg;
+		this.cryptoKeys = keyGenerator;
+		this.tokenType = tokenType;
+		initialize();
+		jwtKeyStore = new JsonWebTokenKeyStore(tokenType, signingKey, validatorKey,
+				validatorLocalKey, issuer);
+	}
+
+	/**
+	 * Initialize the Key Manager based on Token Type (Secret or Public Key)
+	 */
+	protected void initialize() {
+		log.info("JWT-KeyManager: JSON Web Token Type = {} ", this.tokenType);
+		issuer	= (jwtConfig != null) ? jwtConfig.getServiceOrg() : "fusion-air";
+		// Create the Key based on Secret Key or Private Key
+		log.info("Create Signing Keys...");
+		createSigningKey();
+		setKeyCloakPublicKey();
+		log.info("JWT-KeyManager: Intialization Complete! ");
 	}
 
 	/**
@@ -98,9 +115,9 @@ public final class JsonWebTokenKeyManager {
 	public JsonWebTokenKeyManager init(int tknType) {
 		this.tokenType = tknType;
 		log.info("JWT-KeyManager: JSON Web Token Type = {} ", this.tokenType);
+		issuer	= (jwtConfig != null) ? jwtConfig.getServiceOrg() : "fusion-air";
 		// Create the Key based on Secret Key or Private Key
 		createSigningKey();
-		issuer				= (jwtConfig != null) ? jwtConfig.getServiceOrg() : "fusion-air";
 		return this;
 	}
 
@@ -163,6 +180,8 @@ public final class JsonWebTokenKeyManager {
 					throw new SecurityException(e);
 				}
 			}
+		} else {
+			log.info("JWT-KeyManager: Local Auth Access Enabled... ");
 		}
 	}
 
@@ -205,9 +224,6 @@ public final class JsonWebTokenKeyManager {
 	 * @return
 	 */
 	private CryptoKeyGenerator getCryptoKeyGenerator() {
-		if(cryptoKeys == null) {
-			cryptoKeys = new CryptoKeyGenerator();
-		}
 		return cryptoKeys;
 	}
 
@@ -245,10 +261,18 @@ public final class JsonWebTokenKeyManager {
 	}
 
 	/**
-	 * Returns Validator Local Key
+	 * Returns Validator Local Public Key
 	 * @return
 	 */
 	public Key getValidatorLocalKey() {
 		return validatorLocalKey;
+	}
+
+	/**
+	 * Returns KeyStore that contains all the necessary Keys
+	 * @return
+	 */
+	public JsonWebTokenKeyStore getJwtKeyStore() {
+		return jwtKeyStore;
 	}
 }

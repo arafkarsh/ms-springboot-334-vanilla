@@ -8,7 +8,7 @@ ENV_VAR="JASYPT_ENCRYPTOR_PASSWORD"
 
 # For Java 17+
 echo Using Java 17+ Comptible code
-java -cp $jasypt src/main/java/io/fusion/air/microservice/security/Encrypt17.java $1 $2
+java -cp $jasypt src/main/java/io/fusion/air/microservice/security/utils/Encrypt17.java $1 $2
 
 # For Java 23
 #echo Java 23 Comptible Code

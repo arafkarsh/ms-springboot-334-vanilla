@@ -21,8 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 // Custom
 import io.fusion.air.microservice.domain.exceptions.AuthorizationException;
 import io.fusion.air.microservice.domain.models.auth.Token;
-import io.fusion.air.microservice.security.CryptoKeyGenerator;
-import io.fusion.air.microservice.security.KeyCloakConfig;
+import io.fusion.air.microservice.security.crypto.CryptoKeyGenerator;
+import io.fusion.air.microservice.security.jwt.core.KeyCloakConfig;
 // Spring
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

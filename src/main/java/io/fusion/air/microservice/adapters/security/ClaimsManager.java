@@ -89,8 +89,7 @@ public class ClaimsManager {
         if(!claimsInitialized) {
             throw new AuthorizationException("Tx-Token: Un-Authorized Access by user - Claims Not Initialized!");
         }
-        String subject = this.getSubject();
-        if(subject == null) {
+        if(this.getSubject() == null) {
             throw new AuthorizationException("Tx-Token: Un-Authorized Access by user - Subject Not Found!");
         }
         return claimsInitialized;

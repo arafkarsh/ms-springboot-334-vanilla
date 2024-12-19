@@ -20,7 +20,7 @@
 				<appender-ref ref="STDOUT_JSON"/>
 				<appender-ref ref="ASYNC_JSON"/>
 			</logger>
-			<logger  level="trace" name="io.fusion.air.microservice.security.JsonWebTokenValidator">
+			<logger  level="trace" name="io.fusion.air.microservice.security.jwt.client.JsonWebTokenValidator">
 				<appender-ref ref="STDOUT_JSON"/>
 				<appender-ref ref="ASYNC_JSON"/>
 			</logger>
@@ -39,7 +39,7 @@
 				<appender-ref ref="STDOUT_TEXT" />
 				<appender-ref ref="ASYNC_TEXT" />
 			</logger>
-			<logger  level="trace" name="io.fusion.air.microservice.security.JsonWebTokenValidator">
+			<logger  level="trace" name="io.fusion.air.microservice.security.jwt.client.JsonWebTokenValidator">
 				<appender-ref ref="STDOUT_TEXT" />
 				<appender-ref ref="ASYNC_TEXT" />
 			</logger>

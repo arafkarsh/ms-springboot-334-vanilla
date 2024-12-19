@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.fusion.air.microservice.security;
+package io.fusion.air.microservice.security.jwt.core;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -35,26 +36,27 @@ public class TokenDataFactory {
     private KeyCloakConfig keyCloakConfig;
 
     // Autowired using the Constructor
-    private JsonWebToken jwt;
-
-    // Autowired using the Constructor
     private JsonWebTokenKeyManager keyManager;
 
     /**
      * Autowired using the Constructor
      * @param jwtCfg
      * @param kCloakCfg
-     * @param jwTkn
      * @param kManager
      */
+    @Autowired
     public TokenDataFactory(JsonWebTokenConfig jwtCfg, KeyCloakConfig kCloakCfg,
-                            JsonWebToken jwTkn, JsonWebTokenKeyManager kManager) {
+                             JsonWebTokenKeyManager kManager) {
         jwtConfig = jwtCfg;
         keyCloakConfig = kCloakCfg;
-        jwt = jwTkn;
         keyManager = kManager;
     }
 
+    /**
+     * Create Token Data with JWT and Validating Key
+     * @param token
+     * @return
+     */
     public TokenData createTokenData(String token) {
         if(keyCloakConfig.isKeyCloakEnabled()) {
             return createKeyCloakTokenData( token);
@@ -63,14 +65,28 @@ public class TokenDataFactory {
         }
     }
 
-    public TokenData createLocalTokenData(String token) {
-        return new TokenData(token, jwtConfig.getTokenIssuer() , LOCAL_KEY,  jwt.getValidatorLocalKey());
+    /**
+     * Returns Local Key
+     * @param token
+     * @return
+     */
+    private TokenData createLocalTokenData(String token) {
+        return new TokenData(token, jwtConfig.getTokenIssuer() , LOCAL_KEY,  keyManager.getValidatorLocalKey());
     }
 
-    public TokenData createKeyCloakTokenData(String token) {
-        return new TokenData(token, keyCloakConfig.getTokenIssuer() , KEYCLOAK_KEY,  jwt.getValidatorKey());
+    /**
+     * Returns KeyCloak Key
+     * @param token
+     * @return
+     */
+    private TokenData createKeyCloakTokenData(String token) {
+        return new TokenData(token, keyCloakConfig.getTokenIssuer() , KEYCLOAK_KEY,  keyManager.getValidatorKey());
     }
 
+    /**
+     * Returns true if the KeyCloak is enabled
+     * @return
+     */
     public boolean isKeyCloakEnabled() {
     	return keyCloakConfig.isKeyCloakEnabled();
     }

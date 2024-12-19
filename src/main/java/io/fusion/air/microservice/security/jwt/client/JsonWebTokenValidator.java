@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package io.fusion.air.microservice.security;
+package io.fusion.air.microservice.security.jwt.client;
 // JWT
+import io.fusion.air.microservice.security.jwt.core.TokenData;
+import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -42,12 +44,7 @@ public final class JsonWebTokenValidator {
 
 	public static final String DOUBLE_LINE = "===============================================================================";
 
-	/**
-	 * Initialize the JWT with the Signature Algorithm based on Secret Key or Public / Private Key
-	 */
-	public JsonWebTokenValidator() {
-		// Nothing to instantiate
-	}
+	private JsonWebTokenValidator() {}
 
 	// =============================================================================================
 	// Token Data
@@ -60,7 +57,7 @@ public final class JsonWebTokenValidator {
 	 * @param token
 	 * @return
 	 */
-	public boolean validateToken(String userId, TokenData token) {
+	public static boolean validateToken(String userId, TokenData token) {
 		return (!isTokenExpired(token) &&
 				getSubjectFromToken(token).equals(userId));
 	}
@@ -71,7 +68,7 @@ public final class JsonWebTokenValidator {
 	 * @param token
 	 * @return
 	 */
-	public boolean isTokenExpired(TokenData token) {
+	public static boolean isTokenExpired(TokenData token) {
 		return getExpiryDateFromToken(token).before(new Date());
 	}
 
@@ -81,7 +78,7 @@ public final class JsonWebTokenValidator {
 	 * @param token
 	 * @return
 	 */
-	public String getSubjectFromToken(TokenData token) {
+	public static String getSubjectFromToken(TokenData token) {
 		return getClaimFromToken(token, Claims::getSubject);
 	}
 
@@ -91,7 +88,7 @@ public final class JsonWebTokenValidator {
 	 * @param token
 	 * @return
 	 */
-	public Date getExpiryDateFromToken(TokenData token) {
+	public static Date getExpiryDateFromToken(TokenData token) {
 		return getClaimFromToken(token, Claims::getExpiration);
 	}
 
@@ -101,7 +98,7 @@ public final class JsonWebTokenValidator {
 	 * @param token
 	 * @return
 	 */
-	public Date getNotBeforeDateFromToken(TokenData token) {
+	public static Date getNotBeforeDateFromToken(TokenData token) {
 		return getClaimFromToken(token, Claims::getNotBefore);
 	}
 	/**
@@ -110,7 +107,7 @@ public final class JsonWebTokenValidator {
 	 * @param token
 	 * @return
 	 */
-	public Date getIssuedAtFromToken(TokenData token) {
+	public static Date getIssuedAtFromToken(TokenData token) {
 		return getClaimFromToken(token, Claims::getIssuedAt);
 	}
 
@@ -120,24 +117,28 @@ public final class JsonWebTokenValidator {
 	 * @param token
 	 * @return
 	 */
-	public String getIssuerFromToken(TokenData token) {
+	public static String getIssuerFromToken(TokenData token) {
 		return getClaimFromToken(token, Claims::getIssuer);
 	}
 
 	/**
 	 * Get the Audience from the Token
-	 *
 	 * @param token
 	 * @return
 	 */
-	public String getAudienceFromToken(TokenData token) {
+	public static String getAudienceFromToken(TokenData token) {
 		return getClaimFromToken(token, Claims::getAudience)
 				.stream()
 				.map(String::valueOf) // Convert each element to a string (if needed)
 				.collect(Collectors.joining(", "));
 	}
 
-	public String getUserRoleFromToken(TokenData token) {
+	/**
+	 * Get the User Role from the Token
+	 * @param token
+	 * @return
+	 */
+	public static String getUserRoleFromToken(TokenData token) {
 		Claims claims = getAllClaims(token);
 		String role = (String) claims.get("rol");
 		return (role == null) ? "Public" : role;
@@ -148,50 +149,61 @@ public final class JsonWebTokenValidator {
 	 * @param token
 	 * @return
 	 */
-	public String getCloakPreferredUser(TokenData token) {
+	public static String getCloakPreferredUser(TokenData token) {
 		Claims claims = getAllClaims(token);
 		String subject = (String) claims.get("sub");
 		String puser = (String) claims.get("preferred_username");
 		return (puser == null) ? subject: puser;
 	}
 
-	public <T> T getClaimFromToken(TokenData token,
+	/**
+	 * Get Claims from the Token
+	 * @param token
+	 * @param claimsResolver
+	 * @return
+	 * @param <T>
+	 */
+	public static <T> T getClaimFromToken(TokenData token,
 								   Function<Claims, T> claimsResolver) {
 		return claimsResolver.apply(getAllClaims(token));
 	}
 
-	public Claims getAllClaims(TokenData token) {
+	/**
+	 * Get All Claims
+	 * @param token
+	 * @return
+	 */
+	public static Claims getAllClaims(TokenData token) {
 		return getJws(token).getPayload();
 	}
 
-	public Jws<Claims> getJws(TokenData token) {
+	/**
+	 * Get Jws Claims
+	 * @param token
+	 * @return
+	 */
+	public static Jws<Claims> getJws(TokenData token) {
 		return (token.getKeyType()  == JsonWebTokenConstants.PUBLIC_KEY) ?
+				// if Token Validated using - Public Key
 				Jwts.parser()
 						.verifyWith( (PublicKey) token.getValidatoryKey() )
 						.requireIssuer(token.getIssuer())
 						.build()
 						.parseSignedClaims(token.getToken())
+				// Else Token Validated using - Secret Key
 				: Jwts.parser()
 				.verifyWith( (SecretKey) token.getValidatoryKey() )
 				.requireIssuer(token.getIssuer())
 				.build()
 				.parseSignedClaims(token.getToken());
-		/**
-		return Jwts.parserBuilder()
-				.setSigningKey(_token.getValidatoryKey())
-				.requireIssuer(_token.getIssuer())
-				.build()
-				.parseClaimsJws(_token.getToken());
-		 */
 	}
 
 	/**
 	 * Return Payload as JSON String
-	 *
 	 * @param token
 	 * @return
 	 */
-	public String getPayload(TokenData token) {
+	public static String getPayload(TokenData token) {
 		StringBuilder sb = new StringBuilder();
 		Claims claims = getAllClaims(token);
 		int x=1;
@@ -215,7 +227,7 @@ public final class JsonWebTokenValidator {
 	 * Print Token Stats
 	 * @param token
 	 */
-	public void tokenStats(TokenData token) {
+	public static void tokenStats(TokenData token) {
 		tokenStats(token, true, true);
 	}
 
@@ -224,7 +236,7 @@ public final class JsonWebTokenValidator {
 	 * @param token
 	 * @param showClaims
 	 */
-	public void tokenStats(TokenData token,  boolean showClaims) {
+	public static void tokenStats(TokenData token,  boolean showClaims) {
 		tokenStats(token, showClaims, false);
 	}
 
@@ -234,9 +246,9 @@ public final class JsonWebTokenValidator {
 	 * @param showClaims
 	 * @param showPayload
 	 */
-    public void tokenStats(TokenData token, boolean showClaims, boolean showPayload) {
+    public static void tokenStats(TokenData token, boolean showClaims, boolean showPayload) {
 		println("-------------- aaa.bbb.ccc ------------------- 1 -");
-		println(token);
+		println(token.getToken());
 		println("-------------- ----------- ------------------- 2 -");
 		println("Subject  = "+getSubjectFromToken(token));
 		println("Audience = "+getAudienceFromToken(token));
@@ -283,23 +295,5 @@ public final class JsonWebTokenValidator {
 		hs = (h<10) ? hs + h : ""+h;
 		ds = (d<10) ? ds + d : ""+d;
 		return ds + ":" + hs + ":" + ms;
-	}
-
-	/**
-	 * Only for Testing from Command Line
-	 *
-	 * @param args
-	 * @throws Exception
-	 */
-	public static void main(String[] args) {
-		println(DOUBLE_LINE);
-		println("Generate Json Web Tokens Based on SECRET KEYS");
-		println(DOUBLE_LINE);
-		// testJWTCreation(JsonWebTokenValidator.SECRET_KEY);
-		println(DOUBLE_LINE);
-		println("Generate Json Web Tokens Based on PUBLIC/PRIVATE KEYS");
-		println(DOUBLE_LINE);
-		// testJWTCreation(JsonWebTokenValidator.PUBLIC_KEY);
-		println(DOUBLE_LINE);
 	}
 }

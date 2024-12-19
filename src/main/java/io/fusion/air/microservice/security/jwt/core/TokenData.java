@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.fusion.air.microservice.security;
+package io.fusion.air.microservice.security.jwt.core;
 
 import java.security.Key;
 
@@ -25,18 +25,24 @@ import java.security.Key;
 public class TokenData {
 
     private final String token;
-
     private final String issuer;
-
     private final int keyType;
-
     private final Key validatoryKey;
 
-    public TokenData(String tkn, String is, int kType, Key vKey) {
-        token = tkn;
-        issuer = is;
-        keyType = kType;
-        validatoryKey = vKey;
+    /**
+     * Token Data
+     * Holds the Original token, The Key Type (Secret or Public)  and the Validator Key.
+     *
+     * @param token
+     * @param issuer
+     * @param keyType
+     * @param validatorKey
+     */
+    public TokenData(String token, String issuer, int keyType, Key validatorKey) {
+        this.token = token;
+        this.issuer = issuer;
+        this.keyType = keyType;
+        this.validatoryKey = validatorKey;
     }
 
     /**

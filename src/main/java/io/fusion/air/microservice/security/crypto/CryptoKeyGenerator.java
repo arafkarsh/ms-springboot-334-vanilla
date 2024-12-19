@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.fusion.air.microservice.security;
+package io.fusion.air.microservice.security.crypto;
 
 // Java Security
 import java.io.*;

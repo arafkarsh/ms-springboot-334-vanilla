@@ -18,6 +18,7 @@ package io.fusion.air.microservice.adapters.controllers.open;
 import io.fusion.air.microservice.adapters.logging.MetricsCounter;
 import io.fusion.air.microservice.adapters.logging.MetricsPath;
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
+import io.fusion.air.microservice.adapters.security.SingleTokenAuthorizationRequired;
 import io.fusion.air.microservice.domain.entities.order.ProductEntity;
 import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
@@ -157,6 +158,7 @@ public class ProductControllerImpl extends AbstractController {
 		return getAllProducts();
 	}
 
+	@SingleTokenAuthorizationRequired(role = "USER")
 	@Operation(summary = "Get All the Products (Secured)", security = { @SecurityRequirement(name = "bearer-key") })
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200",
@@ -398,15 +400,17 @@ public class ProductControllerImpl extends AbstractController {
 		return ResponseEntity.ok(stdResponse);
 	}
 
+	private static final String ZIP_CODE = "12345";
+
 	/**
 	 * Create Fall Back Product for Testing Purpose ONLY
 	 * @return
 	 */
 	private List<ProductEntity> createFallBackProducts() {
 		List<ProductEntity> productList = new ArrayList<>();
-		productList.add(new ProductEntity("iPhone 10", "iPhone 10, 64 GB", new BigDecimal(60000), "12345"));
-		productList.add(new ProductEntity("iPhone 11", "iPhone 11, 128 GB", new BigDecimal(70000), "12345"));
-		productList.add(new ProductEntity("Samsung Galaxy s20", "Samsung Galaxy s20, 256 GB", new BigDecimal(80000), "12345"));
+		productList.add(new ProductEntity("iPhone 10", "iPhone 10, 64 GB", new BigDecimal(60000), ZIP_CODE));
+		productList.add(new ProductEntity("iPhone 11", "iPhone 11, 128 GB", new BigDecimal(70000), ZIP_CODE));
+		productList.add(new ProductEntity("Samsung Galaxy s20", "Samsung Galaxy s20, 256 GB", new BigDecimal(80000), ZIP_CODE));
 
 		try {
 			productServiceImpl.createProductsEntity(productList);
@@ -417,8 +421,3 @@ public class ProductControllerImpl extends AbstractController {
 		return productList;
 	}
  }
-// throw new DuplicateDataException("Invalid Order Value");
-// throw new InputDataException("Invalid Order Value");
-// throw new BusinessServiceException("Invalid Order Value");
-// throw new ResourceNotFoundException("Invalid Order Value");
-// throw new RuntimeException("Invalid Order Value");

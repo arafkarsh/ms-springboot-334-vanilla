@@ -15,24 +15,30 @@
  */
 package io.fusion.air.microservice.server.service;
 // Custom
-import io.fusion.air.microservice.security.*;
+import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants;
+import io.fusion.air.microservice.security.jwt.server.TokenManager;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.config.ServiceHelp;
 import io.fusion.air.microservice.utils.CPU;
-// Spring
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.AUTH_TOKEN;
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.REFRESH_TOKEN;
+// Micrometer
+import io.fusion.air.microservice.utils.Std;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+// Spring
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.ConfigurableEnvironment;
-//Logging System
-import org.slf4j.Logger;
 // Java
 import java.util.Map;
+import org.slf4j.Logger;
 import org.slf4j.MDC;
+
+import static io.fusion.air.microservice.utils.Std.println;
 import static org.slf4j.LoggerFactory.getLogger;
 import static java.lang.invoke.MethodHandles.lookup;
 
@@ -70,13 +76,7 @@ public class ServiceEventListener {
 	private ServiceConfiguration serviceConfig;
 
 	// Autowired using the Constructor
-	private JsonWebToken jsonWebToken;
-
-	// Autowired using the Constructor
-	private JsonWebTokenValidator jsonWebTokenValidator;
-
-	// Autowired using the Constructor
-	private JsonWebTokenKeyManager jsonWebTokenKeyManager;
+	private TokenManager tokenManager;
 
 	// Autowired using the Constructor
 	private  MeterRegistry meterRegistry;
@@ -86,20 +86,17 @@ public class ServiceEventListener {
 
 	/**
 	 * Autowired using the Constructor
+	 *
 	 * @param serviceConfig
-	 * @param jsonWebToken
-	 * @param jsonWebTokenValidator
-	 * @param jsonWebTokenKeyManager
+	 * @param tokenManager
 	 * @param meterRegistry
 	 * @param environment
 	 */
-	public ServiceEventListener(ServiceConfiguration serviceConfig, JsonWebToken jsonWebToken,
-								JsonWebTokenValidator jsonWebTokenValidator, JsonWebTokenKeyManager jsonWebTokenKeyManager,
+	public ServiceEventListener(ServiceConfiguration serviceConfig, TokenManager tokenManager,
 								MeterRegistry meterRegistry, ConfigurableEnvironment environment) {
 		this.serviceConfig = serviceConfig;
-		this.jsonWebToken = jsonWebToken;
-		this.jsonWebTokenValidator = jsonWebTokenValidator;
-		this.jsonWebTokenKeyManager = jsonWebTokenKeyManager;
+		this.tokenManager = tokenManager;
+
 		this.meterRegistry = meterRegistry;
 		this.environment = environment;
 	}
@@ -140,9 +137,7 @@ public class ServiceEventListener {
 		for(String apiName : serviceConfig.getAppPropertyProductList()) {
 			String fullCounterName = apiClass + (apiName.isEmpty() ? "" : apiName.replace("/", "."));
 			// Create and Register the counter
-			Counter counter = Counter
-					.builder(fullCounterName)
-					.register(meterRegistry);
+			 Counter.builder(fullCounterName).register(meterRegistry);
 			totalApis++;
 		}
 		log.info("Total fusion.air.product APIs registered with MicroMeter = {} ", totalApis);
@@ -154,24 +149,19 @@ public class ServiceEventListener {
 	 * is ready.
 	 */
 	@EventListener(ApplicationReadyEvent.class)
-	public void doSomethingAfterStartup() {
+	public void setupLogoMetricsTokens() {
 		log.info("Service is getting ready. Getting the CPU Stats ... ");
 		String s = CPU.printCpuStats();
 		log.info("{}", s);
+		// 1: Setup Logo
 		showLogo();
-		// Register the APIs with Micrometer
+		// 2: Register the APIs with Micrometer
 		registerAPICallsForMicroMeter();
-		// Initialize the Key Manager
-		jsonWebTokenKeyManager.init(serviceConfig.getTokenType());
-		jsonWebTokenKeyManager.setKeyCloakPublicKey();
-		// Initialize the Token
-		jsonWebToken.init(serviceConfig.getTokenType());
+		// 3: Generate Tokens - ONLY For Dev Mode (For Developer Testing)
 		if(serverTokenTest && getDevMode() ) {
 			log.info("Generate Test Tokens = {} ", serverTokenTest);
-			generateTestToken();		// ONLY FOR DEVELOPER TESTING
+			generateTestToken();
 		}
-		// Initialize the KeyCloak Public Key
-		jsonWebToken.setKeyCloakPublicKey();
 	}
 
 	/**
@@ -191,42 +181,38 @@ public class ServiceEventListener {
 	 */
 	private void generateTestToken() {
 		log.info("Token Type = {}", serviceConfig.getTokenType());
-		// Step 1: Set Expiry Time
+		// Step 1: Set Expiry Time & Subject
 		tokenAuthExpiry = (tokenAuthExpiry < 10) ? JsonWebTokenConstants.EXPIRE_IN_FIVE_MINS : tokenAuthExpiry;
 		tokenRefreshExpiry = (tokenRefreshExpiry < 10) ? JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;
-
-		// Step 2: Set Subject and Issuer
 		String subject	 = "jane.doe";
-		String issuer    = serviceConfig.getServiceOrg();
-		String type 	 = TokenManager.TX_USERS;
 
-		// Step 3: Initialize TokenManager
-		TokenManager tokenManager = new TokenManager(serviceConfig, tokenAuthExpiry, tokenRefreshExpiry);
-
-		// Step 4: Generate Authorize Tokens
+		// Step 2: Generate Authorize Tokens
 		Map<String, String> tokens = tokenManager.createAuthorizationToken(subject, null);
-		String token = tokens.get("token");
-		String refresh = tokens.get("refresh");
-		String jStats = JsonWebToken.printExpiryTime(tokenAuthExpiry);
-		log.info("Auth Token Expiry in Days:Hours:Mins  {}   Tkn-1 <>", jStats);
-		jsonWebToken.tokenStats(token, false, false);
-		log.info("Auth Token.... END ................................... Tkn-1 <>");
-		jStats = JsonWebToken.printExpiryTime(tokenRefreshExpiry);
-		log.info("Refresh Token Expiry in Days:Hours:Mins  {} Tkn-2 <>", jStats);
-		jsonWebToken.tokenStats(refresh, false, false);
-		log.info("Refresh Token.... END ............................... Tkn-2 <>");
-		jStats = JsonWebToken.printExpiryTime(tokenRefreshExpiry);
-		log.info("Tx-Token Expiry in Days:Hours:Mins  {}    Tkn-3 <>", jStats);
-		String txToken = tokenManager.createTXToken(subject, type, null);
-		jsonWebToken.tokenStats(txToken, false, false);
-		log.info("Tx Token.... END ....................................... Tkn-3 <>");
-		jStats = JsonWebToken.printExpiryTime(tokenRefreshExpiry);
-		log.info("Admin Token Expiry in Days:Hours:Mins  {} Tkn-4 <>", jStats);
-		String admToken = tokenManager.adminToken(subject, issuer);
-		jsonWebToken.tokenStats(admToken, false, false);
-		log.info("Admin Token.... END ................................. Tkn-4 <>");
+		String token = tokens.get(AUTH_TOKEN);
+		String refresh = tokens.get(REFRESH_TOKEN);
+		String txToken = tokenManager.createTXToken(subject, JsonWebTokenConstants.TX_USERS, null);
+		String admToken = tokenManager.adminToken(subject, serviceConfig.getServiceOrg());
 
+		// Step 3: Print Token Stats
+		printTokenStats( token,  "Auth",  1,  tokenAuthExpiry);
+		printTokenStats( refresh,  "Refresh",  2,  tokenRefreshExpiry);
+		printTokenStats( txToken,  "Tx",  3,  tokenRefreshExpiry);
+		printTokenStats( admToken,  "Admin",  4,  tokenRefreshExpiry);
 		log.info("Token Creation done... for Dev Testing........... ............ COMPLETE!!");
+	}
+
+	/**
+	 * Print the Token Stats
+	 * @param token
+	 * @param name
+	 * @param counter
+	 */
+	private void printTokenStats(String token, String name, int counter, long expiry) {
+		String jStats = tokenManager.printExpiryTime(expiry);
+		Std.println("---------------------------------------------------");
+		Std.printf("[%s]>> %s Token Expiry in Days:Hours:Mins %s\n", counter, name, jStats);
+		tokenManager.printTokenStats(token, false, false);
+		Std.printf("[%s]>> %s Token End -------------------------------\n", counter, name);
 	}
 
 	/**

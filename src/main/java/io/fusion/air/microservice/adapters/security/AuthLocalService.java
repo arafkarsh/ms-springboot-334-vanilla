@@ -19,8 +19,9 @@ package io.fusion.air.microservice.adapters.security;
 import io.fusion.air.microservice.domain.exceptions.SecurityException;
 import io.fusion.air.microservice.domain.models.auth.Token;
 import io.fusion.air.microservice.domain.ports.services.UserService;
-import io.fusion.air.microservice.security.CryptoKeyGenerator;
-import io.fusion.air.microservice.security.TokenManager;
+import io.fusion.air.microservice.security.crypto.CryptoKeyGenerator;
+import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants;
+import io.fusion.air.microservice.security.jwt.server.TokenManager;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 // Spring
 import org.springframework.beans.factory.annotation.Value;
@@ -125,7 +126,7 @@ public class AuthLocalService {
         HttpHeaders headers = new HttpHeaders();
         Map<String, String> tokens = tokenManager.createAuthorizationToken(username, headers);
         // TX - Token
-        String txToken = tokenManager.createTXToken(username, TokenManager.TX_USERS,  headers);
+        String txToken = tokenManager.createTXToken(username, JsonWebTokenConstants.TX_USERS,  headers);
         tokens.put("TX-Token", txToken);
         return tokens;
     }

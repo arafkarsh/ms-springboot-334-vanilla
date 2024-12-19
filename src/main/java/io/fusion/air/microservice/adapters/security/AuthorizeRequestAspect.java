@@ -16,8 +16,13 @@
 package io.fusion.air.microservice.adapters.security;
 // Custom
 import io.fusion.air.microservice.domain.exceptions.*;
-import io.fusion.air.microservice.security.JsonWebToken;
+
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.*;
 // JWT
+import io.fusion.air.microservice.security.jwt.client.JsonWebTokenValidator;
+import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants;
+import io.fusion.air.microservice.security.jwt.core.TokenData;
+import io.fusion.air.microservice.security.jwt.core.TokenDataFactory;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 // Aspect
@@ -52,25 +57,10 @@ public class AuthorizeRequestAspect {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
 
-    public static final String AUTH             = "auth";
-    public static final String AUTH_REFRESH     = "refresh";
-    public static final String TX_USERS         = "tx-users";
-    public static final String TX_SERVICE       = "tx-internal";
-    public static final String TX_EXTERNAL      = "tx-external";
-
-    public static final String REFRESH_TOKEN    = "Refresh-Token";
-    public static final String AUTH_TOKEN       = "Authorization";
-    public static final String SINGLE_TOKEN     = "Authorization";
-    public static final String TX_TOKEN         = "TX-TOKEN";
-
-    public static final int CONSUMERS           = 1;
-    public static final int INTERNAL_SERVICES   = 2;
-    public static final int EXTERNAL_SERVICES   = 3;
-
     private static final String ERROR = "ERROR";
 
     // Autowired using the Constructor
-    private final JsonWebToken jwtUtil;
+    private final TokenDataFactory tokenFactory;
 
     // Autowired using the Constructor
     private final UserDetailsServiceImpl userDetailsService;
@@ -80,17 +70,15 @@ public class AuthorizeRequestAspect {
 
     /**
      * Autowired using the Constructor
-     * @param jwt
      * @param userService
      * @param claims
      */
-    public AuthorizeRequestAspect(JsonWebToken jwt, UserDetailsServiceImpl userService,
+    public AuthorizeRequestAspect(TokenDataFactory tokenFactory, UserDetailsServiceImpl userService,
                                   ClaimsManager claims ) {
-        jwtUtil = jwt;
-        userDetailsService = userService;
-        claimsManager = claims;
+        this.tokenFactory = tokenFactory;
+        this.userDetailsService = userService;
+        this.claimsManager = claims;
     }
-
 
     /**
      * Validate REST Endpoint Annotated with @validateRefreshToken Annotation
@@ -183,12 +171,13 @@ public class AuthorizeRequestAspect {
         HttpServletRequest request = attributes.getRequest();
         logTime(startTime, "Validating", request.getRequestURI(), joinPoint);
         final String token = getToken(startTime, request.getHeader(tokenKey), joinPoint);
-        final String user = getUser(startTime, token, joinPoint);
+        TokenData tokenData = tokenFactory.createTokenData(token);
+        final String user = getUser(startTime, tokenData, joinPoint);
         log.info("Step 0: User Extracted... {} ", user);
         // Validate the Token when User is NOT Null
         if (user != null) {
             // Validate Token
-            UserDetails userDetails = validateToken(startTime, singleToken, user, tokenKey, token, joinPoint, tokenCtg);
+            UserDetails userDetails = validateToken(startTime, singleToken, user, tokenKey, tokenData, joinPoint, tokenCtg);
             // Create Authorize Token
             UsernamePasswordAuthenticationToken authorizeToken = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
@@ -234,11 +223,11 @@ public class AuthorizeRequestAspect {
      * @param joinPoint
      * @return
      */
-    private String getUser(long startTime, String token, ProceedingJoinPoint joinPoint) {
+    private String getUser(long startTime, TokenData token, ProceedingJoinPoint joinPoint) {
         String user = null;
         String msg = null;
         try {
-            user = jwtUtil.getSubjectFromToken(token);
+            user = JsonWebTokenValidator.getSubjectFromToken(token);
             // Store the user info for logging
             MDC.put("user", user);
             return user;
@@ -276,15 +265,15 @@ public class AuthorizeRequestAspect {
      * @return
      */
     private UserDetails validateToken(long startTime, boolean singleToken, String user, String tokenKey,
-                                      String token, ProceedingJoinPoint joinPoint, int tokenCtg) {
+                                      TokenData token, ProceedingJoinPoint joinPoint, int tokenCtg) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(user);
         String msg = null;
         try {
             // Validate the Token
-            if (jwtUtil.validateToken(userDetails.getUsername(), token)) {
-                String role = jwtUtil.getUserRoleFromToken(token);
+            if (JsonWebTokenValidator.validateToken(userDetails.getUsername(), token)) {
+                String role = JsonWebTokenValidator.getUserRoleFromToken(token);
                 // Set the Claims ONLY If it's a Single Token
-                Claims claims = jwtUtil.getAllClaims(token);
+                Claims claims = JsonWebTokenValidator.getAllClaims(token);
                 if(singleToken) {
                     claimsManager.setClaims(claims);
                     claimsManager.isClaimsInitialized();
@@ -322,7 +311,7 @@ public class AuthorizeRequestAspect {
         AuthorizationRequired annotation = null;
         String annotationRole = null;
         try {
-            if (tokenKey.equalsIgnoreCase(AUTH_TOKEN)) {
+            if (tokenKey.equalsIgnoreCase(JsonWebTokenConstants.AUTH_TOKEN)) {
                 annotation = signature.getMethod().getAnnotation(AuthorizationRequired.class);
                 annotationRole = annotation.role();
             }
@@ -331,8 +320,7 @@ public class AuthorizeRequestAspect {
         }
         log.info("Step 3: Role Check Role = {},  Claims Role = {} ", annotationRole, role);
         // If the Role in the Token is User and Required is Admin then Reject the request
-        if(role.trim().equalsIgnoreCase(UserRole.USER.toString())
-                && annotationRole != null
+        if(role.trim().equalsIgnoreCase(UserRole.USER.toString()) && annotationRole != null
                 && annotationRole.equals(UserRole.ADMIN.toString())) {
             throw new AuthorizationException("Invalid User Role!");
         }
@@ -358,10 +346,10 @@ public class AuthorizeRequestAspect {
             String tokenType =  validateTokenType( user,  claims);
             switch(tokenCtg) {
                 case CONSUMERS:
-                    if (tokenKey.equals(AUTH_TOKEN) && !tokenType.equals(AUTH)) {
+                    if (tokenKey.equals(JsonWebTokenConstants.AUTH_TOKEN) && !tokenType.equals(JsonWebTokenConstants.AUTH)) {
                         msg = "Invalid Auth Token! ("+tokenType+")  For " + user;
                         throw new AuthorizationException(msg);
-                    } else if (tokenKey.equals(REFRESH_TOKEN) && !tokenType.equals(AUTH_REFRESH)) {
+                    } else if (tokenKey.equals(REFRESH_TOKEN) && !tokenType.equals(JsonWebTokenConstants.AUTH_REFRESH)) {
                         msg = "Invalid Refresh Token! " + user;
                         throw new AuthorizationException(msg);
                     }
@@ -397,10 +385,11 @@ public class AuthorizeRequestAspect {
      * @param joinPoint
      */
     private void validateAndSetClaimsFromTxToken(long startTime, String user,
-                                                 String tokenData, ProceedingJoinPoint joinPoint) {
-        String token = null;
-        if (tokenData != null && tokenData.startsWith("Bearer ")) {
-            token = tokenData.substring(7);
+                                                 String token, ProceedingJoinPoint joinPoint) {
+        TokenData tokenData;
+        if (token != null && token.startsWith("Bearer ")) {
+            String txToken = token.substring(7);
+            tokenData = tokenFactory.createTokenData(txToken);
         } else {
             String msg = "TX-Token: Access Denied: Unable to extract TX-Token from Header! "+user;
             logTime(startTime, ERROR, msg, joinPoint);
@@ -409,8 +398,8 @@ public class AuthorizeRequestAspect {
         String msg = null;
         try {
             Claims claims = null;
-            if (jwtUtil.validateToken(user, token)) {
-                claims = jwtUtil.getAllClaims(token);
+            if (JsonWebTokenValidator.validateToken(user, tokenData)) {
+                claims = JsonWebTokenValidator.getAllClaims(tokenData);
                 String tokenType = validateTokenType( user,  claims);
                 if (!tokenType.equals(TX_USERS)) {
                     msg = "Invalid TX Token Type ("+tokenType+") ! " + user;

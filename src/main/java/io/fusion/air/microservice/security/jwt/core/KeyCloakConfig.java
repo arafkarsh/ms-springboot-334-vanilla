@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.fusion.air.microservice.security;
+package io.fusion.air.microservice.security.jwt.core;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -61,8 +61,6 @@ public class KeyCloakConfig implements Serializable {
 
     @Value("${server.keycloak.issuer}")
     private String tokenIssuer;
-
-    // Removed the Empty Constructor
 
     /**
      * Return KeyCloak URL

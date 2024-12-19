@@ -18,11 +18,11 @@ package io.fusion.air.microservice.server.controllers;
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.exceptions.*;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.adapters.security.AuthorizeRequestAspect;
 import io.fusion.air.microservice.adapters.security.ValidateRefreshToken;
-import io.fusion.air.microservice.security.CryptoKeyGenerator;
-import io.fusion.air.microservice.security.JsonWebToken;
-import io.fusion.air.microservice.security.TokenManager;
+import io.fusion.air.microservice.security.crypto.CryptoKeyGenerator;
+import io.fusion.air.microservice.security.jwt.client.JsonWebTokenValidator;
+import io.fusion.air.microservice.security.jwt.core.TokenData;
+import io.fusion.air.microservice.security.jwt.server.TokenManager;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 // Swagger
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,6 +43,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import io.jsonwebtoken.Claims;
+
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.REFRESH_TOKEN;
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.TX_USERS;
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -70,24 +73,20 @@ public class TokenController extends AbstractController {
 	private String serviceName;
 
 	// Autowired using the Constructor
-	private JsonWebToken jsonWebToken;
-
-	// Autowired using the Constructor
 	private CryptoKeyGenerator cryptoKeys;
+
 	// Autowired using the Constructor
 	private TokenManager tokenManager;
 
 	/**
 	 * Autowired using the Constructor
 	 * @param serviceConfig
-	 * @param jsonWebToken
 	 * @param cryptoKeys
 	 * @param tokenManager
 	 */
-	public TokenController(ServiceConfiguration serviceConfig, JsonWebToken jsonWebToken,
+	public TokenController(ServiceConfiguration serviceConfig,
 						   CryptoKeyGenerator cryptoKeys, TokenManager tokenManager ) {
 		this.serviceConfig = serviceConfig;
-		this.jsonWebToken = jsonWebToken;
 		this.cryptoKeys = cryptoKeys;
 		this.tokenManager = tokenManager;
 		this.serviceName = super.name();
@@ -167,16 +166,17 @@ public class TokenController extends AbstractController {
 	public ResponseEntity<StandardResponse> generate(HttpServletRequest request) throws AbstractServiceException {
 		log.debug("{} |Request to Generate Refresh Tokens... ", serviceName);
 		// Step 1:
-		final String refreshToken = getToken(request.getHeader(AuthorizeRequestAspect.REFRESH_TOKEN));
-		String subject = jsonWebToken.getSubjectFromToken(refreshToken);
-		Claims refreshTokenClaims = jsonWebToken.getAllClaims(refreshToken);
+		final String refreshToken = getToken(request.getHeader(REFRESH_TOKEN));
+		TokenData tokenData = tokenManager.createTokenData(refreshToken);
+		String subject = JsonWebTokenValidator.getSubjectFromToken(tokenData);
+		Claims refreshTokenClaims = JsonWebTokenValidator.getAllClaims(tokenData);
 
 		// Step 2: Generate Authorize Tokens (Auth and Refresh Tokens)
 		HttpHeaders headers = new HttpHeaders();
 		Map<String, String> allTokens = tokenManager.createAuthorizationToken(subject, headers, refreshTokenClaims);
 
 		// Step 3: Generate Tx Tokens
-		String txToken = tokenManager.createTXToken(subject, TokenManager.TX_USERS, headers);
+		String txToken = tokenManager.createTXToken(subject, TX_USERS, headers);
 		allTokens.putIfAbsent("TX-Token", txToken);
 
 		// Step 4: Create a Payload with all the Tokens
