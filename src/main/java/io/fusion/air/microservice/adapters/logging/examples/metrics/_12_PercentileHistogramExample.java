@@ -32,6 +32,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 /**
@@ -92,7 +93,7 @@ public class _12_PercentileHistogramExample {
     }
 
     public static int getRandomNumber(int min, int max) {
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
         return random.nextInt(max - min + 1) + min; // Generate random number between min and max
     }
 

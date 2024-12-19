@@ -2,14 +2,14 @@
 <users>
     <user>
         <username>admin</username>
-        <password>securepassword</password>
+        <password>2025.audi.??.2020</password>
     </user>
     <user>
         <username>john.doe</username>
-        <password>securepasswordjohn</password>
+        <password>2010.bmw.??.2030</password>
     </user>
     <user>
         <username>jane.doe</username>
-        <password>securepasswordjane</password>
+        <password>1990.??.tesla.2010</password>
     </user>
 </users>

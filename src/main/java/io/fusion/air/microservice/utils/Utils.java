@@ -270,7 +270,7 @@ public final class Utils {
 					.findAndRegisterModules()
 					.writeValueAsString(object);
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			Std.println("Error: "+e);
 		}
 		return "";
 	}

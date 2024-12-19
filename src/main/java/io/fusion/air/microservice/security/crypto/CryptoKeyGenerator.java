@@ -136,12 +136,12 @@ public class CryptoKeyGenerator {
         try {
             publicKey = readPublicKey(publicKeyFile);
         } catch (Exception e) {
-            e.printStackTrace();
+            Std.println("Error: "+e);
         }
         try {
             privateKey = readPrivateKey(privateKeyFile);
         } catch (Exception e) {
-            e.printStackTrace();
+            Std.println("Error: "+e);
         }
         return this;
     }
@@ -188,7 +188,7 @@ public class CryptoKeyGenerator {
         try (PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(fileName)))) {
             pemWriter.writeObject(pemObject);
         } catch (Exception e) {
-            e.printStackTrace();
+            Std.println("Error: "+e);
         }
     }
 
@@ -232,7 +232,7 @@ public class CryptoKeyGenerator {
         try (PemWriter pemWriter = new PemWriter(new PrintWriter(stringWriter));) {
             pemWriter.writeObject(pemObject);
         } catch (Exception e) {
-            e.printStackTrace();
+            Std.println("Error: "+e);
         }
         return stringWriter.toString();
     }

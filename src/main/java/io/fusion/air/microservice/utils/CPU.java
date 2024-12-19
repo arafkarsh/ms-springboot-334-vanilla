@@ -110,7 +110,7 @@ public class CPU {
 	 */
 	public static long getCommittedVirtualMemorySize() {
 		try {	return (Long) invoke("getCommittedVirtualMemorySize", osMXBean); }
-		catch (Exception ignored) { ignored.printStackTrace(); }
+		catch (Exception ignored) { Std.println("Error: "+ignored); }
 		return 0;
 	}
 
@@ -120,7 +120,7 @@ public class CPU {
 	 */
 	public static long getTotalSwapSpaceSize() {
 		try {	return (Long) invoke("getTotalSwapSpaceSize", osMXBean); }
-		catch (Exception ignored) { ignored.printStackTrace(); }
+		catch (Exception ignored) { Std.println("Error: "+ignored);  }
 		return 0;
 	}
 
@@ -130,7 +130,7 @@ public class CPU {
 	 */
 	public static long getFreeSwapSpaceSize() {
 		try {	return (Long) invoke("getFreeSwapSpaceSize", osMXBean); }
-		catch (Exception ignored) { ignored.printStackTrace(); }
+		catch (Exception ignored) { Std.println("Error: "+ignored);  }
 		return 0;
 	}
 
@@ -140,7 +140,7 @@ public class CPU {
 	 */
 	public static int getProcessCpuTime() {
 		try {	return (Integer) invoke("getProcessCpuTime", osMXBean); }
-		catch (Exception ignored) { ignored.printStackTrace(); }
+		catch (Exception ignored) { Std.println("Error: "+ignored);  }
 		return 0;
 	}
 
@@ -150,7 +150,7 @@ public class CPU {
 	 */
 	public static long getFreePhysicalMemorySize() {
 		try {	return (Long) invoke("getFreePhysicalMemorySize", osMXBean); }
-		catch (Exception ignored) { ignored.printStackTrace(); }
+		catch (Exception ignored) { Std.println("Error: "+ignored);  }
 		return 0;
 	}
 
@@ -160,7 +160,7 @@ public class CPU {
 	 */
 	public static long getTotalPhysicalMemorySize() {
 		try {	return (Long) invoke("getTotalPhysicalMemorySize", osMXBean); }
-		catch (Exception ignored) { ignored.printStackTrace(); }
+		catch (Exception ignored) { Std.println("Error: "+ignored);  }
 		return 0;
 	}
 
@@ -223,7 +223,7 @@ public class CPU {
 	}
 	public static Object getProcessCpuLoad() {
 		try {	return  invoke("getProcessCpuLoad", osMXBean); }
-		catch (Exception ignored) { ignored.printStackTrace(); }
+		catch (Exception ignored) { Std.println("Error: "+ignored);  }
 		return "0.0";
 	}
 

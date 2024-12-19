@@ -91,7 +91,7 @@ public class SecureData {
             secretKey = new SecretKeySpec(key, encryptAlgo);
             secretKeyData = new SecretKeyData(secretKey, key, encryptAlgo);
         } catch (Exception e) {
-            e.printStackTrace();
+            Std.println("Error: "+e);
             throw new CryptoSecurityException(e);
         }
         return secretKeyData;
@@ -189,7 +189,7 @@ public class SecureData {
             log.info("SecretKeyData Generation Failed for Encryption.... ");
         } catch (Exception e) {
             log.info("Unable to Encrypt Data: {} ",  e.toString());
-            e.printStackTrace();
+            Std.println("Error: "+e);
         }
         return "";
     }

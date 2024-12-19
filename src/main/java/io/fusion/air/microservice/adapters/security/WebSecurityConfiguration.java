@@ -127,8 +127,11 @@ public class WebSecurityConfiguration {
          .and()
          .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class);
          */
-        // Disable for Local Testing
-        http.csrf(CsrfConfigurer::disable);
+        // Change the API Path As per the Security Requirement
+        String apiPath = serviceConfig.getApiDocPath();
+        http.csrf(csrf -> csrf
+                .ignoringRequestMatchers(apiPath +"/**")
+        );
     }
 
     /**
