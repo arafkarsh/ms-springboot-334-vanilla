@@ -16,10 +16,7 @@
 package io.fusion.air.microservice.server.config;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.fusion.air.microservice.utils.Utils;
@@ -57,9 +54,6 @@ public class ServiceConfiguration implements Serializable {
 	public static final String DB_MYSQL 		= "MySQL";
 	public static final String DB_ORACLE 	= "Oracle";
 
-	@JsonIgnore
-	private ConfigMap configMap = new ConfigMap();
-
 	/**
 	 * To be used outside SpringBoot Context
 	 * For WireMock Testing the External Services
@@ -79,30 +73,6 @@ public class ServiceConfiguration implements Serializable {
 	public ServiceConfiguration(String rHost, int rPort) {
 		this.remoteHost = rHost;
 		this.remotePort = rPort;
-	}
-
-	/**
-	 * Returns the ConfigMap
-	 * @return
-	 */
-	public ConfigMap getConfigMap() {
-		configMap.setServiceOrg(serviceOrg);
-		configMap.setServiceName( serviceName);
-		configMap.setServiceApiPrefix( serviceApiPrefix);
-		configMap.setServiceApiVersion( serviceApiVersion);
-		configMap.setServiceApiName( serviceApiName);
-		configMap.setServiceApiPath( serviceApiPath);
-		configMap.setServiceApiErrorPrefix( serviceApiErrorPrefix);
-		configMap.setServiceContainer( serviceContainer);
-		configMap.setServiceUrl( serviceUrl);
-		configMap.setApiDocPath( apiDocPath) ;
-		configMap.setBuildNumber( buildNumber);
-		configMap.setBuildDate( buildDate) ;
-		configMap.setServerVersion( serverVersion);
-		configMap.setServerHost( serverHost) ;
-		configMap.setAppPropertyList(appPropertyList);
-		configMap.setAppPropertyMap( appPropertyMap);
-		return configMap;
 	}
 
 	/**
@@ -129,6 +99,23 @@ public class ServiceConfiguration implements Serializable {
 		sb.append("\"app.property.map\": ").append(Utils.toJsonString(appPropertyMap));
 		sb.append("}");
 		return sb.toString();
+	}
+
+	/**
+	 * Returns Basic Info about the Server
+	 * @return
+	 */
+	public Map<String, String> getConfigMap() {
+		HashMap<String,String> map = new LinkedHashMap<>();
+		map.put("swagger.api.path", apiDocPath);
+		map.put("service.org", serviceOrg);
+		map.put("service.name",  serviceName);
+		map.put("service.url", serviceUrl);
+		map.put("service.api.version", serviceApiVersion);
+		map.put("build.number", ""+buildNumber);
+		map.put("build.date", buildDate);
+		map.put("serverVersion", serverVersion);
+		return map;
 	}
 
 	@Value("${service.org:OrgNotDefined}")
