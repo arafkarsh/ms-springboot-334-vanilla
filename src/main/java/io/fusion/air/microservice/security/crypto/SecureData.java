@@ -277,7 +277,6 @@ public class SecureData {
             log.info("SecretKeyData Generation Failed for Decryption.... ");
         } catch (Exception e) {
             log.info("Unable to Decrypt the data: {} ", e.toString());
-            e.printStackTrace();
         }
         return null;
     }

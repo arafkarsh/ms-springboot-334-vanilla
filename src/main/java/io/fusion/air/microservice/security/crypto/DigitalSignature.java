@@ -163,7 +163,7 @@ public class DigitalSignature {
         try (PemWriter pemWriter  = new PemWriter(new OutputStreamWriter(new FileOutputStream(fileName))) )  {
             pemWriter.writeObject(pemObject);
         } catch (Exception e) {
-            e.printStackTrace();
+            Std.printError(e);
         }
     }
 

@@ -112,7 +112,7 @@ public class CryptoKeyGenerator {
             try {
                 generateRSAKeyPair();
             } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
+                Std.printError(e);
             }
             writeKeyFiles();
         }
