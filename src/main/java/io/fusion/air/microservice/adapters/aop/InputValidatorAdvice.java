@@ -71,11 +71,12 @@ public class InputValidatorAdvice {
      */
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, WebRequest request) {
-        List<String> errors = ex.getBindingResult()
+        List<String> errors =  ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(error -> error.getField() + " | " + error.getDefaultMessage())
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(ArrayList::new));
+        log.debug("462: List Errors = {} ", errors);
         return createErrorResponse( "462",  "Errors: Invalid Method Arguments",  errors );
     }
 
@@ -90,7 +91,8 @@ public class InputValidatorAdvice {
         List<String> errors = ex.getConstraintViolations()
                 .stream()
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(ArrayList::new));
+        log.debug("463: List Errors = {} ", errors);
         return createErrorResponse( "463",  "Errors: Input Constraint Violations",  errors );
     }
 
