@@ -37,8 +37,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
-
-import static io.fusion.air.microservice.utils.Std.println;
 import static org.slf4j.LoggerFactory.getLogger;
 import static java.lang.invoke.MethodHandles.lookup;
 
