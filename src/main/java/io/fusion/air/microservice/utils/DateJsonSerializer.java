@@ -14,32 +14,39 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.utils;
-
+// Java
 import java.io.IOException;
-
+import java.time.LocalDateTime;
+// Faster XML
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-public class DateJsonSerializer<LocalDateTime> extends StdSerializer<LocalDateTime>{
+/**
+ * @author: Araf Karsh Hamid
+ * @version:
+ * @date:
+ */
+public class DateJsonSerializer extends StdSerializer<LocalDateTime> {
+	private static final long serialVersionUID = -7035242849275956037L;
 
+	/**
+	 * Constructor
+	 */
 	public DateJsonSerializer() {
-		this(null, false);
-	}
-	protected DateJsonSerializer(Class<?> t, boolean dummy) {
-		super(t, dummy);
+		super(LocalDateTime.class);
 	}
 
 	/**
-	 * 
+	 * Serialize the date
+	 * @param value
+	 * @param gen
+	 * @param provider
+	 * @throws IOException
 	 */
-	private static final long serialVersionUID = -7035242849275956037L;
-
 	@Override
-	public void serialize(LocalDateTime value, 
-			JsonGenerator gen, 
-			SerializerProvider provider) throws IOException {
+	public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider provider)
+			throws IOException {
 		gen.writeString(value.toString());		
 	}
-
 }

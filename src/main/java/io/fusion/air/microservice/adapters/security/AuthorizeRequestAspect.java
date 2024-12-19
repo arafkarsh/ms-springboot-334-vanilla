@@ -161,7 +161,7 @@ public class AuthorizeRequestAspect {
      */
     @Around(value = "execution(* io.fusion.air.microservice.adapters.controllers.external.*.*(..))")
     public Object validateExternalRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        return validateRequest(false, AUTH_TOKEN,joinPoint, EXTERNAL_SERVICES);
+        return validateRequest(false, AUTH_TOKEN, joinPoint, EXTERNAL_SERVICES);
     }
 
     /**
@@ -187,7 +187,6 @@ public class AuthorizeRequestAspect {
         log.info("Step 0: User Extracted... {} ", user);
         // Validate the Token when User is NOT Null
         if (user != null) {
-            // System.out.println("Step 1: Extract Tokens...");
             // Validate Token
             UserDetails userDetails = validateToken(startTime, singleToken, user, tokenKey, token, joinPoint, tokenCtg);
             // Create Authorize Token
@@ -197,13 +196,12 @@ public class AuthorizeRequestAspect {
             // Set the Security Context with current user as Authorized for the request,
             // So it passes the Spring Security Configurations successfully.
             SecurityContextHolder.getContext().setAuthentication(authorizeToken);
-            // System.out.println("Step 5: Security Context. "+SecurityContextHolder.getContext().getAuthentication().getPrincipal());
             logTime(startTime, "SUCCESS", "User Authorized for the request",  joinPoint);
         }
         // If the User == NULL then ERROR is thrown from getUser() method itself
         // Check the Tx Token if It's NOT a SINGLE_TOKEN Request
         if(!singleToken ) {
-            validateAndSetClaimsFromTxToken(startTime, user, tokenKey, request.getHeader(TX_TOKEN), joinPoint);
+            validateAndSetClaimsFromTxToken(startTime, user, request.getHeader(TX_TOKEN), joinPoint);
         }
         return joinPoint.proceed();
     }
@@ -215,13 +213,13 @@ public class AuthorizeRequestAspect {
      * ------------------------------------------------------------------------------------------------------
      *
      * @param startTime
-     * @param tokenKey
+     * @param jwToken
      * @param joinPoint
      * @return
      */
-    private String getToken(long startTime, String tokenKey, ProceedingJoinPoint joinPoint) {
-        if (tokenKey != null && tokenKey.startsWith("Bearer ")) {
-            return tokenKey.substring(7);
+    private String getToken(long startTime, String jwToken, ProceedingJoinPoint joinPoint) {
+        if (jwToken != null && jwToken.startsWith("Bearer ")) {
+            return jwToken.substring(7);
         }
         String msg = "Access Denied: Unable to extract token from Header!";
         logTime(startTime, ERROR, msg,  joinPoint);
@@ -282,7 +280,6 @@ public class AuthorizeRequestAspect {
         UserDetails userDetails = userDetailsService.loadUserByUsername(user);
         String msg = null;
         try {
-            // System.out.println("Step 2: Validate Token...");
             // Validate the Token
             if (jwtUtil.validateToken(userDetails.getUsername(), token)) {
                 String role = jwtUtil.getUserRoleFromToken(token);
@@ -397,10 +394,9 @@ public class AuthorizeRequestAspect {
      *
      * @param startTime
      * @param user
-     * @param tokenKey
      * @param joinPoint
      */
-    private void validateAndSetClaimsFromTxToken(long startTime, String user, String tokenKey,
+    private void validateAndSetClaimsFromTxToken(long startTime, String user,
                                                  String tokenData, ProceedingJoinPoint joinPoint) {
         String token = null;
         if (tokenData != null && tokenData.startsWith("Bearer ")) {
