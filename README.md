@@ -5,12 +5,13 @@
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=arafkarsh_ms-springboot-334-vanilla&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=arafkarsh_ms-springboot-334-vanilla) 
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=arafkarsh_ms-springboot-334-vanilla&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=arafkarsh_ms-springboot-334-vanilla)
 
-This microservice template offers a range of built-in functionalities. If the Quality Gate check fails, 
-it's because the password is encrypted within the application’s properties file, with the encryption key 
-stored externally, outside the application’s context. 
+This microservice template offers a range of built-in functionalities. To simplify the demonstration of 
+various features, an encrypted password is utilized for connecting to H2 and PostgreSQL databases. 
+The template includes utilities for encrypting and decrypting passwords, ensuring that the encryption 
+key is securely stored outside the application’s runtime context.
 
-However, quality standards mandate that passwords should be securely stored in a vault, such as 
-HashiCorp Vault, for enhanced security.
+To know more about how to setup these passwords (for H2 & PostgreSQL) and environment variables
+checkout Session 1.2
 
 Encrypted H2 (In Memory) Database Password. Uses H2 database in Dev (Profile) mode.
 ![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/encrypt/Security-H2-psd.jpg)
@@ -19,13 +20,11 @@ Encrypted PostgreSQL Database Password. Uses PostgreSQL DB in Staging & Prod (pr
 Password can be decrypted only using an Encryption Key stored in System Enviornment variable
 ![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/encrypt/Security-Encryption-pro.jpg)
 
-To simplify the demonstration of various features, an encrypted password is utilized for connecting 
-to H2 and PostgreSQL databases. The template includes utilities for encrypting and decrypting 
-passwords, ensuring that the encryption key is securely stored outside the application’s runtime 
-context. 
+If the Quality Gate check fails, it's because the password is encrypted within the application’s 
+properties file, with the encryption key stored externally, outside the application’s context.
 
-To know more about how to setup these passwords (for H2 & PostgreSQL) and environment variables 
-checkout Session 1.2
+However, quality standards mandate that passwords should be securely stored in a vault, such as
+HashiCorp Vault, for enhanced security.
 
 ## What the Template Provides out of the box
 
