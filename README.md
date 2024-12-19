@@ -5,10 +5,12 @@
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=arafkarsh_ms-springboot-334-vanilla&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=arafkarsh_ms-springboot-334-vanilla) 
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=arafkarsh_ms-springboot-334-vanilla&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=arafkarsh_ms-springboot-334-vanilla)
 
-This microservice template offers a range of built-in functionalities. The Quality Gate check fails 
-because the password is encrypted within the application’s properties file, with the encryption key 
-stored externally, outside the application’s context. However, quality standards mandate that 
-passwords should be securely stored in a vault, such as HashiCorp Vault, for enhanced security.
+This microservice template offers a range of built-in functionalities. If the Quality Gate check fails, 
+it's because the password is encrypted within the application’s properties file, with the encryption key 
+stored externally, outside the application’s context. 
+
+However, quality standards mandate that passwords should be securely stored in a vault, such as 
+HashiCorp Vault, for enhanced security.
 
 Encrypted H2 (In Memory) Database Password. Uses H2 database in Dev (Profile) mode.
 ![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/encrypt/Security-H2-psd.jpg)
