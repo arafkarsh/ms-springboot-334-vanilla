@@ -199,33 +199,6 @@ public class ServiceConfiguration implements Serializable {
 	@Value("${server.crypto.public.key:publicKey.pem}")
 	private String cryptoPublicKeyFile;
 
-	// server.crypto.private.key=privateKey.pem
-	@Value("${server.crypto.private.key:privateKey.pem}")
-	private String cryptoPrivateKeyFile;
-
-	@Value("${server.token.issuer}")
-	private String tokenIssuer;
-
-	// server.token.type=1
-	// (Type 1 = secret key, 2 = public / private key)
-	@Value("${server.token.type:1}")
-	private int tokenType;
-
-	@Value("${server.token.test}")
-	private boolean serverTokenTest;
-
-	// server.token.auth.expiry=300000
-	@Value("${server.token.auth.expiry:300000}")
-	private long tokenAuthExpiry;
-
-	// server.token.refresh.expiry=1800000
-	@Value("${server.token.refresh.expiry:1800000}")
-	private long tokenRefreshExpiry;
-
-	@Value("${server.token.key:sigmaEpsilon6109871597}")
-	private String tokenKey;
-
-
 	@Value("${spring.codec.max-in-memory-size:3MB}")
 	private String springCodecMaxMemory;
 
@@ -314,13 +287,6 @@ public class ServiceConfiguration implements Serializable {
 	public String getSpringCodecMaxMemory() {
 		return springCodecMaxMemory;
 	}
-
-	/**
-	 * @return the tokenKey
-	 */
-	public String getTokenKey() {
-		return tokenKey;
-	}
 	
 	/**
 	 * @return the serverVersion
@@ -334,14 +300,6 @@ public class ServiceConfiguration implements Serializable {
 	 */
 	public boolean isServerRestart() {
 		return serverRestart;
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public boolean isServerTokenTest() {
-		return serverTokenTest;
 	}
 
 	/**
@@ -535,54 +493,12 @@ public class ServiceConfiguration implements Serializable {
 	}
 
 	/**
-	 * Returns the Auth Token Expiry
-	 * @return
-	 */
-	public long getTokenAuthExpiry() {
-		return tokenAuthExpiry;
-	}
-
-	/**
-	 * Returns the Refresh Token Expiry
-	 */
-	public long getTokenRefreshExpiry() {
-		return tokenRefreshExpiry;
-	}
-
-	/**
-	 * Returns Token Type
-	 * Token Type is used to sign the JWTs.
-	 * 1 = secret key,
-	 * 2 = public / private key
-	 * @return
-	 */
-	public int getTokenType() {
-		return tokenType;
-	}
-
-	/**
 	 * Returns the Public Key File Name
 	 * @return
 	 */
 	public String getCryptoPublicKeyFile() {
 		return cryptoPublicKeyFile;
 	}
-
-	/**
-	 * Returns the Private Key File Name
-	 * @return
-	 */
-	public String getCryptoPrivateKeyFile() {
-		return cryptoPrivateKeyFile;
-	}
-
-	/**
-	 * Returns the Token Issuer
-	 */
-	public String getTokenIssuer() {
-		return tokenIssuer;
-	}
-
 	/**
 	 * Returns Server Resource URL
 	 * @return

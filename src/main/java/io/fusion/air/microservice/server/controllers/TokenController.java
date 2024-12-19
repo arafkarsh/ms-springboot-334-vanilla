@@ -21,9 +21,11 @@ import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.adapters.security.ValidateRefreshToken;
 import io.fusion.air.microservice.security.crypto.CryptoKeyGenerator;
 import io.fusion.air.microservice.security.jwt.client.JsonWebTokenValidator;
+import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConfig;
 import io.fusion.air.microservice.security.jwt.core.TokenData;
 import io.fusion.air.microservice.security.jwt.server.TokenManager;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.REFRESH_TOKEN;
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.TX_USERS;
 // Swagger
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -43,9 +45,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import io.jsonwebtoken.Claims;
-
-import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.REFRESH_TOKEN;
-import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.TX_USERS;
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -69,7 +68,7 @@ public class TokenController extends AbstractController {
 	private static final Logger log = getLogger(lookup().lookupClass());
 
 	// Autowired using the Constructor
-	private ServiceConfiguration serviceConfig;
+	private JsonWebTokenConfig jwtConfig;
 	private String serviceName;
 
 	// Autowired using the Constructor
@@ -80,13 +79,13 @@ public class TokenController extends AbstractController {
 
 	/**
 	 * Autowired using the Constructor
-	 * @param serviceConfig
+	 * @param jwtConfig
 	 * @param cryptoKeys
 	 * @param tokenManager
 	 */
-	public TokenController(ServiceConfiguration serviceConfig,
+	public TokenController(JsonWebTokenConfig jwtConfig,
 						   CryptoKeyGenerator cryptoKeys, TokenManager tokenManager ) {
-		this.serviceConfig = serviceConfig;
+		this.jwtConfig = jwtConfig;
 		this.cryptoKeys = cryptoKeys;
 		this.tokenManager = tokenManager;
 		this.serviceName = super.name();
@@ -129,7 +128,7 @@ public class TokenController extends AbstractController {
 	 * @return
 	 */
 	private String getCryptoPublicKeyFile() {
-		return (serviceConfig != null) ? serviceConfig.getCryptoPublicKeyFile() : "publicKey.pem";
+		return (jwtConfig != null) ? jwtConfig.getCryptoPublicKeyFile() : "publicKey.pem";
 	}
 
 	/**
@@ -137,7 +136,7 @@ public class TokenController extends AbstractController {
 	 * @return
 	 */
 	private String getCryptoPrivateKeyFile() {
-		return (serviceConfig != null) ? serviceConfig.getCryptoPrivateKeyFile() : "privateKey.pem";
+		return (jwtConfig != null) ? jwtConfig.getCryptoPrivateKeyFile() : "privateKey.pem";
 	}
 
 	/**

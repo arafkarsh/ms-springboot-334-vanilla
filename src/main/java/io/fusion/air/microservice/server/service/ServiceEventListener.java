@@ -178,7 +178,6 @@ public class ServiceEventListener {
 	 * serverTestToken=false
 	 */
 	private void generateTestToken() {
-		log.info("Token Type = {}", serviceConfig.getTokenType());
 		// Step 1: Set Expiry Time & Subject
 		tokenAuthExpiry = (tokenAuthExpiry < 10) ? JsonWebTokenConstants.EXPIRE_IN_FIVE_MINS : tokenAuthExpiry;
 		tokenRefreshExpiry = (tokenRefreshExpiry < 10) ? JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;

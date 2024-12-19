@@ -20,9 +20,9 @@ import io.fusion.air.microservice.domain.exceptions.SecurityException;
 import io.fusion.air.microservice.domain.models.auth.Token;
 import io.fusion.air.microservice.domain.ports.services.UserService;
 import io.fusion.air.microservice.security.crypto.CryptoKeyGenerator;
+import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConfig;
 import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants;
 import io.fusion.air.microservice.security.jwt.server.TokenManager;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
 // Spring
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -47,7 +47,7 @@ public class AuthLocalService {
     private static final Logger log = getLogger(lookup().lookupClass());
 
     // Autowired using Constructor
-    private final ServiceConfiguration serviceConfig;
+    private final JsonWebTokenConfig jwtConfig;
 
     // Autowired using Constructor
     private final CryptoKeyGenerator cryptoKeys;
@@ -67,14 +67,14 @@ public class AuthLocalService {
     /**
      * Autowired using Constructor
      *
-     * @param serviceConfig
+     * @param jsonWebTokenConfig
      * @param cryptoKeys
      * @param tokenManager
      * @param userService
      */
-    public  AuthLocalService(ServiceConfiguration serviceConfig, CryptoKeyGenerator cryptoKeys,
+    public  AuthLocalService(JsonWebTokenConfig jsonWebTokenConfig, CryptoKeyGenerator cryptoKeys,
                              TokenManager tokenManager, UserService userService ) {
-        this.serviceConfig = serviceConfig;
+        this.jwtConfig = jsonWebTokenConfig;
         this.cryptoKeys = cryptoKeys;
         this.tokenManager = tokenManager;
         this.userService = userService;
@@ -96,7 +96,7 @@ public class AuthLocalService {
      * @return
      */
     private String getCryptoPublicKeyFile() {
-        return (serviceConfig != null) ? serviceConfig.getCryptoPublicKeyFile() : "publicKey.pem";
+        return (jwtConfig != null) ? jwtConfig.getCryptoPublicKeyFile() : "publicKey.pem";
     }
 
     /**
@@ -104,7 +104,7 @@ public class AuthLocalService {
      * @return
      */
     private String getCryptoPrivateKeyFile() {
-        return (serviceConfig != null) ? serviceConfig.getCryptoPrivateKeyFile() : "privateKey.pem";
+        return (jwtConfig != null) ? jwtConfig.getCryptoPrivateKeyFile() : "privateKey.pem";
     }
 
     /**
