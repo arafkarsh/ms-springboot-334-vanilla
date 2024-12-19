@@ -15,7 +15,7 @@
  */
 package io.fusion.air.microservice.security.crypto;
 
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.server.config.DatabaseConfig;
 import io.fusion.air.microservice.utils.Std;
 
 /**
@@ -29,21 +29,21 @@ import io.fusion.air.microservice.utils.Std;
 public class PasswordManager {
 
     // Autowired using the Constructor
-    private ServiceConfiguration serviceConfig;
+    private DatabaseConfig dbConfig;
 
     /**
      * Autowired using the Constructor
-     * @param serviceCfg
+     * @param dbCfg
      */
-    public PasswordManager(ServiceConfiguration serviceCfg) {
-        serviceConfig = serviceCfg;
+    public PasswordManager(DatabaseConfig dbCfg) {
+        this.dbConfig = dbCfg;
     }
     /**
      * Return the Decrypted User Name
      * @return
      */
     public String getDatabaseUserName() {
-        return SecureData.decrypt(serviceConfig.getDataSourceUserName(),  getSeed());
+        return SecureData.decrypt(dbConfig.getDataSourceUserName(),  getSeed());
     }
 
     /**
@@ -51,7 +51,7 @@ public class PasswordManager {
      * @return
      */
     public String getDatabasePassword() {
-        return SecureData.decrypt(serviceConfig.getDataSourcePassword(), getSeed());
+        return SecureData.decrypt(dbConfig.getDataSourcePassword(), getSeed());
     }
 
     /**
@@ -60,11 +60,11 @@ public class PasswordManager {
      */
     private String getSeed() {
         return new StringBuilder()
-                .append(serviceConfig.getServiceOrg())
+                .append(dbConfig.getServiceOrg())
                 .append("|")
-                .append(serviceConfig.getServiceName())
+                .append(dbConfig.getServiceName())
                 .append("|")
-                .append(serviceConfig.getSecureDataKey())
+                .append(dbConfig.getSecureDataKey())
                 .toString();
     }
 

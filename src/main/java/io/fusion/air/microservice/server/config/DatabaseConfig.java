@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 
 /**
- * Service Configuration
+ * Database Configuration
  *
  * @author arafkarsh
  *
@@ -43,6 +43,16 @@ public class DatabaseConfig implements Serializable {
 	public static final String DB_POSTGRESQL = "PostgreSQL";
 	public static final String DB_MYSQL 		= "MySQL";
 	public static final String DB_ORACLE 	= "Oracle";
+
+	@Value("${service.org:OrgNotDefined}")
+	private String serviceOrg;
+
+	@Value("${service.name:NameNotDefined}")
+	private String serviceName;
+
+	// server.secure.data.key
+	@Value("${server.secure.data.key:alphaHawk6109871597}")
+	private String secureDataKey;
 
 	// Database Configurations
 	@Value("${db.server:localhost}")
@@ -153,5 +163,29 @@ public class DatabaseConfig implements Serializable {
 	 */
 	public String getDataSourceVendor() {
 		return dataSourceVendor;
+	}
+
+	/**
+	 * Secure Data Key
+	 * @return
+	 */
+	public String getSecureDataKey() {
+		return secureDataKey;
+	}
+
+	/**
+	 * Returns the Service Org Name
+	 * @return
+	 */
+	public String getServiceOrg() {
+		return serviceOrg;
+	}
+
+	/**
+	 * Returns the Service Name
+	 * @return
+	 */
+	public String getServiceName() {
+		return serviceName;
 	}
 }

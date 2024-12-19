@@ -49,11 +49,6 @@ public class ServiceConfiguration implements Serializable {
 	// Health Path
 	public static final String HEALTH_PATH = "/service";
 
-	public static final String DB_H2 		= "H2";
-	public static final String DB_POSTGRESQL = "PostgreSQL";
-	public static final String DB_MYSQL 		= "MySQL";
-	public static final String DB_ORACLE 	= "Oracle";
-
 	/**
 	 * To be used outside SpringBoot Context
 	 * For WireMock Testing the External Services
@@ -230,40 +225,6 @@ public class ServiceConfiguration implements Serializable {
 	@Value("${server.token.key:sigmaEpsilon6109871597}")
 	private String tokenKey;
 
-	// server.secure.data.key
-	@Value("${server.secure.data.key:alphaHawk6109871597}")
-	private String secureDataKey;
-
-	// Database Configurations
-	@Value("${db.server:localhost}")
-	private String dataSourceServer;
-
-	@Value("${db.port:5432}")
-	private int dataSourcePort;
-
-	@Value("${db.name:demo}")
-	private String dataSourceName;
-
-	@Value("${db.schema:demo}")
-	private String dataSourceSchema;
-
-	@Value("${db.vendor:H2}")
-	private String dataSourceVendor;
-
-	@Value("${spring.datasource.url:jdbc:h2:mem:demo;DB_CLOSE_ON_EXIT=FALSE}")
-	private String dataSourceURL;
-
-	@Value("${spring.datasource.driverClassName:org.h2.Driver}")
-	private String dataSourceDriverClassName;
-
-	@Value("${spring.datasource.username:sa}")
-	private String dataSourceUserName;
-
-	@Value("${spring.datasource.password:password}")
-	private String dataSourcePassword;
-
-	@Value("${spring.jpa.database-platform:org.hibernate.dialect.H2Dialect}")
-	private String dataSourceDialect;
 
 	@Value("${spring.codec.max-in-memory-size:3MB}")
 	private String springCodecMaxMemory;
@@ -566,86 +527,6 @@ public class ServiceConfiguration implements Serializable {
 	}
 
 	/**
-	 * Returns Database URL
-	 * @return
-	 */
-	public String getDataSourceURL() {
-		return dataSourceURL;
-	}
-
-	/**
-	 * Returns Driver ClassNames
-	 * @return
-	 */
-	public String getDataSourceDriverClassName() {
-		return dataSourceDriverClassName;
-	}
-
-	/**
-	 * Returns Database User Name
-	 * @return
-	 */
-	public String getDataSourceUserName() {
-		return dataSourceUserName;
-	}
-
-	/**
-	 * Returns Database Password
-	 * @return
-	 */
-	public String getDataSourcePassword() {
-		return dataSourcePassword;
-	}
-
-	/***
-	 * Returns Dialect
-	 * @return
-	 */
-	public String getDataSourceDialect() {
-		return dataSourceDialect;
-	}
-
-	/**
-	 * DataSource Server
-	 * @return
-	 */
-	public String getDataSourceServer() {
-		return dataSourceServer;
-	}
-
-	/**
-	 * DataSource Port
-	 * @return
-	 */
-	public int getDataSourcePort() {
-		return dataSourcePort;
-	}
-
-	/**
-	 * DataSource DB Name
-	 * @return
-	 */
-	public String getDataSourceName() {
-		return dataSourceName;
-	}
-
-	/**
-	 * Returns DB Schema Name
-	 * @return
-	 */
-	public String getDataSourceSchema() {
-		return dataSourceSchema;
-	}
-
-	/**
-	 * Returns the Data Source Vendor (Ex. H2, PostgreSQL)
-	 * @return
-	 */
-	public String getDataSourceVendor() {
-		return dataSourceVendor;
-	}
-
-	/**
 	 * Returns System Properties
 	 * @return
 	 */
@@ -666,14 +547,6 @@ public class ServiceConfiguration implements Serializable {
 	 */
 	public long getTokenRefreshExpiry() {
 		return tokenRefreshExpiry;
-	}
-
-	/**
-	 * Secure Data Key
-	 * @return
-	 */
-	public String getSecureDataKey() {
-		return secureDataKey;
 	}
 
 	/**
