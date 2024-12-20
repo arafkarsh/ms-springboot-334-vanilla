@@ -108,7 +108,6 @@ public class JwtFilter implements Filter {
         // Extract Tokens if Available
         String authToken = extractToken( httpRequest,  AUTH_TOKEN);
         String txToken = extractToken( httpRequest,  TX_TOKEN);
-        String errorMsg = "";
         try {
             // IF ONLY Auth Token Available
             if (authToken != null && txToken == null) {
@@ -121,10 +120,8 @@ public class JwtFilter implements Filter {
             // Continue the filter chain
             filterChain.doFilter(httpRequest, httpResponse);
         } catch(Exception e) {
-            errorMsg = e.getMessage();
+            log.info("|JwtFilter Error: {} ", e.getMessage());
             throwError(httpResponse);
-        } finally {
-            log.info("|JwtFilter={}", errorMsg);
         }
     }
 

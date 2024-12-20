@@ -18,15 +18,15 @@ package io.fusion.air.microservice.adapters.security;
 import io.fusion.air.microservice.adapters.security.core.UserRole;
 import io.fusion.air.microservice.adapters.security.jwt.AuthorizationRequired;
 import io.fusion.air.microservice.adapters.security.jwt.ClaimsManager;
+import io.fusion.air.microservice.adapters.security.jwt.SingleTokenAuthorizationRequired;
 import io.fusion.air.microservice.adapters.security.service.UserDetailsServiceImpl;
 import io.fusion.air.microservice.domain.exceptions.*;
-
-import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.*;
-// JWT
 import io.fusion.air.microservice.security.jwt.client.JsonWebTokenValidator;
 import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants;
 import io.fusion.air.microservice.security.jwt.core.TokenData;
 import io.fusion.air.microservice.security.jwt.core.TokenDataFactory;
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.*;
+// JWT
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 // Aspect
@@ -174,7 +174,7 @@ public class AuthorizeRequestAspect {
                 RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         logTime(startTime, "Validating", request.getRequestURI(), joinPoint);
-        final String token = getToken(startTime, request.getHeader(tokenKey), joinPoint);
+        final String token = getToken(startTime, request.getHeader(AUTH_TOKEN), joinPoint);
         TokenData tokenData = tokenFactory.createTokenData(token);
         final String user = getUser(startTime, tokenData, joinPoint);
         log.info("Step 0: User Extracted... {} ", user);
@@ -312,14 +312,19 @@ public class AuthorizeRequestAspect {
      */
     private void verifyTheUserRole(String role, String tokenKey, ProceedingJoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        AuthorizationRequired annotation = null;
+
         String annotationRole = null;
+        log.info("Step 3: ROLE CHECK..... FOR Token Type = {} ", tokenKey);
         try {
-            if (tokenKey.equalsIgnoreCase(JsonWebTokenConstants.AUTH_TOKEN)) {
-                annotation = signature.getMethod().getAnnotation(AuthorizationRequired.class);
+            if (tokenKey.equalsIgnoreCase(AUTH_TOKEN)) {
+                AuthorizationRequired annotation =  signature.getMethod().getAnnotation(AuthorizationRequired.class);
+                annotationRole = annotation.role();
+            } else if(tokenKey.equalsIgnoreCase(SINGLE_TOKEN)) {
+                SingleTokenAuthorizationRequired annotation =  signature.getMethod().getAnnotation(SingleTokenAuthorizationRequired.class);
                 annotationRole = annotation.role();
             }
         } catch (Exception ignored) {
+            ignored.printStackTrace();
             throw new AuthorizationException("Role Not Found!", ignored);
         }
         log.info("Step 3: Role Check Role = {},  Claims Role = {} ", annotationRole, role);

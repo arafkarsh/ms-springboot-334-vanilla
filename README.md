@@ -238,6 +238,17 @@ production environment.
 
 ### Step 1.6 -  Import Swagger API Docs Into Postman
 
+### Step 1.7 - JWT Token Validation example
+
+Public API (Without Token Validation)
+![No-Authorizet](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/JWT-Public.jpg)
+
+Secure API with a Single Token (Primarily to be used by ADMIN)
+![Authorizet-Single](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/JWT-Single.jpg)
+
+Secure API with an Additional Tx Token which contains App Specific Data.
+![Authorizet-Tx](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/JWT-Tx.jpg)
+
 What is Postman?
 - Postman is an API platform for building and using APIs. Postman simplifies each step of the API 
 lifecycle and streamlines collaboration so you can create better APIs—faster.
