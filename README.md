@@ -246,7 +246,7 @@ Public API (Without Token Validation)
 Secure API with a Single Token (Primarily to be used by ADMIN)
 ![Authorizet-Single](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/JWT-Single.jpg)
 
-Secure API with an Additional Tx Token which contains App Specific Data.
+Secure API with an Additional Tx Token which contains App Specific Claims.
 ![Authorizet-Tx](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/JWT-Tx.jpg)
 
 What is Postman?
