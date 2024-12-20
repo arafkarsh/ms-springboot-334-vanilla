@@ -105,9 +105,10 @@ public class JwtFilter implements Filter {
         log.info("JWT Filter in Action... ");
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-
+        // Extract Tokens if Available
         String authToken = extractToken( httpRequest,  AUTH_TOKEN);
         String txToken = extractToken( httpRequest,  TX_TOKEN);
+        String errorMsg = "";
         try {
             // IF ONLY Auth Token Available
             if (authToken != null && txToken == null) {
@@ -117,22 +118,13 @@ public class JwtFilter implements Filter {
             if (txToken != null) {
                 setClaims(txToken, TX_TOKEN);
             }
-            filterChain.doFilter(httpRequest, httpResponse); // Continue the filter chain
+            // Continue the filter chain
+            filterChain.doFilter(httpRequest, httpResponse);
         } catch(Exception e) {
-            if (!httpResponse.isCommitted()) {
-                String errorPrefix = serviceConfig.getServiceApiErrorPrefix();
-                StandardResponse error = Utils.createErrorResponse(
-                        null,errorPrefix, "403", HttpStatus.FORBIDDEN,
-                        "The request was rejected by JwtFilter!");
-                httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                httpResponse.setContentType("application/json");
-                String json = Utils.toJsonString(error);
-                PrintWriter out = httpResponse.getWriter();
-                out.write(json);
-                out.flush();
-                MDC.clear();
-                log.info("|JwtFilter={}", e.getMessage());
-            }
+            errorMsg = e.getMessage();
+            throwError(httpResponse);
+        } finally {
+            log.info("|JwtFilter={}", errorMsg);
         }
     }
 
@@ -159,10 +151,29 @@ public class JwtFilter implements Filter {
      * @return
      */
     private String extractToken(HttpServletRequest request, String tokenType) {
-        log.debug("JWT Filter in Action... Extracting the Tokens... ");
+        log.debug("JWT Filter in Action... Extracting the Tokens... {} ", tokenType);
         String header = request.getHeader(tokenType);
         return (header != null && header.startsWith("Bearer ")) ? header.substring(7) : null;
     }
 
-
+    /**
+     * Throw Error if JWT Token Validation Fails.
+     * @param httpResponse
+     * @throws IOException
+     */
+    private void throwError( HttpServletResponse httpResponse) throws IOException{
+        if (!httpResponse.isCommitted()) {
+            String errorPrefix = serviceConfig.getServiceApiErrorPrefix();
+            StandardResponse error = Utils.createErrorResponse(
+                    null,errorPrefix, "403", HttpStatus.FORBIDDEN,
+                    "The request was rejected by JwtFilter!");
+            httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            httpResponse.setContentType("application/json");
+            String json = Utils.toJsonString(error);
+            PrintWriter out = httpResponse.getWriter();
+            out.write(json);
+            out.flush();
+            MDC.clear();
+        }
+    }
 }

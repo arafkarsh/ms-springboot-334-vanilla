@@ -247,12 +247,15 @@ public final class JsonWebTokenValidator {
 	 * @param showPayload
 	 */
     public static void tokenStats(TokenData token, boolean showClaims, boolean showPayload) {
+		Claims claims = getAllClaims(token);
 		println("-------------- aaa.bbb.ccc ------------------- 1 -");
-		println(token.getToken());
+		println("Bearer "+token.getToken());
 		println("-------------- ----------- ------------------- 2 -");
 		println("Subject  = "+getSubjectFromToken(token));
 		println("Audience = "+getAudienceFromToken(token));
 		println("Issuer   = "+getIssuerFromToken(token));
+		println("Type     = "+claims.get("type"));
+		println("Role     = "+claims.get("rol"));
 		println("IssuedAt = "+getIssuedAtFromToken(token));
 		println("Expiry   = "+getExpiryDateFromToken(token));
 		println("Expired  = "+isTokenExpired(token));
@@ -262,7 +265,6 @@ public final class JsonWebTokenValidator {
 		println("Body         : " + jws.getPayload());
 		println("Content      : " + jws.toString());
 		if(showClaims) {
-			Claims claims = getAllClaims(token);
 			int x = 1;
 			for (Entry<String, Object> o : claims.entrySet()) {
 				println(x + "> " + o);

@@ -6,6 +6,8 @@ java-docs/
 src/docker/*.jar
 src/docker/libs
 src/docker/Dockerfile-r
+tests/tokens
+
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

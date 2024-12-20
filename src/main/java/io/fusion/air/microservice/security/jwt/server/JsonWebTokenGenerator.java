@@ -213,19 +213,4 @@ public class JsonWebTokenGenerator {
                 .signWith(key)
                 .compact();
     }
-
-    /**
-     * Validate the Token Expiry Time
-     * @param tokenExpiry
-     * @param auth
-     * @return
-     */
-    public static final long tokenExpiryValidator(long tokenExpiry, boolean auth) {
-        if (auth) {
-            // For Auth Token
-            return (tokenExpiry > EXPIRE_IN_TEN_MINS) ?  EXPIRE_IN_TEN_MINS : tokenExpiry;
-        }
-        // For Other Token like Refresh or Tx Token
-        return (tokenExpiry > EXPIRE_IN_THIRTY_MINS) ? EXPIRE_IN_THIRTY_MINS  : tokenExpiry;
-    }
 }
