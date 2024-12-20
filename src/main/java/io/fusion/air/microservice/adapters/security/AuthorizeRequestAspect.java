@@ -324,7 +324,7 @@ public class AuthorizeRequestAspect {
                 annotationRole = annotation.role();
             }
         } catch (Exception ignored) {
-            ignored.printStackTrace();
+            log.error("Authorization Failed: Role Not Found!");
             throw new AuthorizationException("Role Not Found!", ignored);
         }
         log.info("Step 3: Role Check Role = {},  Claims Role = {} ", annotationRole, role);
