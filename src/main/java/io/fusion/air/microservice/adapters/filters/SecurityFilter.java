@@ -16,7 +16,7 @@
 package io.fusion.air.microservice.adapters.filters;
 // Custom
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.server.config.ServiceConfig;
 import io.fusion.air.microservice.utils.Utils;
 // Spring
 import org.springframework.core.Ordered;
@@ -58,7 +58,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     private static final Logger log = getLogger(lookup().lookupClass());
 
     // Autowired using constructor
-    private final ServiceConfiguration serviceConfig;
+    private final ServiceConfig serviceConfig;
 
     private static final String COOKIE = "Set-Cookie";
 
@@ -66,7 +66,7 @@ public class SecurityFilter extends OncePerRequestFilter {
      * Autowired using constructor
      * @param serviceCfg
      */
-    public SecurityFilter(ServiceConfiguration serviceCfg) {
+    public SecurityFilter(ServiceConfig serviceCfg) {
         serviceConfig = serviceCfg;
     }
 
@@ -93,7 +93,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         } catch (RequestRejectedException e ) {
             if (!response.isCommitted()) {
                 String service = (serviceConfig != null) ? serviceConfig.getServiceName() : "Unknown";
-                String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AKH";
+                String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceApiErrorPrefix() : "AKH";
                 MDC.put("Service", service);
                 StandardResponse error = Utils.createErrorResponse(
                         null,errorPrefix, "403", HttpStatus.FORBIDDEN,

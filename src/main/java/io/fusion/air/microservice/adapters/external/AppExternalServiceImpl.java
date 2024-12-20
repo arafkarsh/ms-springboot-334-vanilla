@@ -22,7 +22,7 @@ import java.util.UUID;
 // Custom
 import io.fusion.air.microservice.domain.models.order.PaymentDetails;
 import io.fusion.air.microservice.domain.models.order.PaymentStatus;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.server.config.ServiceConfig;
 import io.fusion.air.microservice.server.models.EchoData;
 import io.fusion.air.microservice.server.models.EchoResponseData;
 import io.fusion.air.microservice.utils.Utils;
@@ -50,7 +50,7 @@ public class AppExternalServiceImpl {
     private static final Logger log = getLogger(lookup().lookupClass());
 
     // Autowired using the Constructor
-    private final ServiceConfiguration serviceConfig;
+    private final ServiceConfig serviceConfig;
 
     private String payments 	= "/payments";
     private String remoteEcho 	= "/service/echo";
@@ -72,7 +72,7 @@ public class AppExternalServiceImpl {
      * @param serviceCfg
      */
     @Autowired
-    public AppExternalServiceImpl(ServiceConfiguration serviceCfg) {
+    public AppExternalServiceImpl(ServiceConfig serviceCfg) {
         serviceConfig = serviceCfg;
     }
 
@@ -82,7 +82,7 @@ public class AppExternalServiceImpl {
      */
     public AppExternalServiceImpl(String host, int port) {
         log.info("{} |PaymentGW Constructor(host,port) ...", LocalDateTime.now());
-        serviceConfig = new ServiceConfiguration(host, port);
+        serviceConfig = new ServiceConfig(host, port);
         restClient = new RestClientService();
         setURLs();
     }

@@ -15,7 +15,7 @@
  */
 package io.fusion.air.microservice.adapters.security;
 // Custom
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.server.config.ServiceConfig;
 // Jakarta
 // Spring
 import org.springframework.context.annotation.Bean;
@@ -41,13 +41,13 @@ import java.util.Arrays;
 public class WebSecurityConfiguration {
 
     // Autowired using the constructor
-    private final ServiceConfiguration serviceConfig;
+    private final ServiceConfig serviceConfig;
 
     /**
      * Autowired using the constructor
      * @param serviceCfg
      */
-    public WebSecurityConfiguration(ServiceConfiguration serviceCfg) {
+    public WebSecurityConfiguration(ServiceConfig serviceCfg) {
         serviceConfig = serviceCfg;
     }
 

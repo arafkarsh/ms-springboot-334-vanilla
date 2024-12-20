@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
  * @date:
  */
 @Configuration
-public class ServerConfiguration implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
+public class WebServerConfig implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
 
     @Override
     public void customize(TomcatServletWebServerFactory factory) {

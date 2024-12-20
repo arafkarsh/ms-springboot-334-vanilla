@@ -18,7 +18,7 @@ package io.fusion.air.microservice.adapters.aop;
 import io.fusion.air.microservice.domain.exceptions.*;
 import io.fusion.air.microservice.domain.exceptions.SecurityException;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.server.config.ServiceConfig;
 import io.fusion.air.microservice.utils.Utils;
 // Spring
 import org.springframework.core.annotation.Order;
@@ -56,15 +56,15 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
 
-    // ServiceConfiguration
+    // ServiceConfig
     // @Autowired not required - Constructor based Autowiring
-    private final ServiceConfiguration serviceConfig;
+    private final ServiceConfig serviceConfig;
 
     /**
      * Constructor for Autowiring
      * @param serviceConfig
      */
-    public ExceptionHandlerAdvice(ServiceConfiguration serviceConfig) {
+    public ExceptionHandlerAdvice(ServiceConfig serviceConfig) {
         this.serviceConfig = serviceConfig;
     }
 
@@ -183,7 +183,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
                                                        HttpStatus httpStatus,
                                                        WebRequest request) {
 
-        String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AKH";           // Microservice Prefix
+        String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceApiErrorPrefix() : "AKH";           // Microservice Prefix
         String appErrorCode = errorPrefix+errorCode;                                                                       // Error Code
         if(exception instanceof AbstractServiceException ase) {
             ase.setErrorCode(appErrorCode);                                                                                     // Set the Error Code

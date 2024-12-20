@@ -31,7 +31,7 @@ import org.springframework.web.method.HandlerMethod;
  * @date:
  */
 @Configuration
-public class SwaggerConfiguration {
+public class SwaggerConfig {
     @Bean
     public OperationCustomizer customGlobalHeaders() {
         return (Operation operation, HandlerMethod handlerMethod) -> {

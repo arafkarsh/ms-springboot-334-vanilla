@@ -15,7 +15,7 @@
  */
 package io.fusion.air.microservice.adapters.filters;
 // Custom
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.server.config.ServiceConfig;
 import io.fusion.air.microservice.utils.CPU;
 // Spring
 import org.springframework.core.annotation.Order;
@@ -44,13 +44,13 @@ public class LogFilter implements Filter {
     private static final Logger log = getLogger(lookup().lookupClass());
 
     // Autowired using Constructor
-    private final ServiceConfiguration serviceConfig;
+    private final ServiceConfig serviceConfig;
 
     /**
      * Autowired using Constructor
      * @param serviceCfg
      */
-    public LogFilter(ServiceConfiguration serviceCfg) {
+    public LogFilter(ServiceConfig serviceCfg) {
         serviceConfig = serviceCfg;
     }
 

@@ -18,8 +18,8 @@ package io.fusion.air.microservice.server.controllers;
 import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import io.fusion.air.microservice.server.config.ServiceHelp;
+import io.fusion.air.microservice.server.config.ServiceConfig;
+import io.fusion.air.microservice.server.setup.ServiceHelp;
 import io.fusion.air.microservice.ServiceBootStrap;
 // Swagger
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -50,7 +50,7 @@ import static java.lang.invoke.MethodHandles.lookup;
  */
 @RestController
 // "/service-name/api/v1/service"
-@RequestMapping("${service.api.path}"+ ServiceConfiguration.HEALTH_PATH)
+@RequestMapping("${service.api.path}"+ ServiceConfig.HEALTH_PATH)
 @Tag(name = "System - Health", description = "Health (Liveness, Readiness, ReStart.. etc)")
 public class HealthController extends AbstractController {
 
@@ -64,14 +64,14 @@ public class HealthController extends AbstractController {
 					;
 
 	// Autowired using the Constructor
-	private ServiceConfiguration serviceConfig;
+	private ServiceConfig serviceConfig;
 	private String serviceName;
 
 	/**
 	 * Autowired using the Constructor
 	 * @param serviceConfig
 	 */
-	public HealthController(ServiceConfiguration serviceConfig) {
+	public HealthController(ServiceConfig serviceConfig) {
 		this.serviceConfig = serviceConfig;
 		this.serviceName = super.name();
 	}

@@ -68,6 +68,9 @@ public class JsonWebTokenConstants {
     public static final String SINGLE_TOKEN                = "Authorization";
     public static final String TX_TOKEN                     = "TX-TOKEN";
 
+    public static final String EXPIRES_IN                   = "expires_in";
+    public static final String REFRESH_EXPIRES_IN       = "refresh_expires_in";
+
     public static final int CONSUMERS                       = 1;
     public static final int INTERNAL_SERVICES            = 2;
     public static final int EXTERNAL_SERVICES            = 3;

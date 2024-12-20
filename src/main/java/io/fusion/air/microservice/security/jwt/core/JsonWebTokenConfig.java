@@ -21,6 +21,9 @@ import org.springframework.context.annotation.PropertySource;
 // Java
 import java.io.Serializable;
 
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.EXPIRE_IN_TEN_MINS;
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS;
+
 /**
  * JWT Configuration
  *
@@ -40,6 +43,9 @@ public class JsonWebTokenConfig implements Serializable {
 
     @Value("${service.org:OrgNotDefined}")
     private String serviceOrg;
+
+    @Value("${service.name:NameNotDefined}")
+    private String serviceName;
 
     // server.crypto.public.key=publicKey.pem
     @Value("${server.crypto.public.key:publicKey.pem}")
@@ -119,16 +125,16 @@ public class JsonWebTokenConfig implements Serializable {
      * Returns Auth Token Expiry Time
      * @return
      */
-    public long getTokenAuthExpiry() {
-        return tokenAuthExpiry;
+    public long getAuthTokenExpiry() {
+        return tokenExpiryValidator( tokenAuthExpiry,  true);
     }
 
     /**
      * Returns Refresh Token Expiry Time
      * @return
      */
-    public long getTokenRefreshExpiry() {
-        return tokenRefreshExpiry;
+    public long getRefreshTokenExpiry() {
+        return tokenExpiryValidator( tokenRefreshExpiry,  false);
     }
 
     /**
@@ -153,5 +159,28 @@ public class JsonWebTokenConfig implements Serializable {
      */
     public String getServiceOrg() {
         return serviceOrg;
+    }
+
+    /**
+     * @return the serviceName
+     */
+    public String getServiceName() {
+        return serviceName;
+    }
+
+
+    /**
+     * Validate the Token Expiry Time
+     * @param tokenExpiry
+     * @param auth
+     * @return
+     */
+    public static final long tokenExpiryValidator(long tokenExpiry, boolean auth) {
+        if (auth) {
+            // For Auth Token
+            return (tokenExpiry > EXPIRE_IN_TEN_MINS) ?  EXPIRE_IN_TEN_MINS : tokenExpiry;
+        }
+        // For Other Token like Refresh or Tx Token
+        return (tokenExpiry > EXPIRE_IN_THIRTY_MINS) ? EXPIRE_IN_THIRTY_MINS  : tokenExpiry;
     }
 }

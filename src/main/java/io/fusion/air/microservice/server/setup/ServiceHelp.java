@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.fusion.air.microservice.server.config;
+package io.fusion.air.microservice.server.setup;
 // Java
 import java.util.List;
 import java.util.Map;
 // Jakarta
+import io.fusion.air.microservice.server.config.ServiceConfig;
 import jakarta.annotation.PostConstruct;
 // Spring
 import org.springframework.stereotype.Component;
@@ -41,7 +42,7 @@ public class ServiceHelp {
 	private static int counter;
 	
 	// Autowired using the Constructor
-	private ServiceConfiguration serviceConfig;
+	private ServiceConfig serviceConfig;
 	
 	public static final String NL = System.getProperty("line.separator");
 	
@@ -72,7 +73,7 @@ public class ServiceHelp {
 	 * Autowired using the Constructor
 	 * @param serviceCfg
 	 */
-	public ServiceHelp(ServiceConfiguration serviceCfg) {
+	public ServiceHelp(ServiceConfig serviceCfg) {
 		serviceConfig = serviceCfg;
 		counter++;
 	}

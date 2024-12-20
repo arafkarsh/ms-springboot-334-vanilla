@@ -17,7 +17,7 @@ package io.fusion.air.microservice.adapters.aop;
 
 // Custom
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.server.config.ServiceConfig;
 import io.fusion.air.microservice.utils.Utils;
 // Spring
 import org.springframework.core.annotation.Order;
@@ -53,13 +53,13 @@ public class InputValidatorAdvice {
     private static final Logger log = getLogger(lookup().lookupClass());
 
     // Autowired using Constructor
-    private ServiceConfiguration serviceConfig;
+    private ServiceConfig serviceConfig;
 
     /**
      * Autowired using Constructor
      * @param serviceCfg
      */
-    public InputValidatorAdvice(ServiceConfiguration serviceCfg) {
+    public InputValidatorAdvice(ServiceConfig serviceCfg) {
         serviceConfig = serviceCfg;
     }
 
@@ -104,7 +104,7 @@ public class InputValidatorAdvice {
      * @return
      */
     private ResponseEntity<Object> createErrorResponse(String errorCode, String errorMsg, List<String> errors ) {
-        String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AKH";
+        String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceApiErrorPrefix() : "AKH";
         long startTime = System.currentTimeMillis();
         String status = "STATUS=ERROR: "+errorMsg;
         Collections.sort(errors);

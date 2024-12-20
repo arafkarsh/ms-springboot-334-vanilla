@@ -17,8 +17,8 @@ package io.fusion.air.microservice.server.service;
 // Custom
 import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants;
 import io.fusion.air.microservice.security.jwt.server.TokenManager;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import io.fusion.air.microservice.server.config.ServiceHelp;
+import io.fusion.air.microservice.server.config.ServiceConfig;
+import io.fusion.air.microservice.server.setup.ServiceHelp;
 import io.fusion.air.microservice.utils.CPU;
 import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.AUTH_TOKEN;
 import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.REFRESH_TOKEN;
@@ -27,7 +27,6 @@ import io.fusion.air.microservice.utils.Std;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 // Spring
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
@@ -53,25 +52,8 @@ public class ServiceEventListener {
 	// Set Logger -> Lookup will automatically determine the class name.
 	private static final Logger log = getLogger(lookup().lookupClass());
 
-	@Value("${server.token.test}")
-	private boolean serverTokenTest;
-
-	// server.token.auth.expiry=300000
-	@Value("${server.token.auth.expiry:300000}")
-	private long tokenAuthExpiry;
-
-	// server.token.refresh.expiry=1800000
-	@Value("${server.token.refresh.expiry:1800000}")
-	private long tokenRefreshExpiry;
-
-	@Value("${server.api.url.print}")
-	private boolean serverPrintAPIUrl;
-
-	@Value("${spring.profiles.default:dev}")
-	private String activeProfile;
-
 	// Autowired using the Constructor
-	private ServiceConfiguration serviceConfig;
+	private ServiceConfig serviceConfig;
 
 	// Autowired using the Constructor
 	private TokenManager tokenManager;
@@ -90,7 +72,7 @@ public class ServiceEventListener {
 	 * @param meterRegistry
 	 * @param environment
 	 */
-	public ServiceEventListener(ServiceConfiguration serviceConfig, TokenManager tokenManager,
+	public ServiceEventListener(ServiceConfig serviceConfig, TokenManager tokenManager,
 								MeterRegistry meterRegistry, ConfigurableEnvironment environment) {
 		this.serviceConfig = serviceConfig;
 		this.tokenManager = tokenManager;
@@ -104,7 +86,7 @@ public class ServiceEventListener {
 	 * @return
 	 */
 	private boolean  getDevMode() {
-		activeProfile = getActiveProfile();
+		String activeProfile = getActiveProfile();
 		return (activeProfile != null && activeProfile.equalsIgnoreCase("prod")) ? false : true;
 	}
 
@@ -114,15 +96,15 @@ public class ServiceEventListener {
 	 */
 	private String getActiveProfile() {
 		if (environment.getActiveProfiles().length == 0) {
-			log.info("Spring Profile is missing, so defaulting to {}  Profile!", activeProfile);
-			environment.addActiveProfile(activeProfile);
+			log.info("Spring Profile is missing, so defaulting to {}  Profile!", serviceConfig.getActiveProfile());
+			environment.addActiveProfile(serviceConfig.getActiveProfile());
 		}
 		StringBuilder sb = new StringBuilder();
 		for(String profile : environment.getActiveProfiles()) {
 			sb.append(profile).append(" ");
 		}
 		String profile = sb.toString().trim().replace(" ", ", ");
-		log.debug("Profiles = {} ", profile);
+		log.info("Spring Active Profiles = {} ", profile);
 		return profile;
 	}
 
@@ -156,8 +138,7 @@ public class ServiceEventListener {
 		// 2: Register the APIs with Micrometer
 		registerAPICallsForMicroMeter();
 		// 3: Generate Tokens - ONLY For Dev Mode (For Developer Testing)
-		if(serverTokenTest && getDevMode() ) {
-			log.info("Generate Test Tokens = {} ", serverTokenTest);
+		if(tokenManager.getJsonWebTokenConfig().isServerTokenTest() && getDevMode() ) {
 			generateTestToken();
 		}
 	}
@@ -178,9 +159,10 @@ public class ServiceEventListener {
 	 * serverTestToken=false
 	 */
 	private void generateTestToken() {
+		log.info("Generate Test Tokens = {} ", tokenManager.getJsonWebTokenConfig().isServerTokenTest());
 		// Step 1: Set Expiry Time & Subject
-		tokenAuthExpiry = (tokenAuthExpiry < 10) ? JsonWebTokenConstants.EXPIRE_IN_FIVE_MINS : tokenAuthExpiry;
-		tokenRefreshExpiry = (tokenRefreshExpiry < 10) ? JsonWebTokenConstants.EXPIRE_IN_THIRTY_MINS : tokenRefreshExpiry;
+		long tokenAuthExpiry = tokenManager.getJsonWebTokenConfig().getAuthTokenExpiry();
+		long tokenRefreshExpiry = tokenManager.getJsonWebTokenConfig().getRefreshTokenExpiry();
 		String subject	 = "jane.doe";
 
 		// Step 2: Generate Authorize Tokens
@@ -195,7 +177,7 @@ public class ServiceEventListener {
 		printTokenStats( refresh,  "Refresh",  2,  tokenRefreshExpiry);
 		printTokenStats( txToken,  "Tx",  3,  tokenRefreshExpiry);
 		printTokenStats( admToken,  "Admin",  4,  tokenRefreshExpiry);
-		log.info("Token Creation done... for Dev Testing........... ............ COMPLETE!!");
+		log.info("Token Creation done for Dev Testing. COMPLETE!!");
 	}
 
 	/**
@@ -246,7 +228,7 @@ public class ServiceEventListener {
 				+ " :: Mode = {} "
 				+ " :: Restart = {} {} {} ",
 				name, logo, buildNo, buildDt, depModel, ServiceHelp.getCounter(), ServiceHelp.NL , ServiceHelp.DL);
-		if(serverPrintAPIUrl) {
+		if(serviceConfig.isServerPrintAPIUrl()) {
 			log.info("{} API URL : {} {} {} ", ServiceHelp.NL, apiURL, ServiceHelp.NL, ServiceHelp.DL);
 		}
 	}

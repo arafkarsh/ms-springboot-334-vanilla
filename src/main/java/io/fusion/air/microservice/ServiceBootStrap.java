@@ -16,7 +16,7 @@
 package io.fusion.air.microservice;
 
 // Custom
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.server.config.ServiceConfig;
 import io.fusion.air.microservice.server.controllers.HealthController;
 // Spring Framework
 import io.fusion.air.microservice.utils.Utils;
@@ -89,9 +89,9 @@ public class ServiceBootStrap {
 	private static ConfigurableApplicationContext context;
 
 	// Autowired using Constructor Injection
-	private final ServiceConfiguration serviceConfig;
+	private final ServiceConfig serviceConfig;
 
-	public ServiceBootStrap(ServiceConfiguration serviceConfig) {
+	public ServiceBootStrap(ServiceConfig serviceConfig) {
 		this.serviceConfig = serviceConfig;
 	}
 

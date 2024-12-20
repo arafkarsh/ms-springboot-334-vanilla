@@ -15,7 +15,7 @@
  */
 package io.fusion.air.microservice.server.controllers;
 // Custom
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.server.config.ServiceConfig;
 // Swagger Open API
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -49,7 +49,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @RestController
 // "/service-name/api/v1/service"
-@RequestMapping("${service.api.path}"+ ServiceConfiguration.HEALTH_PATH)
+@RequestMapping("${service.api.path}"+ ServiceConfig.HEALTH_PATH)
 @Tag(name = "System - Health", description = "Health (Liveness, Readiness, ReStart.. etc)")
 public class SecurityController {
 

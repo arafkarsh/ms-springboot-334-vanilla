@@ -28,9 +28,9 @@
 package io.fusion.air.microservice.security.jwt.server;
 // Custom
 import io.fusion.air.microservice.security.jwt.core.JsonWebTokenKeyManager;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.AUTH_TOKEN;
-import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.REFRESH_TOKEN;
+import io.fusion.air.microservice.server.config.ServiceConfig;
+
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.*;
 // JWT
 import io.jsonwebtoken.Jwts;
 // Spring
@@ -55,11 +55,8 @@ import java.util.UUID;
 @Component
 public class JsonWebTokenGenerator {
 
-    public static final String EXPIRES_IN = "expires_in";
-    public static final String REFRESH_EXPIRES_IN = "refresh_expires_in";
-
     // Autowired using the Constructor
-    private ServiceConfiguration serviceConfig;
+    private ServiceConfig serviceConfig;
 
     // Autowired using the Constructor
     private JsonWebTokenKeyManager keyManager;
@@ -73,7 +70,7 @@ public class JsonWebTokenGenerator {
      * @param keyManager
      */
     @Autowired
-    public JsonWebTokenGenerator(ServiceConfiguration serviceConfig,
+    public JsonWebTokenGenerator(ServiceConfig serviceConfig,
                                  JsonWebTokenKeyManager keyManager) {
         this.serviceConfig = serviceConfig;
         this.keyManager = keyManager;
@@ -88,7 +85,7 @@ public class JsonWebTokenGenerator {
         String aud = (serviceConfig != null) ? serviceConfig.getServiceName() : "general";
         claims.putIfAbsent("aud", aud);
         claims.putIfAbsent("jti", UUID.randomUUID().toString());
-        claims.putIfAbsent("rol", "USER");
+        claims.putIfAbsent("rol", ROLE_USER);
         return claims;
     }
 
@@ -215,5 +212,20 @@ public class JsonWebTokenGenerator {
                 // Key Secret Key or Public/Private Key
                 .signWith(key)
                 .compact();
+    }
+
+    /**
+     * Validate the Token Expiry Time
+     * @param tokenExpiry
+     * @param auth
+     * @return
+     */
+    public static final long tokenExpiryValidator(long tokenExpiry, boolean auth) {
+        if (auth) {
+            // For Auth Token
+            return (tokenExpiry > EXPIRE_IN_TEN_MINS) ?  EXPIRE_IN_TEN_MINS : tokenExpiry;
+        }
+        // For Other Token like Refresh or Tx Token
+        return (tokenExpiry > EXPIRE_IN_THIRTY_MINS) ? EXPIRE_IN_THIRTY_MINS  : tokenExpiry;
     }
 }

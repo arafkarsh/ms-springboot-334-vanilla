@@ -18,7 +18,7 @@ package io.fusion.air.microservice.server.controllers;
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.server.config.ServiceConfig;
 // Swagger API
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,7 +44,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @RestController
 //  "/service-name/api/v1/config"
-@RequestMapping("${service.api.path}"+ ServiceConfiguration.CONFIG_PATH)
+@RequestMapping("${service.api.path}"+ ServiceConfig.CONFIG_PATH)
 @Tag(name = "System - Config", description = "Config (Environment, Secrets, ConfigMap.. etc)")
 public class ConfigController extends AbstractController {
 
@@ -52,14 +52,14 @@ public class ConfigController extends AbstractController {
 	private static final Logger log = getLogger(lookup().lookupClass());
 
 	// Autowired using the Constructor
-	private final ServiceConfiguration serviceConfig;
+	private final ServiceConfig serviceConfig;
 	private final String serviceName;
 
 	/**
 	 * Autowired using the Constructor
 	 * @param serviceCfg
 	 */
-	public ConfigController(ServiceConfiguration serviceCfg) {
+	public ConfigController(ServiceConfig serviceCfg) {
 		serviceConfig = serviceCfg;
 		serviceName = super.name();
 	}
@@ -108,7 +108,7 @@ public class ConfigController extends AbstractController {
 	public ResponseEntity<StandardResponse> getConfigMap(HttpServletRequest request) throws AbstractServiceException {
 		StandardResponse stdResponse = createSuccessResponse("Config is Ready!");
 		String json = serviceConfig.toJSONString();
-		log.debug("{} |Request to Get ServiceConfiguration .1. {} ", serviceName, json);
+		log.debug("{} |Request to Get ServiceConfig .1. {} ", serviceName, json);
 		stdResponse.setPayload(serviceConfig.getConfigMap());
 		return ResponseEntity.ok(stdResponse);
 	}

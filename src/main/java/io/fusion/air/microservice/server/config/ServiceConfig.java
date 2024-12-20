@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
 		// Expects the file in src/main/resources folder
 		// value = "classpath:application.properties")
 		// value = "classpath:application2.properties,file:./application.properties")
-public class ServiceConfiguration implements Serializable {
+public class ServiceConfig implements Serializable {
 
 	// Config Path
 	public static final String CONFIG_PATH = "/config";
@@ -54,7 +54,7 @@ public class ServiceConfiguration implements Serializable {
 	 * For WireMock Testing the External Services
 	 */
 	@Autowired
-	public ServiceConfiguration() {
+	public ServiceConfig() {
 		this("localhost", 8080);
 	}
 
@@ -65,7 +65,7 @@ public class ServiceConfiguration implements Serializable {
 	 * @param rHost
 	 * @param rPort
 	 */
-	public ServiceConfiguration(String rHost, int rPort) {
+	public ServiceConfig(String rHost, int rPort) {
 		this.remoteHost = rHost;
 		this.remotePort = rPort;
 	}
@@ -195,9 +195,11 @@ public class ServiceConfiguration implements Serializable {
 	@Value("${server.restart}")
 	private boolean serverRestart;
 
-	// server.crypto.public.key=publicKey.pem
-	@Value("${server.crypto.public.key:publicKey.pem}")
-	private String cryptoPublicKeyFile;
+	@Value("${server.api.url.print}")
+	private boolean serverPrintAPIUrl;
+
+	@Value("${spring.profiles.default:dev}")
+	private String activeProfile;
 
 	@Value("${spring.codec.max-in-memory-size:3MB}")
 	private String springCodecMaxMemory;
@@ -401,10 +403,10 @@ public class ServiceConfiguration implements Serializable {
 	}
 
 	/**
-	 * Retuurns Service API Error Prefix
+	 * Returns Service API Error Prefix
 	 * @return
 	 */
-	public String getServiceAPIErrorPrefix() {
+	public String getServiceApiErrorPrefix() {
 		return (serviceApiErrorPrefix != null) ? serviceApiErrorPrefix : "99";
 	}
 
@@ -493,17 +495,26 @@ public class ServiceConfiguration implements Serializable {
 	}
 
 	/**
-	 * Returns the Public Key File Name
-	 * @return
-	 */
-	public String getCryptoPublicKeyFile() {
-		return cryptoPublicKeyFile;
-	}
-	/**
 	 * Returns Server Resource URL
 	 * @return
 	 */
 	public String getServerResourceUrl() {
 		return serverResourceUrl;
+	}
+
+	/**
+	 * Returns if the API URL can be printed
+	 * @return
+	 */
+	public boolean isServerPrintAPIUrl() {
+		return serverPrintAPIUrl;
+	}
+
+	/**
+	 * Returns the Active Profile Name
+	 * @return
+	 */
+	public String getActiveProfile() {
+		return activeProfile;
 	}
 }

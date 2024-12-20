@@ -203,7 +203,7 @@ public final class JsonWebTokenKeyManager {
 
 	/**
 	 * Returns Token Key -
-	 * In SpringBooT Context from ServiceConfiguration
+	 * In SpringBooT Context from ServiceConfig
 	 * Else from Static TOKEN Key
 	 * @return
 	 */

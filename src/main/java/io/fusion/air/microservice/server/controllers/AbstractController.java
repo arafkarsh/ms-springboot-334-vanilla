@@ -17,8 +17,8 @@ package io.fusion.air.microservice.server.controllers;
 // Custom
 import io.fusion.air.microservice.adapters.security.ClaimsManager;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
-import io.fusion.air.microservice.server.config.ServiceHelp;
+import io.fusion.air.microservice.server.config.ServiceConfig;
+import io.fusion.air.microservice.server.setup.ServiceHelp;
 // Spring
 import org.springframework.beans.factory.annotation.Autowired;
 // Java
@@ -41,7 +41,7 @@ public abstract class AbstractController {
 	public static final Logger log = getLogger(lookup().lookupClass());
 	
 	@Autowired
-	private ServiceConfiguration serviceConfig;
+	private ServiceConfig serviceConfig;
 	private String serviceName;
 
 	@Autowired
@@ -88,7 +88,7 @@ public abstract class AbstractController {
 	 * @return
 	 */
 	public final StandardResponse createSuccessResponse(String statusCode, String msg) {
-		String prefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "99";
+		String prefix = (serviceConfig != null) ? serviceConfig.getServiceApiErrorPrefix() : "99";
 		StandardResponse stdResponse = new StandardResponse();
 		stdResponse.initSuccess(prefix + statusCode, msg);
 		return stdResponse;

@@ -22,7 +22,7 @@ import jakarta.servlet.annotation.WebListener;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.MDC;
 //  Custom
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.server.config.ServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -60,7 +60,7 @@ public class ServiceRequestFilter implements ServletRequestListener {
 
 	// WARNING: DON'T USE CONSTRUCTOR for AUTOWIRING
 	@Autowired
-	private ServiceConfiguration serviceConfig;
+	private ServiceConfig serviceConfig;
 
 	/**
 	 * Add the following values into the log for the request

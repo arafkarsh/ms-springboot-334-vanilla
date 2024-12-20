@@ -18,7 +18,7 @@ package io.fusion.air.microservice.server.controllers;
 import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
 import io.fusion.air.microservice.domain.exceptions.InputDataException;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.server.config.ServiceConfiguration;
+import io.fusion.air.microservice.server.config.ServiceConfig;
 import io.fusion.air.microservice.server.models.EchoData;
 import io.fusion.air.microservice.server.models.EchoResponseData;
 import io.fusion.air.microservice.server.service.examples.*;
@@ -49,7 +49,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @RestController
 // "/service-name/api/v1/service"
-@RequestMapping("${service.api.path}"+ ServiceConfiguration.HEALTH_PATH)
+@RequestMapping("${service.api.path}"+ ServiceConfig.HEALTH_PATH)
 @Tag(name = "System - Echo", description = "Echo Tests (Get/Post) Request Scope, Session Scope, App Scope... ")
 public class EchoController extends AbstractController {
 
