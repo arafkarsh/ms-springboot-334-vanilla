@@ -176,7 +176,7 @@ public class CartControllerImpl extends AbstractController {
 	@PostMapping("/add")
 	@MetricsCounter(endpoint = "/add", tags = {"layer", "ws", "public", "yes"})
 	public ResponseEntity<StandardResponse> addToCart(@Valid @RequestBody CartItem cartItem) {
-		String safeProductName = HtmlUtils.htmlEscape(cartItem.getProductName());
+		String safeProductName = HtmlUtils.htmlEscape(cartItem.productName());
 		log.debug("| {} |Request to Add CartItem Item... {} ", serviceName, safeProductName);
 		CartEntity cartItemEntity = cartService.save(cartItem);
 		StandardResponse stdResponse = createSuccessResponse("CartItem Item Added!");

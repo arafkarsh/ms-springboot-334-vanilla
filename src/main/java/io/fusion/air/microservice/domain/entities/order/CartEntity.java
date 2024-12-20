@@ -70,11 +70,11 @@ public class CartEntity extends AbstractBaseEntityWithUUID {
      * @param cartItem
      */
     public CartEntity(CartItem cartItem) {
-        this.customerId = cartItem.getCustomerId();
-        this.productId = cartItem.getProductId();
-        this.productName = cartItem.getProductName();
-        this.price = cartItem.getPrice();
-        this.quantity = cartItem.getQuantity();
+        this.customerId = cartItem.customerId();
+        this.productId = cartItem.productId();
+        this.productName = cartItem.productName();
+        this.price = cartItem.price();
+        this.quantity = cartItem.quantity();
     }
 
     /**
