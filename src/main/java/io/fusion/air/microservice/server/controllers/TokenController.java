@@ -15,10 +15,10 @@
  */
 package io.fusion.air.microservice.server.controllers;
 // Custom
-import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
+import io.fusion.air.microservice.adapters.security.jwt.AuthorizationRequired;
 import io.fusion.air.microservice.domain.exceptions.*;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
-import io.fusion.air.microservice.adapters.security.ValidateRefreshToken;
+import io.fusion.air.microservice.adapters.security.jwt.ValidateRefreshToken;
 import io.fusion.air.microservice.security.crypto.CryptoKeyGenerator;
 import io.fusion.air.microservice.security.jwt.client.JsonWebTokenValidator;
 import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConfig;

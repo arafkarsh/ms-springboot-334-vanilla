@@ -15,6 +15,10 @@
  */
 package io.fusion.air.microservice.adapters.security;
 // Custom
+import io.fusion.air.microservice.adapters.security.core.UserRole;
+import io.fusion.air.microservice.adapters.security.jwt.AuthorizationRequired;
+import io.fusion.air.microservice.adapters.security.jwt.ClaimsManager;
+import io.fusion.air.microservice.adapters.security.service.UserDetailsServiceImpl;
 import io.fusion.air.microservice.domain.exceptions.*;
 
 import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.*;
@@ -87,7 +91,7 @@ public class AuthorizeRequestAspect {
      * @return
      * @throws Throwable
      */
-    @Around("@annotation(io.fusion.air.microservice.adapters.security.ValidateRefreshToken)")
+    @Around("@annotation(io.fusion.air.microservice.adapters.security.jwt.ValidateRefreshToken)")
     public Object validateRefreshRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         return validateRequest(false, REFRESH_TOKEN, joinPoint, CONSUMERS);
     }
@@ -99,7 +103,7 @@ public class AuthorizeRequestAspect {
      * @return
      * @throws Throwable
      */
-    @Around("@annotation(io.fusion.air.microservice.adapters.security.SingleTokenAuthorizationRequired)")
+    @Around("@annotation(io.fusion.air.microservice.adapters.security.jwt.SingleTokenAuthorizationRequired)")
     public Object validateSingleTokenRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         return validateRequest(true, SINGLE_TOKEN, joinPoint, CONSUMERS);
     }
@@ -111,7 +115,7 @@ public class AuthorizeRequestAspect {
      * @return
      * @throws Throwable
      */
-    @Around("@annotation(io.fusion.air.microservice.adapters.security.AuthorizationRequired)")
+    @Around("@annotation(io.fusion.air.microservice.adapters.security.jwt.AuthorizationRequired)")
     public Object validateAnnotatedRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         return validateRequest(false, AUTH_TOKEN, joinPoint, CONSUMERS);
     }

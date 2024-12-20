@@ -16,7 +16,7 @@
 package io.fusion.air.microservice.security.jwt.server;
 // Custom
 import io.fusion.air.microservice.adapters.filters.HeaderManager;
-import io.fusion.air.microservice.adapters.security.ClaimsManager;
+import io.fusion.air.microservice.adapters.security.jwt.ClaimsManager;
 import io.fusion.air.microservice.security.jwt.client.JsonWebTokenValidator;
 import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConfig;
 import io.fusion.air.microservice.security.jwt.core.TokenData;

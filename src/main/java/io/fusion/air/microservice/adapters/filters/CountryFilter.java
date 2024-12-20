@@ -47,7 +47,8 @@ import org.springframework.http.HttpHeaders;
  * if you use the @WebFilter annotation with urlPatterns, this also allows you to specify the scope of the filter.
  * However, this is more Servlet standard-based rather than Spring-specific:
  */
-@WebFilter(urlPatterns = "/ms-vanilla/api/v1/country/*")
+// "/ms-vanilla/api/v1"
+@WebFilter("/ms-vanilla/api/v1/country/*")
 @Order(30)
 public class CountryFilter implements Filter {
     // Set Logger -> Lookup will automatically determine the class name.

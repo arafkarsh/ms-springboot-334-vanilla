@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.fusion.air.microservice.adapters.security;
+package io.fusion.air.microservice.adapters.security.jwt;
 // Custom
 import io.fusion.air.microservice.domain.exceptions.AuthorizationException;
 import io.fusion.air.microservice.utils.Utils;
@@ -69,7 +69,7 @@ public class ClaimsManager {
         this.claims = claims;
         claimsInitialized = true;
         String c =  Utils.toJsonString(this.claims);
-        log.debug(">>> CLAIMS = {}", c);
+        log.debug("ClaimsManager: CLAIMS = {}", c);
     }
 
     /**

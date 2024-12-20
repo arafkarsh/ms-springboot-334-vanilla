@@ -15,7 +15,7 @@
  */
 package io.fusion.air.microservice.server.controllers;
 // Custom
-import io.fusion.air.microservice.adapters.security.ClaimsManager;
+import io.fusion.air.microservice.adapters.security.jwt.ClaimsManager;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
 import io.fusion.air.microservice.server.config.ServiceConfig;
 import io.fusion.air.microservice.server.setup.ServiceHelp;

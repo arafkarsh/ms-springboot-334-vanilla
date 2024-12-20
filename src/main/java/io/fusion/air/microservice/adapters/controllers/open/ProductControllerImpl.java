@@ -17,8 +17,8 @@ package io.fusion.air.microservice.adapters.controllers.open;
 // Custom
 import io.fusion.air.microservice.adapters.logging.MetricsCounter;
 import io.fusion.air.microservice.adapters.logging.MetricsPath;
-import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
-import io.fusion.air.microservice.adapters.security.SingleTokenAuthorizationRequired;
+import io.fusion.air.microservice.adapters.security.jwt.AuthorizationRequired;
+import io.fusion.air.microservice.adapters.security.jwt.SingleTokenAuthorizationRequired;
 import io.fusion.air.microservice.domain.entities.order.ProductEntity;
 import io.fusion.air.microservice.domain.exceptions.AbstractServiceException;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
@@ -138,49 +138,82 @@ public class ProductControllerImpl extends AbstractController {
 	}
 
 	/**
-	 * GET Method Call to Get All the Products
-	 *
+	 * GET Method Call to Get All the Products - Without Any Tokens
+	 * @param request
+	 * @param response
 	 * @return
+	 * @throws AbstractServiceException
 	 */
-	@Operation(summary = "Get All the Products")
+	@Operation(summary = "Get All the Products - without Any Tokens")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200",
-					description = "List All the Product",
+					description = "List All the Product without Any Tokens",
 					content = {@Content(mediaType = "application/json")}),
 			@ApiResponse(responseCode = "400",
 					description = "No Products Found!",
 					content = @Content)
 	})
-	@GetMapping("/all/")
-	@MetricsCounter(endpoint = "/all")
+	@GetMapping("/all/public")
+	@MetricsCounter(endpoint = "/all/public")
 	public ResponseEntity<StandardResponse> getAllProducts(HttpServletRequest request,
 														   HttpServletResponse response) throws AbstractServiceException {
-		return getAllProducts();
+		return getAllProducts("Public");
 	}
 
+	/**
+	 * Get All Products with Single Auth Token
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws AbstractServiceException
+	 */
 	@SingleTokenAuthorizationRequired(role = "USER")
-	@Operation(summary = "Get All the Products (Secured)", security = { @SecurityRequirement(name = "bearer-key") })
+	@Operation(summary = "Get All the Products (Secured) using Single Auth Token", security = { @SecurityRequirement(name = "bearer-key") })
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200",
-					description = "List All the Product",
+					description = "List All the Product using Single Auth Token",
 					content = {@Content(mediaType = "application/json")}),
 			@ApiResponse(responseCode = "400",
 					description = "No Products Found!",
 					content = @Content)
 	})
-	@GetMapping("/all/secured/")
-	@MetricsCounter(endpoint = "/all/secured")
+	@GetMapping("/all/secured/single")
+	@MetricsCounter(endpoint = "/all/secured/single")
 	public ResponseEntity<StandardResponse> getAllProductsSecured(HttpServletRequest request,
 														   HttpServletResponse response) throws AbstractServiceException {
-		return getAllProducts();
+		return getAllProducts("Auth-Token");
+	}
+
+	/**
+	 * Get All Products with Auth and Tx Tokens
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws AbstractServiceException
+	 */
+	@AuthorizationRequired(role = "USER")
+	@Operation(summary = "Get All the Products (Secured) using Auth and Tx Token", security = { @SecurityRequirement(name = "bearer-key") })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200",
+					description = "List All the Product using Auth and Tx Token",
+					content = {@Content(mediaType = "application/json")}),
+			@ApiResponse(responseCode = "400",
+					description = "No Products Found!",
+					content = @Content)
+	})
+	@GetMapping("/all/secured/tx")
+	@MetricsCounter(endpoint = "/all/secured/tx")
+	public ResponseEntity<StandardResponse> getAllProductsWithTxToken(HttpServletRequest request,
+																  HttpServletResponse response) throws AbstractServiceException {
+		return getAllProducts("Tx-Token");
 	}
 
 	/**
 	 * Get All the Products
 	 * @return
 	 */
-	private ResponseEntity<StandardResponse> getAllProducts() {
-		log.debug("| {} |Request to get All Products ... ", serviceName);
+	private ResponseEntity<StandardResponse> getAllProducts(String type) {
+		log.info("|{} |Request ({}) Token to get All Products ... ", serviceName, type);
 		List<ProductEntity> productList = productServiceImpl.getAllProduct();
 		StandardResponse stdResponse = null;
 		log.info("Products List = {} ", productList.size());

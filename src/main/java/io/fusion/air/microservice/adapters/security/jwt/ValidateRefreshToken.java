@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.fusion.air.microservice.adapters.security;
+package io.fusion.air.microservice.adapters.security.jwt;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
