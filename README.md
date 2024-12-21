@@ -39,6 +39,10 @@ io.fusion.air.microservice
 - server
 - utils
 
+### Security Framework with Spring Security, JWT, Cryptography
+![Security Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Fusion-Security-Pkg.jpg)
+
+
 ### Template Features
 
 1. SpringBoot App with Swagger Docs (...microservice.adapters.controllers)

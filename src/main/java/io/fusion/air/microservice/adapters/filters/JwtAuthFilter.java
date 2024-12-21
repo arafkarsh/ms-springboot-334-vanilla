@@ -57,7 +57,7 @@ import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * ms-springboot-334-vanilla / JwtFilter 
+ * ms-springboot-334-vanilla / JwtAuthFilter
  *
  * @author: Araf Karsh Hamid
  * @version: 0.1
@@ -67,7 +67,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 // @WebFilter(urlPatterns = "/ms-vanilla/api/v1/*", dispatcherTypes = {DispatcherType.REQUEST})
 @Component
 @Order(2)
-public class JwtFilter implements Filter {
+public class JwtAuthFilter implements Filter {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
 
@@ -84,8 +84,8 @@ public class JwtFilter implements Filter {
      * Autowired using the Constructor
      * @param claimsManager
      */
-    public JwtFilter(ClaimsManager claimsManager, TokenDataFactory tokenDataFactory,
-                     ServiceConfig serviceConfig) {
+    public JwtAuthFilter(ClaimsManager claimsManager, TokenDataFactory tokenDataFactory,
+                         ServiceConfig serviceConfig) {
         this.claimsManager = claimsManager;
         this.tokenDataFactory = tokenDataFactory;
         this.serviceConfig = serviceConfig;
@@ -120,7 +120,7 @@ public class JwtFilter implements Filter {
             // Continue the filter chain
             filterChain.doFilter(httpRequest, httpResponse);
         } catch(Exception e) {
-            log.info("|JwtFilter Error: {} ", e.getMessage());
+            log.info("|JwtAuthFilter Error: {} ", e.getMessage());
             throwError(httpResponse);
         }
     }
@@ -163,7 +163,7 @@ public class JwtFilter implements Filter {
             String errorPrefix = serviceConfig.getServiceApiErrorPrefix();
             StandardResponse error = Utils.createErrorResponse(
                     null,errorPrefix, "403", HttpStatus.FORBIDDEN,
-                    "The request was rejected by JwtFilter!");
+                    "The request was rejected by JwtAuthFilter!");
             httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
             httpResponse.setContentType("application/json");
             String json = Utils.toJsonString(error);
