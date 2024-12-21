@@ -15,17 +15,31 @@
  */
 package io.fusion.air.microservice.domain.models.order;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 /**
  * 
  * @author arafkarsh
  *
  */
 public class CardDetails {
-	
+
+	@NotNull(message = "Card number cannot be null")
+	@Size(min = 16, max = 16, message = "Card number must be 16 digits")
 	private String cardNumber;
+
+	@NotNull(message = "Card Name cannot be null")
+	@Size(min = 3, max = 32, message = "Card Name must be greater than 2 letters")
 	private String holderName;
+
+	@Min(value = 1, message = "Expiry month must be between 1 and 12")
 	private int expiryMonth;
+
+	@Min(value = 2025, message = "Expiry year must be current or in the future")
 	private int expiryYear;
+
 	private int cardCode;
 	
 	private CardType cardType;

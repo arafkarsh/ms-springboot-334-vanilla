@@ -22,7 +22,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import io.fusion.air.microservice.utils.DateJsonSerializer;
 import io.fusion.air.microservice.utils.Utils;
-
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 /**
  * Payment Details
  * 
@@ -35,10 +37,13 @@ public class PaymentDetails {
 	
 	@JsonSerialize(using = DateJsonSerializer.class)
 	private LocalDateTime transactionDate;
-	
+
+	@Min(value = 1, message = "Order value must be greater than 0")
 	private double orderValue;
 	private PaymentType paymentType;
-	
+
+	@Valid
+	@NotNull(message = "Card details are required")
 	private CardDetails cardDetails;
 	
 	/**

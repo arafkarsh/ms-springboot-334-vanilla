@@ -50,7 +50,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @date:
  */
 @ControllerAdvice
-@Order(2)
+@Order(2) // Make sure that the InputValidatorAdvice has the Highest Order Precedence
 public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
     // Set Logger -> Lookup will automatically determine the class name.
@@ -199,7 +199,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     }
 
     // ================================================================================================================
-    // SERVER EXCEPTIONS: ERROR CODES 430 - 439
+    // SERVER EXCEPTIONS: ERROR CODES 590 - 599
     // ================================================================================================================
     /**
      * Handle Runtime Exception
