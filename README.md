@@ -30,7 +30,7 @@ HashiCorp Vault, for enhanced security.
 
 ### Microservice Package Structure
 
-![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Pkg-Structure.png)
+![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Pkg-Structure.jpg)
 
 io.fusion.air.microservice
 - adapters
@@ -40,7 +40,7 @@ io.fusion.air.microservice
 - utils
 
 ### Security Framework with Spring Security, JWT, Cryptography
-![Security Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Fusion-Security-Pkg.jpg)
+![Security Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Fusion-Security-Pkg.png)
 
 
 ### Template Features
