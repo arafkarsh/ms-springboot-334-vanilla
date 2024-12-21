@@ -39,22 +39,22 @@ io.fusion.air.microservice
 - server
 - utils
 
-### Security Framework with Spring Security, JWT, Cryptography
+### Security Framework with Spring Security, JWT, KeyCloak, & Cryptography
 ![Security Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Fusion-Security-Pkg.png)
-
 
 ### Template Features
 
-1. SpringBoot App with Swagger Docs (...microservice.adapters.controllers)
+1. Security Auth/Authorization using AOP and Filters 
 2. Exception Handling with Exception Framework using AOP ( ..microservice.adapters.aop)
-3. Log Management (json and text formats) using Logback  (...adapters.filters)
+3. Log Management using AOP (json and text formats) using Logback  (...adapters.filters)
 4. Standardized REST Responses (...domain.models.StandardResponse)
-5. Security using JWT Tokens (...microservice.adapters.security, ...microservice.security)
+5. Security using JWT Tokens / KeyCloak Auth (...microservice.adapters.security, ...microservice.security)
 6. Encrypting Sensitive Data using Encryption Algorithms (...microservice.security)
 7. JPA configurations for H2 and PostgreSQL (...server.config)
 8. Observability Using Micrometer, Prometheus and Open Telemetry.
 9. Database Password Encryption using Jasypt. Checkout the shell programs encrypt and decrypt.
 10. Digital Signatures using Standard Java Cryptography. 
+11. Open API based Swagger Docs (...microservice.adapters.controllers)
 
 ## Template Tutorials - Java 23, SpringBoot 3.3.4 & Jakarta 10 Series
 1. [Java 23, SpringBoot 3.3.4 & Jakarta 10 — Part 1](https://arafkarsh.medium.com/java-23-springboot-3-3-4-jakarta-10-125bc815d6c1)
