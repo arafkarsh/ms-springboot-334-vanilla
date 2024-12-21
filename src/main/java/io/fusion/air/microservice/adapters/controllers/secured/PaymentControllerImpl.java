@@ -37,7 +37,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 // Java
 import jakarta.validation.Valid;
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.UUID;

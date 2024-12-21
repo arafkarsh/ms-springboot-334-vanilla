@@ -15,7 +15,6 @@
  */
 package io.fusion.air.microservice.adapters.controllers.open;
 // Custom
-
 import io.fusion.air.microservice.adapters.logging.MetricsCounter;
 import io.fusion.air.microservice.adapters.logging.MetricsPath;
 import io.fusion.air.microservice.domain.models.core.StandardResponse;
@@ -23,23 +22,22 @@ import io.fusion.air.microservice.domain.models.order.PaymentDetails;
 import io.fusion.air.microservice.domain.models.order.PaymentStatus;
 import io.fusion.air.microservice.domain.models.order.PaymentType;
 import io.fusion.air.microservice.server.controllers.AbstractController;
+// Swagger
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+// Jakarta
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.springframework.http.HttpStatus;
+// Spring
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
+// Log
+import org.slf4j.Logger;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.UUID;
-
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
