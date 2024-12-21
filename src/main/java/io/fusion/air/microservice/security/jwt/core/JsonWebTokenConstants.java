@@ -24,6 +24,7 @@ public class JsonWebTokenConstants {
 
     public static final String TOKEN = "<([1234567890SecretKey!!??To??Encrypt##Data@12345%6790])>";
 
+    // Token Expiry Time
     public static final long EXPIRE_IN_ONE_MINS 		= 1000L * 60;
     public static final long EXPIRE_IN_FIVE_MINS 	    = EXPIRE_IN_ONE_MINS * 5;
     public static final long EXPIRE_IN_TEN_MINS 		= EXPIRE_IN_ONE_MINS * 10;
@@ -49,35 +50,50 @@ public class JsonWebTokenConstants {
     public static final long EXPIRE_IN_FIVE_YEARS 	    = EXPIRE_IN_ONE_YEAR * 5;
     public static final long EXPIRE_IN_TEN_YEARS 	    = EXPIRE_IN_ONE_YEAR * 10;
 
+    // Key Types
     public static final int SECRET_KEY 				        = 1;
     public static final int PUBLIC_KEY				        = 2;
     public static final int KEYCLOAK_PUBLIC_KEY		    = 3;
 
+    // Key Origin
     public static final int LOCAL_KEY 				        = 1;
     public static final int KEYCLOAK_KEY 			        = 2;
 
+    // Token Types
     public static final String AUTH                           = "auth";
     public static final String AUTH_REFRESH               = "refresh";
     public static final String TX_USERS                     = "tx-users";
     public static final String TX_SERVICE                   = "tx-internal";
     public static final String TX_EXTERNAL                 = "tx-external";
-    public static final String BEARER                         = "Bearer ";
 
-    public static final String REFRESH_TOKEN              = "Refresh-Token";
+    // Tokens
     public static final String AUTH_TOKEN                  = "Authorization";
-    public static final String SINGLE_TOKEN                = "Single-Token";
+    public static final String REFRESH_TOKEN              = "Refresh-Token";
     public static final String TX_TOKEN                     = "TX-TOKEN";
 
-    public static final String EXPIRES_IN                   = "expires_in";
-    public static final String REFRESH_EXPIRES_IN       = "refresh_expires_in";
+    // Token Mode
+    public static final String SINGLE_TOKEN_MODE      = "Single-Token-Mode";
+    public static final String MULTI_TOKEN_MODE       = "Multi-Token-Mode";
+    public static final String SECURE_PKG_MODE         = "Secure-Pkg-Mode";
+    public static final String REFRESH_TOKEN_MODE     = "Refresh-Token-Mode";
 
+
+    // User Type / Token Categories
     public static final int CONSUMERS                       = 1;
     public static final int INTERNAL_SERVICES            = 2;
     public static final int EXTERNAL_SERVICES            = 3;
 
+    // User Roles
     public static final String ROLE_USER                    = "USER";
     public static final String ROLE_ADMIN                  = "ADMIN";
     public static final String ROLE_PUBLIC                  = "PUBLIC";
+
+    // Other
+    public static final String BEARER                         = "Bearer ";
+    public static final String EXPIRES_IN                   = "expires_in";
+    public static final String REFRESH_EXPIRES_IN       = "refresh_expires_in";
+    public static final String SUCCESS                       = "SUCCESS";
+    public static final String ERROR                          = "ERROR";
 
     private JsonWebTokenConstants() {}
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.fusion.air.microservice.adapters.security;
+package io.fusion.air.microservice.adapters.aop;
 // Custom
 import io.fusion.air.microservice.adapters.security.core.UserRole;
 import io.fusion.air.microservice.adapters.security.jwt.AuthorizationRequired;
@@ -22,7 +22,6 @@ import io.fusion.air.microservice.adapters.security.jwt.SingleTokenAuthorization
 import io.fusion.air.microservice.adapters.security.service.UserDetailsServiceImpl;
 import io.fusion.air.microservice.domain.exceptions.*;
 import io.fusion.air.microservice.security.jwt.client.JsonWebTokenValidator;
-import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants;
 import io.fusion.air.microservice.security.jwt.core.TokenData;
 import io.fusion.air.microservice.security.jwt.core.TokenDataFactory;
 import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.*;
@@ -61,8 +60,6 @@ public class AuthorizeRequestAspect {
     // Set Logger -> Lookup will automatically determine the class name.
     private static final Logger log = getLogger(lookup().lookupClass());
 
-    private static final String ERROR = "ERROR";
-
     // Autowired using the Constructor
     private final TokenDataFactory tokenFactory;
 
@@ -93,7 +90,7 @@ public class AuthorizeRequestAspect {
      */
     @Around("@annotation(io.fusion.air.microservice.adapters.security.jwt.ValidateRefreshToken)")
     public Object validateRefreshRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        return validateRequest(false, REFRESH_TOKEN, joinPoint, CONSUMERS);
+        return validateRequest(false, REFRESH_TOKEN_MODE, joinPoint, CONSUMERS);
     }
 
     /**
@@ -105,7 +102,7 @@ public class AuthorizeRequestAspect {
      */
     @Around("@annotation(io.fusion.air.microservice.adapters.security.jwt.SingleTokenAuthorizationRequired)")
     public Object validateSingleTokenRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        return validateRequest(true, SINGLE_TOKEN, joinPoint, CONSUMERS);
+        return validateRequest(true, SINGLE_TOKEN_MODE, joinPoint, CONSUMERS);
     }
 
     /**
@@ -117,7 +114,7 @@ public class AuthorizeRequestAspect {
      */
     @Around("@annotation(io.fusion.air.microservice.adapters.security.jwt.AuthorizationRequired)")
     public Object validateAnnotatedRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        return validateRequest(false, AUTH_TOKEN, joinPoint, CONSUMERS);
+        return validateRequest(false, MULTI_TOKEN_MODE, joinPoint, CONSUMERS);
     }
 
     /**
@@ -129,7 +126,7 @@ public class AuthorizeRequestAspect {
      */
     @Around(value = "execution(* io.fusion.air.microservice.adapters.controllers.secured.*.*(..))")
     public Object validateAnyRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        return validateRequest(false, AUTH_TOKEN,joinPoint, CONSUMERS);
+        return validateRequest(false, SECURE_PKG_MODE,joinPoint, CONSUMERS);
     }
 
     /**
@@ -141,7 +138,7 @@ public class AuthorizeRequestAspect {
      */
     @Around(value = "execution(* io.fusion.air.microservice.adapters.controllers.internal.*.*(..))")
     public Object validateInternalRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        return validateRequest(false, AUTH_TOKEN,joinPoint, INTERNAL_SERVICES);
+        return validateRequest(false, SECURE_PKG_MODE,joinPoint, INTERNAL_SERVICES);
     }
 
     /**
@@ -153,20 +150,20 @@ public class AuthorizeRequestAspect {
      */
     @Around(value = "execution(* io.fusion.air.microservice.adapters.controllers.external.*.*(..))")
     public Object validateExternalRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        return validateRequest(false, AUTH_TOKEN, joinPoint, EXTERNAL_SERVICES);
+        return validateRequest(false, SECURE_PKG_MODE, joinPoint, EXTERNAL_SERVICES);
     }
 
     /**
      * Validate the Request
      *
      * @param singleToken
-     * @param tokenKey
+     * @param tokenMode
      * @param joinPoint
      * @param tokenCtg
      * @return
      * @throws Throwable
      */
-    private Object validateRequest(boolean singleToken, String tokenKey, ProceedingJoinPoint joinPoint, int tokenCtg)
+    private Object validateRequest(boolean singleToken, String tokenMode, ProceedingJoinPoint joinPoint, int tokenCtg)
             throws Throwable {
         // Get the request object
         long startTime = System.currentTimeMillis();
@@ -181,7 +178,7 @@ public class AuthorizeRequestAspect {
         // Validate the Token when User is NOT Null
         if (user != null) {
             // Validate Token
-            UserDetails userDetails = validateToken(startTime, singleToken, user, tokenKey, tokenData, joinPoint, tokenCtg);
+            UserDetails userDetails = validateToken(startTime, singleToken, user, tokenMode, tokenData, joinPoint, tokenCtg);
             // Create Authorize Token
             UsernamePasswordAuthenticationToken authorizeToken = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
@@ -189,7 +186,7 @@ public class AuthorizeRequestAspect {
             // Set the Security Context with current user as Authorized for the request,
             // So it passes the Spring Security Configurations successfully.
             SecurityContextHolder.getContext().setAuthentication(authorizeToken);
-            logTime(startTime, "SUCCESS", "User Authorized for the request",  joinPoint);
+            logTime(startTime, SUCCESS, "User Authorized for the request",  joinPoint);
         }
         // If the User == NULL then ERROR is thrown from getUser() method itself
         // Check the Tx Token if It's NOT a SINGLE_TOKEN Request
@@ -211,7 +208,7 @@ public class AuthorizeRequestAspect {
      * @return
      */
     private String getToken(long startTime, String jwToken, ProceedingJoinPoint joinPoint) {
-        if (jwToken != null && jwToken.startsWith("Bearer ")) {
+        if (jwToken != null && jwToken.startsWith(BEARER)) {
             return jwToken.substring(7);
         }
         String msg = "Access Denied: Unable to extract token from Header!";
@@ -245,7 +242,7 @@ public class AuthorizeRequestAspect {
             msg = "Access Denied: Invalid Token (Null Token) Error: "+e.getMessage();
             throw new JWTUnDefinedException(msg, e);
         } catch (Exception e) {
-            msg = "Access Denied: Error:  "+e.getMessage();
+            msg = "Access Denied: Error Extracting User:  "+e.getMessage();
             throw new JWTUnDefinedException(msg, e);
         } finally {
             if(msg != null) {
@@ -262,13 +259,13 @@ public class AuthorizeRequestAspect {
      * @param startTime
      * @param singleToken
      * @param user
-     * @param tokenKey
+     * @param tokenMode
      * @param token
      * @param joinPoint
      * @param tokenCtg
      * @return
      */
-    private UserDetails validateToken(long startTime, boolean singleToken, String user, String tokenKey,
+    private UserDetails validateToken(long startTime, boolean singleToken, String user, String tokenMode,
                                       TokenData token, ProceedingJoinPoint joinPoint, int tokenCtg) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(user);
         String msg = null;
@@ -283,9 +280,9 @@ public class AuthorizeRequestAspect {
                     claimsManager.isClaimsInitialized();
                 }
                 // Validate the Token Type
-                validateTokenType( startTime,  user,  tokenKey, claims,  tokenCtg,  joinPoint);
+                getTokenTypeFromClaims( startTime,  user,  tokenMode, claims,  tokenCtg,  joinPoint);
                 // Verify that the user role name matches the role name defined by the protected resource
-                verifyTheUserRole( role,  tokenKey,  joinPoint);
+                verifyTheUserRole( role,  tokenMode,  joinPoint);
                 return userDetails;
             } else {
                 msg = "Auth-Token: Unauthorized Access: Token Validation Failed!";
@@ -304,37 +301,6 @@ public class AuthorizeRequestAspect {
         }
     }
 
-
-    /**
-     * Verify the User Role Matches the Claim
-     * @param tokenKey
-     * @param joinPoint
-     */
-    private void verifyTheUserRole(String role, String tokenKey, ProceedingJoinPoint joinPoint) {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-
-        String annotationRole = null;
-        log.info("Step 3: ROLE CHECK..... FOR Token Type = {} ", tokenKey);
-        try {
-            if (tokenKey.equalsIgnoreCase(AUTH_TOKEN)) {
-                AuthorizationRequired annotation =  signature.getMethod().getAnnotation(AuthorizationRequired.class);
-                annotationRole = annotation.role();
-            } else if(tokenKey.equalsIgnoreCase(SINGLE_TOKEN)) {
-                SingleTokenAuthorizationRequired annotation =  signature.getMethod().getAnnotation(SingleTokenAuthorizationRequired.class);
-                annotationRole = annotation.role();
-            }
-        } catch (Exception ignored) {
-            log.error("Authorization Failed: Role Not Found!");
-            throw new AuthorizationException("Role Not Found!", ignored);
-        }
-        log.info("Step 3: Role Check Role = {},  Claims Role = {} ", annotationRole, role);
-        // If the Role in the Token is User and Required is Admin then Reject the request
-        if(role.trim().equalsIgnoreCase(UserRole.USER.toString()) && annotationRole != null
-                && annotationRole.equals(UserRole.ADMIN.toString())) {
-            throw new AuthorizationException("Invalid User Role!");
-        }
-    }
-
     /**
      * Validate the Token Type
      *
@@ -344,33 +310,34 @@ public class AuthorizeRequestAspect {
      * @param tokenCtg
      * @param joinPoint
      */
-    private void validateTokenType(long startTime, String user, String tokenKey, Claims claims,
-                                   int tokenCtg, ProceedingJoinPoint joinPoint) {
+    private void getTokenTypeFromClaims(long startTime, String user, String tokenMode, Claims claims,
+                                        int tokenCtg, ProceedingJoinPoint joinPoint) {
         String msg = null;
         try {
             if (claims == null) {
                 msg = "Invalid Token! No Claims available! " + user;
                 throw new AuthorizationException(msg);
             }
-            String tokenType =  validateTokenType( user,  claims);
+            String tokenType =  getTokenTypeFromClaims( user,  claims);
             switch(tokenCtg) {
                 case CONSUMERS:
-                    if (tokenKey.equals(JsonWebTokenConstants.AUTH_TOKEN) && !tokenType.equals(JsonWebTokenConstants.AUTH)) {
-                        msg = "Invalid Auth Token! ("+tokenType+")  For " + user;
-                        throw new AuthorizationException(msg);
-                    } else if (tokenKey.equals(REFRESH_TOKEN) && !tokenType.equals(JsonWebTokenConstants.AUTH_REFRESH)) {
+                    if (tokenMode.equals(REFRESH_TOKEN_MODE) && !tokenType.equals(AUTH_REFRESH)) {
                         msg = "Invalid Refresh Token! " + user;
+                        throw new AuthorizationException(msg);
+                    }
+                    if ( !tokenType.equals(AUTH)) {
+                        msg = "Invalid Auth Token! (" + tokenType + ")  For " + user;
                         throw new AuthorizationException(msg);
                     }
                     break;
                 case INTERNAL_SERVICES:
-                    if (tokenKey.equals(AUTH_TOKEN) && !tokenType.equals(TX_SERVICE )) {
+                    if (tokenMode.equals(SECURE_PKG_MODE) && !tokenType.equals(TX_SERVICE )) {
                         msg = "Invalid Auth Token ("+tokenType+") For Internal Service! " + user;
                         throw new AuthorizationException(msg);
                     }
                     break;
                 case EXTERNAL_SERVICES:
-                    if (tokenKey.equals(AUTH_TOKEN) && !tokenType.equals(TX_EXTERNAL )) {
+                    if (tokenMode.equals(SECURE_PKG_MODE) && !tokenType.equals(TX_EXTERNAL )) {
                         msg = "Invalid Auth Token ("+tokenType+") For External! " + user;
                         throw new AuthorizationException(msg);
                     }
@@ -383,6 +350,40 @@ public class AuthorizeRequestAspect {
             if(msg != null) {
                 logTime(startTime, ERROR, msg, joinPoint);
             }
+        }
+    }
+
+    /**
+     * Verify the User Role Matches the Claim
+     * @param role
+     * @param tokenMode
+     * @param joinPoint
+     */
+    private void verifyTheUserRole(String role, String tokenMode, ProceedingJoinPoint joinPoint) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+
+        String annotationRole = null;
+        log.info("Step 3: Role Check..... FOR Token Mode = {} ", tokenMode);
+        try {
+            if (tokenMode.equalsIgnoreCase(MULTI_TOKEN_MODE)) {
+                AuthorizationRequired annotation =  signature.getMethod().getAnnotation(AuthorizationRequired.class);
+                annotationRole = annotation.role();
+            } else if(tokenMode.equalsIgnoreCase(SINGLE_TOKEN_MODE)) {
+                SingleTokenAuthorizationRequired annotation =  signature.getMethod().getAnnotation(SingleTokenAuthorizationRequired.class);
+                annotationRole = annotation.role();
+            } else {
+                // Default Role in Secure Package Mode
+                annotationRole = ROLE_USER;
+            }
+        } catch (Exception ignored) {
+            log.error("Authorization Failed: Role Not Found!");
+            throw new AuthorizationException("Role Not Found!", ignored);
+        }
+        log.info("Step 3: User Role = {},  Claims Role = {} ", annotationRole, role);
+        // If the Role in the Token is User and Required is Admin then Reject the request
+        if(role.trim().equalsIgnoreCase(UserRole.USER.toString()) && annotationRole != null
+                && annotationRole.equals(UserRole.ADMIN.toString())) {
+            throw new AuthorizationException("Invalid User Role!");
         }
     }
 
@@ -409,7 +410,7 @@ public class AuthorizeRequestAspect {
             Claims claims = null;
             if (JsonWebTokenValidator.validateToken(user, tokenData)) {
                 claims = JsonWebTokenValidator.getAllClaims(tokenData);
-                String tokenType = validateTokenType( user,  claims);
+                String tokenType = getTokenTypeFromClaims( user,  claims);
                 if (!tokenType.equals(TX_USERS)) {
                     msg = "Invalid TX Token Type ("+tokenType+") ! " + user;
                     throw new AuthorizationException(msg);
@@ -440,7 +441,7 @@ public class AuthorizeRequestAspect {
      * @param claims
      * @return
      */
-    private String validateTokenType(String user, Claims claims) {
+    private String getTokenTypeFromClaims(String user, Claims claims) {
         String tokenType;
         String msg;
         try {
