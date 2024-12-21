@@ -281,8 +281,8 @@ public class UserTokenAuthorization {
         String msg = null;
         try {
             if (JsonWebTokenValidator.validateToken(user, tokenData)) {
-                String tokenType = validateClaimsTokenType( user);
-                logTime(startTime, "SUCCESS", "TX-Token: User TX Authorized for the request",  joinPoint);
+                validateClaimsTokenType( user);
+                logTime(startTime, SUCCESS, "TX-Token: User TX Authorized for the request",  joinPoint);
             }  else {
                 msg = "TX-Token: Unauthorized Access: Token Validation Failed!";
                 throw new AuthorizationException(msg);
