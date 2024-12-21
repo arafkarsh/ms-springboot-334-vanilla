@@ -17,10 +17,8 @@ package io.fusion.air.microservice;
 
 // Custom
 import io.fusion.air.microservice.server.config.ServiceConfig;
-import io.fusion.air.microservice.server.controllers.HealthController;
-// Spring Framework
 import io.fusion.air.microservice.utils.Utils;
-import org.springdoc.core.GroupedOpenApi;
+// Spring Framework
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.CommandLineRunner;
@@ -41,14 +39,6 @@ import org.springframework.web.client.RestTemplate;
 // FasterXML
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-// Open API Imports
-import io.swagger.v3.oas.models.ExternalDocumentation;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.security.SecurityScheme;
-import io.swagger.v3.oas.models.servers.Server;
 // Java
 import java.util.*;
 import jakarta.annotation.PostConstruct;
@@ -82,7 +72,7 @@ public class ServiceBootStrap {
 	private static final Logger log = getLogger(lookup().lookupClass());
 
 	// All CAPS Words will be replaced using data from application.properties
-	private  static final String SERVICE_TITLE = "<h1>Welcome to MICRO service<h1/>"
+	private  static final String SERVICE_TITLE = "<h1>Welcome to MICRO service</h1>"
 			+"<h3>Copyright (c) COMPANY, 2022</h3>"
 			+"<h5>Build No: BN :: Build Date: BD :: </h5>";
 
@@ -91,16 +81,17 @@ public class ServiceBootStrap {
 	// Autowired using Constructor Injection
 	private final ServiceConfig serviceConfig;
 
+	@Value("${spring.profiles.default:dev}")
+	private static String activeProfile;
+
+	/**
+	 * Autowired using the Constructor Injection
+	 * Microservice Bootstrap
+	 * @param serviceConfig
+	 */
 	public ServiceBootStrap(ServiceConfig serviceConfig) {
 		this.serviceConfig = serviceConfig;
 	}
-
-	// Get the Service Name from the properties file
-	@Value("${service.name:NameNotDefined}")
-	private String serviceName = "Unknown";
-
-	@Value("${spring.profiles.default:dev}")
-	private static String activeProfile;
 	
 	/**
 	 * Start the Microservice
@@ -125,7 +116,7 @@ public class ServiceBootStrap {
 				log.info("Profile is missing, so defaulting to {} Profile!", activeProfile);
 				environment.addActiveProfile(activeProfile);
 			}
-			log.info("Booting MicroService ..... ... Startup completed!");
+			log.info("Booting Microservice... Startup completed!");
 		} catch (Exception e) {
 			log.debug(Utils.getStackTraceAsString(e));
 		}
@@ -135,15 +126,13 @@ public class ServiceBootStrap {
 	 * Restart the Server
 	 */
 	public static void restart() {
-		log.info("Restarting Service ..... .. 1");
+		log.info("Restarting Service.... .. ");
 		ApplicationArguments args = context.getBean(ApplicationArguments.class);
-		log.info("Restarting Service ..... .. 2");
-
 		Thread thread = new Thread(() -> {
 			context.close();
 			start(args.getSourceArgs());
 		});
-		log.info("Restarting Service ..... .. 3");
+		log.info("Restarting Service.... Completed");
 
 		thread.setDaemon(false);
 		thread.start();
@@ -219,113 +208,8 @@ public class ServiceBootStrap {
 		};
 	}
 
-	// =======================================================================================
-	// Open API Documentation Code
-	// =======================================================================================
-	/**
-	 * Open API v3 Docs - All
-	 * Reference: https://springdoc.org/faq.html
-	 * @return
-	 */
 	@Bean
-	public GroupedOpenApi allPublicApi() {
-		return GroupedOpenApi.builder()
-				.group(serviceConfig.getServiceName()+"-service")
-				.pathsToMatch(serviceConfig.getServiceApiPath()+"/**")
-				.build();
-	}
-
-	/**
-	 * Open API v3 Docs - MicroService
-	 * Reference: https://springdoc.org/faq.html
-	 * @return
-	 */
-	@Bean
-	public GroupedOpenApi appPublicApi() {
-		return GroupedOpenApi.builder()
-				.group(serviceConfig.getServiceName()+"-service-core")
-				.pathsToMatch(serviceConfig.getServiceApiPath()+"/**")
-				.pathsToExclude(serviceConfig.getServiceApiPath()+"/service/**", serviceConfig.getServiceApiPath()+"/config/**")
-				.build();
-	}
-
-	/**
-	 * Open API v3 Docs - Core Service
-	 * Reference: https://springdoc.org/faq.html
-	 * Change the Resource Mapping in HealthController
-	 *
-	 * @see HealthController
-	 */
-	@Bean
-	public GroupedOpenApi configPublicApi() {
-		return GroupedOpenApi.builder()
-				.group(serviceConfig.getServiceName()+"-service-config")
-				.pathsToMatch(serviceConfig.getServiceApiPath()+"/config/**")
-				.build();
-	}
-
-	@Bean
-	public GroupedOpenApi systemPublicApi() {
-		return GroupedOpenApi.builder()
-				.group(serviceConfig.getServiceName()+"-service-health")
-				.pathsToMatch(serviceConfig.getServiceApiPath()+"/service/**")
-				.build();
-	}
-
-	/**
-	 * Open API v3
-	 * Reference: https://springdoc.org/faq.html
-	 * @return
-	 */
-	@Bean
-	public OpenAPI buildOpenAPI() {
-		return new OpenAPI()
-				.servers(getServers())
-				.info(new Info()
-						.title(serviceConfig.getServiceName()+" Service")
-						.description(serviceConfig.getServiceDetails())
-						.version(serviceConfig.getServerVersion())
-						.license(new License().name("License: "+serviceConfig.getServiceLicense())
-								.url(serviceConfig.getServiceUrl()))
-				)
-				.externalDocs(new ExternalDocumentation()
-						.description(serviceConfig.getServiceName()+" Service Source Code")
-						.url(serviceConfig.getServiceApiRepository())
-				)
-				.components(new Components().addSecuritySchemes("bearer-key",
-						new SecurityScheme()
-								.type(SecurityScheme.Type.HTTP)
-								.scheme("bearer")
-								.bearerFormat("JWT"))
-				);
-	}
-
-	/**
-	 * Get the List of Servers for Open API Docs - Swagger
-	 * @return
-	 */
-	private List<Server> getServers() {
-		List<Server> serverList = new ArrayList<>();
-
-		Server dev = new Server();
-		dev.setUrl(serviceConfig.getServerHostDev());
-		dev.setDescription(serviceConfig.getServerHostDevDesc());
-		Server uat = new Server();
-		uat.setUrl(serviceConfig.getServerHostUat());
-		uat.setDescription(serviceConfig.getServerHostUatDesc());
-		Server prod = new Server();
-		prod.setUrl(serviceConfig.getServerHostProd());
-		prod.setDescription(serviceConfig.getServerHostProdDesc());
-
-		serverList.add(dev);
-		serverList.add(uat);
-		serverList.add(prod);
-
-		return serverList;
-	}
-
-	@Bean
-	ForwardedHeaderFilter forwardedHeaderFilter() {
+	public ForwardedHeaderFilter forwardedHeaderFilter() {
 		return new ForwardedHeaderFilter();
 	}
 	/**
@@ -348,19 +232,4 @@ public class ServiceBootStrap {
 				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 				.findAndRegisterModules();
 	}
-
-	/**
-	 * All file upload till 512 MB
-	 * returns MultipartConfigElement
-	 * @return
-	 */
-	/**
-	 * Deprecated from SpringBoot 3.1
-	@Bean
-	public MultipartConfigElement multipartConfigElement() {
-		MultipartConfigFactory factory = new MultipartConfigFactory();
-		factory.setMaxFileSize(DataSize.ofBytes(500000000L));
-		return factory.createMultipartConfig();
-	}
-	 */
 }

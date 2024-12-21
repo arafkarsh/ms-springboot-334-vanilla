@@ -73,6 +73,14 @@ public abstract class AbstractController {
 	}
 
 	/**
+	 * Returns the User Name
+	 * @return
+	 */
+	public final String getUserName() {
+		return (claimsManager != null) ? claimsManager.getUserName() : "Unknown";
+	}
+
+	/**
 	 * Returns StandardResponse for Success
 	 * @param msg
 	 * @return

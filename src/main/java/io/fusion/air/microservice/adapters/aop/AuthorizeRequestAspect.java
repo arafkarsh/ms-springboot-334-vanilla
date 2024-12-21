@@ -25,6 +25,20 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
 /**
+ * Authorize Request Aspect Authorizes User Request in the following 6 modes
+ *
+ * 1. Multi Token Mode: An API Annotated with @AuthorizeRequest Annotation - This expects two
+ *    tokens in the header Auth Token and Tx Token
+ * 2. Single Token Mode: An APi Annotated with @SingleTokenAuthorizationRequest will expect
+ *     the Auth Token in the headers (Refresh Token will be always there with every Auth token).
+ *  3. Secure Package Mode: Any Rest Controllers under the controllers secured packaged will
+ *     be automatically protected under JWT Token Authorization
+ *  4. Internal Package Mode: Expects Auth and Tx Token for internal Service to Service
+ *      Communication
+ *  5. External Package Mode: For External Service Communication.
+ *  6. Refresh Token Mode: To refresh the tokens when Auth Token is expired and Refresh Token
+ *     is still valid.
+ *
  * @author: Araf Karsh Hamid
  * @version:
  * @date:
@@ -42,18 +56,6 @@ public class AuthorizeRequestAspect {
      */
     public AuthorizeRequestAspect(UserTokenAuthorization userTokenAuthorization) {
         this.userTokenAuthorization = userTokenAuthorization;
-    }
-
-    /**
-     * Validate REST Endpoint Annotated with @validateRefreshToken Annotation
-     *
-     * @param joinPoint
-     * @return
-     * @throws Throwable
-     */
-    @Around("@annotation(io.fusion.air.microservice.adapters.security.jwt.ValidateRefreshToken)")
-    public Object validateRefreshRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        return validateRequest(false, REFRESH_TOKEN_MODE, joinPoint, CONSUMERS);
     }
 
     /**
@@ -79,6 +81,19 @@ public class AuthorizeRequestAspect {
     public Object validateAnnotatedRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         return validateRequest(false, MULTI_TOKEN_MODE, joinPoint, CONSUMERS);
     }
+
+    /**
+     * Validate REST Endpoint Annotated with @validateRefreshToken Annotation
+     *
+     * @param joinPoint
+     * @return
+     * @throws Throwable
+     */
+    @Around("@annotation(io.fusion.air.microservice.adapters.security.jwt.ValidateRefreshToken)")
+    public Object validateRefreshRequest(ProceedingJoinPoint joinPoint) throws Throwable {
+        return validateRequest(false, REFRESH_TOKEN_MODE, joinPoint, CONSUMERS);
+    }
+
 
     /**
      * Secure All the Consumers REST Endpoints in the Secured Packaged using JWT
@@ -128,6 +143,6 @@ public class AuthorizeRequestAspect {
      */
     private Object validateRequest(boolean singleToken, String tokenMode, ProceedingJoinPoint joinPoint, int tokenCtg)
             throws Throwable {
-        return userTokenAuthorization.validateRequest(singleToken,tokenMode,  joinPoint,tokenCtg );
+        return userTokenAuthorization.validateRequest(singleToken, tokenMode,  joinPoint, tokenCtg );
     }
  }

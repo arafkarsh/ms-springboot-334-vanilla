@@ -88,8 +88,7 @@ public class PaymentControllerImpl extends AbstractController {
     })
 	@GetMapping("/status/{referenceNo}")
 	@MetricsCounter(endpoint = "/status")
-	public ResponseEntity<StandardResponse> getStatus(@PathVariable("referenceNo") String referenceNo,
-														HttpServletRequest request)  {
+	public ResponseEntity<StandardResponse> getStatus(@PathVariable("referenceNo") String referenceNo)  {
 		log.debug("| {} |Request to Payment Status of Service... ", serviceName);
 		StandardResponse stdResponse = createSuccessResponse("Processing Success!");
 		// Response Object

@@ -88,8 +88,8 @@ public class UserTokenAuthorization {
      * @return
      * @throws Throwable
      */
-    public Object validateRequest(boolean singleToken, String tokenMode, ProceedingJoinPoint joinPoint, int tokenCtg)
-            throws Throwable {
+    public Object validateRequest(boolean singleToken, String tokenMode,
+                                  ProceedingJoinPoint joinPoint, int tokenCtg) throws Throwable {
         // Get the request object
         long startTime = System.currentTimeMillis();
         ServletRequestAttributes attributes = (ServletRequestAttributes)

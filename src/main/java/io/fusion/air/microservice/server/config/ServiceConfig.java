@@ -146,6 +146,9 @@ public class ServiceConfig implements Serializable {
 	@Value("${service.license:MIT License}")
 	private String serviceLicense;
 
+	@Value("${service.license.url}")
+	private String serviceLicenseURL;
+
 	@Value("${springdoc.swagger-ui.path}")
 	private String apiDocPath;
 
@@ -516,5 +519,13 @@ public class ServiceConfig implements Serializable {
 	 */
 	public String getActiveProfile() {
 		return activeProfile;
+	}
+
+	/**
+	 * Return Service License URL
+	 * @return
+	 */
+	public String getServiceLicenseURL() {
+		return serviceLicenseURL;
 	}
 }

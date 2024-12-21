@@ -16,7 +16,6 @@
 package io.fusion.air.microservice.adapters.security.core;
 // Custom
 import io.fusion.air.microservice.server.config.ServiceConfig;
-// Jakarta
 // Spring
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,15 +39,16 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class WebSecurityConfiguration {
 
-    // Autowired using the constructor
-    private final ServiceConfig serviceConfig;
+    private final String apiPath;
+    private final String hostName;
 
     /**
      * Autowired using the constructor
-     * @param serviceCfg
+     * @param serviceConfig
      */
-    public WebSecurityConfiguration(ServiceConfig serviceCfg) {
-        serviceConfig = serviceCfg;
+    public WebSecurityConfiguration(ServiceConfig serviceConfig) {
+        apiPath = serviceConfig.getServiceApiPath();
+        hostName = serviceConfig.getServerHost();
     }
 
     /**
@@ -62,11 +62,11 @@ public class WebSecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // enableSecureChannel(http);           // Forces All Request to be Secured (HTTPS)
-        authorizeHttpRequests(http);         // Set Authorization Policies
-        csrfProtection(http);                   // Set CSRF Protection
-        xFrameProtection(http);               // Set X-Frame Protection
-        contentSecurityPolicy(http);          // Set Content Security Policy
-        return http.build();                     // Build Security Filter Chain
+        csrfProtection(http);                   // Step 1: Set CSRF Protection
+        authorizeHttpRequests(http);         // Step 2: Set Authorization Policies
+        xFrameProtection(http);               // Step 3: Set X-Frame Protection
+        contentSecurityPolicy(http);          // Step 4: Set Content Security Policy
+        return http.build();                     // Step 5: Build Security Filter Chain
     }
 
     /**
@@ -81,6 +81,29 @@ public class WebSecurityConfiguration {
     }
 
     /**
+     * Configures Cross-Site Request Forgery (CSRF) protection for HTTP security. This method typically
+     * enables CSRF protection using a cookie-based CSRF token repository, making CSRF tokens accessible
+     * to client-side scripting. Note that CSRF protection is disabled for local testing within this method.
+     *
+     * @param http the {@link HttpSecurity} object to configure HTTP security for the application
+     * @throws Exception if there is a problem during configuration
+     */
+    private void csrfProtection(HttpSecurity http) throws Exception {
+        // Enable CSRF Protection
+        // http.csrf(csrf -> ...):
+	    // - Configures CSRF protection for the application.
+	    // - CSRF protection is enabled by default in Spring Security, but this configuration customizes its behavior.
+        // Change the API Path As per the Security Requirement
+        // apiPath:
+        //	- The variable apiPath likely holds a string such as /api/v1. This would exclude all
+        // 	endpoints like /api/v1/* or /api/v1/resource/123 from CSRF validation.
+        //	- Typically used to exclude REST API endpoints, which are not vulnerable to CSRF in most cases.
+        http.csrf(csrf -> csrf
+                .ignoringRequestMatchers(apiPath +"/**")
+        );
+    }
+
+    /**
      * Configures HTTP security to authorize requests based on the API documentation path.
      * It permits all requests matching the API documentation path and redirects unauthorized
      * access attempts to a custom access denied page.
@@ -89,7 +112,6 @@ public class WebSecurityConfiguration {
      * @throws Exception if there is a problem during configuration
      */
     private void authorizeHttpRequests(HttpSecurity http) throws Exception {
-        String apiPath = serviceConfig.getApiDocPath();
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(apiPath + "/**").permitAll()
                         // Require authentication for any other requests
@@ -102,35 +124,6 @@ public class WebSecurityConfiguration {
                 // Make sure to add stateless session management since it's a microservice
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-    }
-
-    /**
-     * Configures Cross-Site Request Forgery (CSRF) protection for HTTP security. This method typically
-     * enables CSRF protection using a cookie-based CSRF token repository, making CSRF tokens accessible
-     * to client-side scripting. Note that CSRF protection is disabled for local testing within this method.
-     *
-     * @param http the {@link HttpSecurity} object to configure HTTP security for the application
-     * @throws Exception if there is a problem during configuration
-     */
-    private void csrfProtection(HttpSecurity http) throws Exception {
-        // Enable CSRF Protection
-        // This line configures the Cross-Site Request Forgery (CSRF) protection, using a Cookie-based CSRF token
-        // repository. This means that CSRF tokens will be stored in cookies. The withHttpOnlyFalse() method makes
-        // these cookies accessible to client-side scripting, which is typically necessary for applications that use
-        // a JavaScript-based frontend.
-        /**
-         http
-         .csrf()
-         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-         // Add the above Only for testing in Swagger
-         .and()
-         .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class);
-         */
-        // Change the API Path As per the Security Requirement
-        String apiPath = serviceConfig.getApiDocPath();
-        http.csrf(csrf -> csrf
-                .ignoringRequestMatchers(apiPath +"/**")
-        );
     }
 
     /**
@@ -164,7 +157,6 @@ public class WebSecurityConfiguration {
      * @throws Exception if there is a problem during configuration
      */
     private void contentSecurityPolicy(HttpSecurity http) throws Exception {
-        String hostName = serviceConfig.getServerHost();
         // Content Security Policy
         // The last part sets the Content Security Policy (CSP). This is a security measure that helps prevent a range
         // of attacks, including Cross-Site Scripting (XSS) and data injection attacks. It does this by specifying which

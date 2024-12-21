@@ -58,7 +58,7 @@ public final class JsonWebTokenKeyManager {
 	// Autowired using the Constructor
 	private final CryptoKeyGenerator cryptoKeys;
 
-	private int tokenType;
+	private final int tokenType;
 	private String issuer;
 	private Key signingKey;
 	private Key validatorKey;
@@ -69,56 +69,36 @@ public final class JsonWebTokenKeyManager {
 	/**
 	 * Initialize the JWT with the Signature Algorithm based on Secret Key or Public / Private Key
 	 * Autowired using the Constructor
+	 *
 	 * @param jwtCfg
 	 * @param keyCloakCfg
 	 * @param keyGenerator
+	 * @param tokenType
 	 */
 	@Autowired
 	public JsonWebTokenKeyManager(JsonWebTokenConfig jwtCfg, KeyCloakConfig keyCloakCfg,
-								  CryptoKeyGenerator keyGenerator, @Value("${server.token.type:1}") int tokenType ) {
-		this.jwtConfig = jwtCfg;
-		this.keycloakConfig = keyCloakCfg;
-		this.cryptoKeys = keyGenerator;
-		this.tokenType = tokenType;
+								  CryptoKeyGenerator keyGenerator,
+								  @Value("${server.token.type:1}") int tokenType ) {
+		this.jwtConfig 		= jwtCfg;
+		this.keycloakConfig	= keyCloakCfg;
+		this.cryptoKeys		= keyGenerator;
+		this.tokenType		= tokenType;
+		this.issuer			= (jwtConfig != null) ? jwtConfig.getServiceOrg() : "fusion-air";
 		initialize();
-		jwtKeyStore = new JsonWebTokenKeyStore(tokenType, signingKey, validatorKey,
-				validatorLocalKey, issuer);
+		jwtKeyStore 		= new JsonWebTokenKeyStore(tokenType, signingKey, validatorKey,
+																		validatorLocalKey, issuer);
 	}
 
 	/**
 	 * Initialize the Key Manager based on Token Type (Secret or Public Key)
 	 */
 	protected void initialize() {
-		log.info("JWT-KeyManager: JSON Web Token Type = {} ", this.tokenType);
-		issuer	= (jwtConfig != null) ? jwtConfig.getServiceOrg() : "fusion-air";
+		log.info("JWT-KeyManager: Json Web Token Type = {}  with Issuer = {}", this.tokenType, issuer);
 		// Create the Key based on Secret Key or Private Key
 		log.info("Create Signing Keys...");
 		createSigningKey();
 		setKeyCloakPublicKey();
-		log.info("JWT-KeyManager: Intialization Complete! ");
-	}
-
-	/**
-	 * Initialize the JsonWebToken with Token Type Secret Keys and other default claims
-	 * settings.
-	 * @return
-	 */
-	public JsonWebTokenKeyManager init() {
-		return init(JsonWebTokenConstants.SECRET_KEY);
-	}
-
-	/**
-	 * Initialize the JsonWebToken with Token Type (Secret or Public/Private Keys) and other default claims
-	 * settings.
-	 * @return
-	 */
-	public JsonWebTokenKeyManager init(int tknType) {
-		this.tokenType = tknType;
-		log.info("JWT-KeyManager: JSON Web Token Type = {} ", this.tokenType);
-		issuer	= (jwtConfig != null) ? jwtConfig.getServiceOrg() : "fusion-air";
-		// Create the Key based on Secret Key or Private Key
-		createSigningKey();
-		return this;
+		log.info("JWT-KeyManager: Initialization Complete! ");
 	}
 
 	/**
@@ -155,8 +135,7 @@ public final class JsonWebTokenKeyManager {
 	}
 
 	/**
-	 * This is set when the Applications Boots Up from the Servlet Event Listener
-	 * Servlet Event Listener ensures that the public key is downloaded from the KeyCloak Server
+	 * This is set when Spring Creates the JsonWebTokenKeyManager.
 	 * Set the Validator Key as KeyCloak Public Key if the Public Key downloaded from KeyCloak.
 	 */
 	public void setKeyCloakPublicKey() {
@@ -225,16 +204,6 @@ public final class JsonWebTokenKeyManager {
 	 */
 	private CryptoKeyGenerator getCryptoKeyGenerator() {
 		return cryptoKeys;
-	}
-
-	/**
-	 * Set the Issuer
-	 * @param issuer
-	 * @return
-	 */
-	public JsonWebTokenKeyManager setIssuer(String issuer) {
-		this.issuer = issuer;
-		return this;
 	}
 
 	/**
