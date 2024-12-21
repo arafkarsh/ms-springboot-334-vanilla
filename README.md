@@ -30,7 +30,7 @@ HashiCorp Vault, for enhanced security.
 
 ### Microservice Package Structure
 
-![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Pkg-Structure.jpg)
+![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Pkg-Structure.png)
 
 io.fusion.air.microservice
 - adapters
