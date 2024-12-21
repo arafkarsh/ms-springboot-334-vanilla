@@ -238,17 +238,6 @@ production environment.
 
 ### Step 1.6 -  Import Swagger API Docs Into Postman
 
-### Step 1.7 - JWT Token Validation example
-
-Public API (Without Token Validation)
-![No-Authorizet](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/JWT-Public.jpg)
-
-Secure API with a Single Token (Primarily to be used by ADMIN)
-![Authorizet-Single](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/JWT-Single.jpg)
-
-Secure API with an Additional Tx Token which contains App Specific Claims.
-![Authorizet-Tx](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/JWT-Tx.jpg)
-
 What is Postman?
 - Postman is an API platform for building and using APIs. Postman simplifies each step of the API 
 lifecycle and streamlines collaboration so you can create better APIs—faster.
@@ -266,6 +255,20 @@ lifecycle and streamlines collaboration so you can create better APIs—faster.
 
 #### Step 1.6.4: Test the API
 ![Postman Import](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Import-API-into-Postman-4.jpg)
+
+### Step 1.7 - JWT Token Validation example
+
+####  1.7.1 Public API (Without Token Validation) - ...adapters.controllers.open.*
+![No-Authorizet](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/JWT-Public.jpg)
+
+#### 1.7.2 Secure API with a Single Token (Primarily to be used by ADMIN)
+![Authorizet-Single](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/JWT-Single.jpg)
+
+#### 1.7.3 Secure API with an Additional Tx Token which contains App Specific Claims.
+![Authorize-Tx](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/JWT-Tx.jpg)
+
+#### 1.7.4 All the APIs under the Secure Package (under ...adapters.controllers.secured.*)
+![Secured-Pkg](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/JWT-Secured-Pkg.jpg)
 
 ## 2. CRUD Operations Demo & Error Handling
 
