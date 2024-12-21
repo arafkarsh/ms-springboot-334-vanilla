@@ -128,6 +128,19 @@ public class ClaimsManager {
         return (String) claims.get("rol");
     }
 
+    /**
+     * Returns the Token Types
+     * 1. auth  (For Auth Token)
+     * 2. refresh (For Refresh Token)
+     * 3. tx-users (For Tx Token)
+     * 4. tx-internal (For Internal Service Tokens)
+     * 5. tx-external (For External Service Tokens)
+     * @return
+     */
+    public String getTokenType() {
+        return (String) claims.get("type");
+    }
+
     // ====================================================================================================
     // Claims from KeyCloak Authentication
     // ====================================================================================================

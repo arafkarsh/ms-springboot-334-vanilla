@@ -23,8 +23,6 @@ import io.fusion.air.microservice.security.jwt.core.TokenData;
 import io.fusion.air.microservice.security.jwt.core.TokenDataFactory;
 import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.*;
 // JWT
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 // Jakarta
 import jakarta.servlet.http.HttpServletRequest;
 // Aspect
@@ -95,50 +93,28 @@ public class UserTokenAuthorization {
         ServletRequestAttributes attributes = (ServletRequestAttributes)
                 RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        logTime(startTime, "Validating", request.getRequestURI(), joinPoint);
-        final String token = getToken(startTime, request.getHeader(AUTH_TOKEN), joinPoint);
-        TokenData tokenData = tokenFactory.createTokenData(token);
+        logTime(startTime, "Extracting & Validating Token", request.getRequestURI(), joinPoint);
+        // Create Token Data from the TokenDataFactory
+        final TokenData tokenData = tokenFactory.getTokenData( request.getHeader(AUTH_TOKEN), AUTH_TOKEN, joinPoint.toString());
+        // Get the User (Subject) from the Token
         final String user = getUser(startTime, tokenData, joinPoint);
-        log.info("Step 0: User Extracted... {} ", user);
-        // Validate the Token when User is NOT Null
-        if (user != null) {
-            // Validate Token
-            UserDetails userDetails = validateToken(startTime, singleToken, user, tokenMode, tokenData, joinPoint, tokenCtg);
-            // Create Authorize Token
-            UsernamePasswordAuthenticationToken authorizeToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
-            authorizeToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            // Set the Security Context with current user as Authorized for the request,
-            // So it passes the Spring Security Configurations successfully.
-            SecurityContextHolder.getContext().setAuthentication(authorizeToken);
-            logTime(startTime, SUCCESS, "User Authorized for the request",  joinPoint);
-        }
+        log.info("Step 1: Validate Request: User Extracted... {} ", user);
         // If the User == NULL then ERROR is thrown from getUser() method itself
+        // Validate the Token when User is NOT Null
+        UserDetails userDetails = validateToken(startTime, user, tokenMode, tokenData, joinPoint, tokenCtg);
+        // Create Authorize Token
+        UsernamePasswordAuthenticationToken authorizeToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+        authorizeToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        // Set the Security Context with current user as Authorized for the request,
+        // So it passes the Spring Security Configurations successfully.
+        SecurityContextHolder.getContext().setAuthentication(authorizeToken);
+        logTime(startTime, SUCCESS, "User Authorized for the request",  joinPoint);
         // Check the Tx Token if It's NOT a SINGLE_TOKEN Request
         if(!singleToken ) {
             validateAndSetClaimsFromTxToken(startTime, user, request.getHeader(TX_TOKEN), joinPoint);
         }
         return joinPoint.proceed();
-    }
-
-    /**
-     * Extract the Token fromm the Authorization Header
-     * ------------------------------------------------------------------------------------------------------
-     * Authorization: Bearer AAA.BBB.CCC
-     * ------------------------------------------------------------------------------------------------------
-     *
-     * @param startTime
-     * @param jwToken
-     * @param joinPoint
-     * @return
-     */
-    private String getToken(long startTime, String jwToken, ProceedingJoinPoint joinPoint) {
-        if (jwToken != null && jwToken.startsWith(BEARER)) {
-            return jwToken.substring(7);
-        }
-        String msg = "Access Denied: Unable to extract token from Header!";
-        logTime(startTime, ERROR, msg,  joinPoint);
-        throw new JWTTokenExtractionException(msg);
     }
 
     /**
@@ -157,18 +133,9 @@ public class UserTokenAuthorization {
             // Store the user info for logging
             MDC.put("user", user);
             return user;
-        } catch (IllegalArgumentException e) {
-            msg = "Access Denied: Unable to get Subject JWT Token Error: "+e.getMessage();
-            throw new JWTTokenSubjectException(msg, e);
-        } catch (ExpiredJwtException e) {
-            msg = "Access Denied: JWT Token has expired Error: "+e.getMessage();
-            throw new JWTTokenExpiredException(msg, e);
-        } catch (NullPointerException e) {
-            msg = "Access Denied: Invalid Token (Null Token) Error: "+e.getMessage();
-            throw new JWTUnDefinedException(msg, e);
         } catch (Exception e) {
-            msg = "Access Denied: Error Extracting User:  "+e.getMessage();
-            throw new JWTUnDefinedException(msg, e);
+            msg = e.getMessage();
+            throw e;
         } finally {
             if(msg != null) {
                 logTime(startTime, ERROR, msg, joinPoint);
@@ -182,31 +149,25 @@ public class UserTokenAuthorization {
      * - Expiry Time
      *
      * @param startTime
-     * @param singleToken
      * @param user
      * @param tokenMode
-     * @param token
+     * @param tokenData
      * @param joinPoint
      * @param tokenCtg
      * @return
      */
-    private UserDetails validateToken(long startTime, boolean singleToken, String user, String tokenMode,
-                                      TokenData token, ProceedingJoinPoint joinPoint, int tokenCtg) {
+    private UserDetails validateToken(long startTime, String user, String tokenMode,
+                                      TokenData tokenData, ProceedingJoinPoint joinPoint, int tokenCtg) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(user);
         String msg = null;
         try {
-            // Validate the Token
-            if (JsonWebTokenValidator.validateToken(userDetails.getUsername(), token)) {
-                String role = JsonWebTokenValidator.getUserRoleFromToken(token);
-                // Set the Claims ONLY If it's a Single Token
-                Claims claims = JsonWebTokenValidator.getAllClaims(token);
-                if(singleToken) {
-                    claimsManager.setClaims(claims);
-                    claimsManager.isClaimsInitialized();
-                }
+            // Validate the Token with the User details and Token Expiry
+            if (JsonWebTokenValidator.validateToken(userDetails.getUsername(), tokenData)) {
                 // Validate the Token Type
-                getTokenTypeFromClaims( startTime,  user,  tokenMode, claims,  tokenCtg,  joinPoint);
+                String tokenType = JsonWebTokenValidator.getTokenType(tokenData);
+                validateTokenType( startTime,  user,  tokenType, tokenMode,  tokenCtg,  joinPoint);
                 // Verify that the user role name matches the role name defined by the protected resource
+                String role = JsonWebTokenValidator.getUserRoleFromToken(tokenData);
                 verifyTheUserRole( role,  tokenMode,  joinPoint);
                 return userDetails;
             } else {
@@ -231,27 +192,21 @@ public class UserTokenAuthorization {
      *
      * @param startTime
      * @param user
-     * @param claims
      * @param tokenCtg
      * @param joinPoint
      */
-    private void getTokenTypeFromClaims(long startTime, String user, String tokenMode, Claims claims,
+    private void validateTokenType(long startTime, String user, String tokenType, String tokenMode,
                                         int tokenCtg, ProceedingJoinPoint joinPoint) {
         String msg = null;
         try {
-            if (claims == null) {
-                msg = "Invalid Token! No Claims available! " + user;
-                throw new AuthorizationException(msg);
-            }
-            String tokenType =  getTokenTypeFromClaims( user,  claims);
             switch(tokenCtg) {
                 case CONSUMERS:
                     if (tokenMode.equals(REFRESH_TOKEN_MODE) && !tokenType.equals(AUTH_REFRESH)) {
-                        msg = "Invalid Refresh Token! " + user;
+                        msg = "Invalid Refresh Token!  (" + tokenType + ")  " + user;
                         throw new AuthorizationException(msg);
                     }
                     if ( !tokenType.equals(AUTH)) {
-                        msg = "Invalid Auth Token! (" + tokenType + ")  For " + user;
+                        msg = "Invalid Auth Token! (" + tokenType + ")  " + user;
                         throw new AuthorizationException(msg);
                     }
                     break;
@@ -321,37 +276,20 @@ public class UserTokenAuthorization {
      */
     private void validateAndSetClaimsFromTxToken(long startTime, String user,
                                                  String token, ProceedingJoinPoint joinPoint) {
-        TokenData tokenData;
-        if (token != null && token.startsWith("Bearer ")) {
-            String txToken = token.substring(7);
-            tokenData = tokenFactory.createTokenData(txToken);
-        } else {
-            String msg = "TX-Token: Access Denied: Unable to extract TX-Token from Header! "+user;
-            logTime(startTime, ERROR, msg, joinPoint);
-            throw new JWTTokenExtractionException(msg);
-        }
+
+        final TokenData tokenData = tokenFactory.getTokenData(token, TX_TOKEN, joinPoint.toString());
         String msg = null;
         try {
-            Claims claims = null;
             if (JsonWebTokenValidator.validateToken(user, tokenData)) {
-                claims = JsonWebTokenValidator.getAllClaims(tokenData);
-                String tokenType = getTokenTypeFromClaims( user,  claims);
-                if (!tokenType.equals(TX_USERS)) {
-                    msg = "Invalid TX Token Type ("+tokenType+") ! " + user;
-                    throw new AuthorizationException(msg);
-                }
-                claimsManager.setClaims(claims);
-                claimsManager.isClaimsInitialized();
+                String tokenType = validateClaimsTokenType( user);
                 logTime(startTime, "SUCCESS", "TX-Token: User TX Authorized for the request",  joinPoint);
             }  else {
                 msg = "TX-Token: Unauthorized Access: Token Validation Failed!";
                 throw new AuthorizationException(msg);
             }
         } catch(AuthorizationException e) {
+            msg = e.getMessage();
             throw e;
-        } catch(Exception e) {
-            msg = "TX-Token: Unauthorized Access: Error: "+e.getMessage();
-            throw new AuthorizationException(msg, e);
         } finally {
             // Error is Logged ONLY if msg != NULL
             if(msg != null) {
@@ -363,20 +301,17 @@ public class UserTokenAuthorization {
     /**
      * Validates Token  Type
      * @param user
-     * @param claims
      * @return
      */
-    private String getTokenTypeFromClaims(String user, Claims claims) {
-        String tokenType;
+    private String validateClaimsTokenType(String user) {
+        String tokenType = claimsManager.getTokenType();
         String msg;
-        try {
-            tokenType = (String) claims.get("type");
-        } catch (Exception e) {
-            msg = "Unable to get Token Type from Claims for user: "+user;
-            throw new AuthorizationException(msg, e);
-        }
         if (tokenType == null) {
-            msg = "Invalid Token Type from Claims! for user: " + user;
+            msg = "Invalid Tx Token Type  (NULL) from Claims! for user: " + user;
+            throw new AuthorizationException(msg);
+        }
+        if (!tokenType.equals(TX_USERS)) {
+            msg = "Invalid TX Token Type ("+tokenType+") ! " + user;
             throw new AuthorizationException(msg);
         }
         return tokenType;

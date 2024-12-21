@@ -16,9 +16,13 @@
 
 package io.fusion.air.microservice.security.jwt.client;
 // JWT
+import io.fusion.air.microservice.domain.exceptions.JWTTokenExpiredException;
+import io.fusion.air.microservice.domain.exceptions.JWTTokenSubjectException;
+import io.fusion.air.microservice.domain.exceptions.JWTUnDefinedException;
 import io.fusion.air.microservice.security.jwt.core.TokenData;
 import io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 // Spring
@@ -79,7 +83,17 @@ public final class JsonWebTokenValidator {
 	 * @return
 	 */
 	public static String getSubjectFromToken(TokenData token) {
-		return getClaimFromToken(token, Claims::getSubject);
+		try {
+			return getClaimFromToken(token, Claims::getSubject);
+		} catch (IllegalArgumentException e) {
+			throw new JWTTokenSubjectException("Access Denied: Unable to get Subject JWT Token Error: "+e.getMessage(), e);
+		} catch (ExpiredJwtException e) {
+			throw new JWTTokenExpiredException("Access Denied: JWT Token has expired Error: "+e.getMessage(), e);
+		} catch (NullPointerException e) {
+			throw new JWTUnDefinedException("Access Denied: Invalid Token (Null Token) Error: "+e.getMessage(), e);
+		} catch (Exception e) {
+			throw new JWTUnDefinedException("Access Denied: Error Extracting User:  "+e.getMessage(), e);
+		}
 	}
 
 	/**
@@ -142,6 +156,16 @@ public final class JsonWebTokenValidator {
 		Claims claims = getAllClaims(token);
 		String role = (String) claims.get("rol");
 		return (role == null) ? "Public" : role;
+	}
+
+	/**
+	 * Return Token Type
+	 * @param token
+	 * @return
+	 */
+	public static String getTokenType(TokenData token) {
+		Claims claims = getAllClaims(token);
+		return (String) claims.get("type");
 	}
 
 	/**

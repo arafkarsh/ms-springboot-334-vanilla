@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 package io.fusion.air.microservice.security.jwt.core;
-
+// Custom
+import io.fusion.air.microservice.domain.exceptions.JWTTokenExtractionException;
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.*;
+import static io.fusion.air.microservice.security.jwt.core.JsonWebTokenConstants.ERROR;
+// Spring
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+// Log
+import org.slf4j.Logger;
+import static java.lang.invoke.MethodHandles.lookup;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author: Araf Karsh Hamid
@@ -26,8 +34,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TokenDataFactory {
 
-    public static final int LOCAL_KEY 				= 1;
-    public static final int KEYCLOAK_KEY 			= 2;
+    // Set Logger -> Lookup will automatically determine the class name.
+    private static final Logger log = getLogger(lookup().lookupClass());
 
     // Autowired using the Constructor
     private JsonWebTokenConfig jwtConfig;
@@ -53,11 +61,33 @@ public class TokenDataFactory {
     }
 
     /**
+     * Extract the Token fromm the Authorization Header
+     * ------------------------------------------------------------------------------------------------------
+     * Authorization: Bearer AAA.BBB.CCC
+     * ------------------------------------------------------------------------------------------------------
+     *
+     * @param jwToken
+     * @param className
+     * @return
+     */
+    public final TokenData getTokenData(String jwToken, String tokenType, String className) {
+        if (jwToken != null && jwToken.startsWith(BEARER)) {
+            String token =  jwToken.substring(7);
+            if(token != null) {
+                return createTokenData(token);
+            }
+        }
+        String msg = "Access Denied: Unable to extract ["+tokenType+"] token from Header!";
+        logTime( ERROR, msg,  className);
+        throw new JWTTokenExtractionException(msg);
+    }
+
+    /**
      * Create Token Data with JWT and Validating Key
      * @param token
      * @return
      */
-    public TokenData createTokenData(String token) {
+    public final TokenData createTokenData(String token) {
         if(keyCloakConfig.isKeyCloakEnabled()) {
             return createKeyCloakTokenData( token);
         } else {
@@ -89,6 +119,16 @@ public class TokenDataFactory {
      */
     public boolean isKeyCloakEnabled() {
     	return keyCloakConfig.isKeyCloakEnabled();
+    }
+
+    /**
+     * Log Time
+     * @param status
+     * @param msg
+     * @param className
+     */
+    private void logTime(String status, String msg, String className) {
+        log.info("2|TDF|TIME=0 ms|STATUS={}|CLASS={}|Msg={}", status,className, msg);
     }
 
 }

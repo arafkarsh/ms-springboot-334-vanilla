@@ -260,8 +260,8 @@ public class TokenManager {
      * @param tokens
      */
     private void setHeaders(HttpHeaders headers, Map<String, String> tokens) {
-        String authToken = tokens.get("token");
-        String refreshTkn = tokens.get(AUTH_REFRESH);
+        String authToken = tokens.get(AUTH_TOKEN);
+        String refreshTkn = tokens.get(REFRESH_TOKEN);
         setHeaders( headers,  authToken,  refreshTkn);
     }
 

@@ -37,7 +37,7 @@ import java.math.BigDecimal;
  * 
  * @author: Araf Karsh Hamid
  * @version: 0.1
- * @date: 2024-12-20T10:29 AM
+ * @date: 2024-12-20T10:29 AM
  */
 public record CartItem(
                 @NotBlank(message = "The Customer ID is required.") String customerId,
