@@ -1,7 +1,20 @@
 #!/bin/bash
+echo 
+echo "Testing Auth and Tx Token with /ms-vanilla/api/v1/product/all/secured/tx"
+echo 
 curl -X 'GET' \
-  'http://localhost:9334/ms-vanilla/api/v1/product/all/secured/' \
+  'http://localhost:9334/ms-vanilla/api/v1/product/all/secured/tx/' \
   -H 'accept: application/json' \
   -H 'Refresh-Token: eyJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJnZW5lcmljIiwic3ViIjoiamFuZS5kb2UiLCJ0eXBlIjoicmVmcmVzaCIsImlzcyI6Im9yZ25hbWUiLCJyb2wiOiJVU0VSIiwianRpIjoiYmY5YzY0M2ItNzJhZS00ZDhjLWJiZWEtMGIyZmZjMTFjZDg4IiwiaWF0IjoxNzM0Njc4OTg5LCJleHAiOjE3MzQ2ODA3ODl9.3aOZQ_auAOeKn41Bv_Qo5NbPJXbNwUxRvBkdD2l5WHGH5yk72jVD-yMJGhRIDzUtVMskMEwHeNkqrmrLGst82g' \
   -H 'TX-Token: eyJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJ0eC1zZXJ2aWNlcyIsInN1YiI6ImphbmUuZG9lIiwidHlwZSI6InR4LXVzZXJzIiwiaXNzIjoib3JnbmFtZSIsInJvbCI6IlVTRVIiLCJqdGkiOiI5ZGYyNGZhNi03YWRlLTQ3ODAtOTc5NS1kN2Y5NzliZGM0OWUiLCJpYXQiOjE3MzQ2Nzg5ODksImV4cCI6MTczNDY4MDc4OX0.F8HzJUoXmt7ts_p9-Gu6K933RK2Z_nxLRHnLuEGXUvX6ooLz3e0tyDofpRpb40O_Nhz8AeybkQg3ILkoGoK5lw' \
   -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJnZW5lcmljIiwic3ViIjoiamFuZS5kb2UiLCJ0eXBlIjoiYXV0aCIsImlzcyI6Im9yZ25hbWUiLCJyb2wiOiJVU0VSIiwianRpIjoiNWNiMzgxZjktM2JkMy00YTA0LWE4N2UtZmFkNDgzNzY0MWFhIiwiaWF0IjoxNzM0Njc4OTg5LCJleHAiOjE3MzQ2Nzk1ODl9.VRgoy6-fx8ImKfRzHwdlE90e5HlcVc3LG5589ucBWh3E9WpGl2I2FGQXglqswBfF7A-juin1iN4uswAArSS4aA'
+echo 
+echo 
+echo "Testing Auth Token with /ms-vanilla/api/v1/product/all/secured/single/"
+echo 
+curl -X 'GET' \
+  'http://localhost:9334/ms-vanilla/api/v1/product/all/secured/tx/' \
+  -H 'accept: application/json' \
+  -H 'Refresh-Token: eyJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJnZW5lcmljIiwic3ViIjoiamFuZS5kb2UiLCJ0eXBlIjoicmVmcmVzaCIsImlzcyI6Im9yZ25hbWUiLCJyb2wiOiJVU0VSIiwianRpIjoiYmY5YzY0M2ItNzJhZS00ZDhjLWJiZWEtMGIyZmZjMTFjZDg4IiwiaWF0IjoxNzM0Njc4OTg5LCJleHAiOjE3MzQ2ODA3ODl9.3aOZQ_auAOeKn41Bv_Qo5NbPJXbNwUxRvBkdD2l5WHGH5yk72jVD-yMJGhRIDzUtVMskMEwHeNkqrmrLGst82g' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJnZW5lcmljIiwic3ViIjoiamFuZS5kb2UiLCJ0eXBlIjoiYXV0aCIsImlzcyI6Im9yZ25hbWUiLCJyb2wiOiJVU0VSIiwianRpIjoiNWNiMzgxZjktM2JkMy00YTA0LWE4N2UtZmFkNDgzNzY0MWFhIiwiaWF0IjoxNzM0Njc4OTg5LCJleHAiOjE3MzQ2Nzk1ODl9.VRgoy6-fx8ImKfRzHwdlE90e5HlcVc3LG5589ucBWh3E9WpGl2I2FGQXglqswBfF7A-juin1iN4uswAArSS4aA'
+echo 

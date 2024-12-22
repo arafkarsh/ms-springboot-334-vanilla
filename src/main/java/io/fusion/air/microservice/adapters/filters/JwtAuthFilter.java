@@ -115,6 +115,9 @@ public class JwtAuthFilter implements Filter {
             }
             // IF Tx Token is VALID
             if (txToken != null) {
+                if(authToken == null) {
+                    throw new AuthorizationException("Auth Token Missing with Valid Tx Token!");
+                }
                 setClaims(txToken, TX_TOKEN);
             }
             // Continue the filter chain
@@ -123,6 +126,18 @@ public class JwtAuthFilter implements Filter {
             log.info("|JwtAuthFilter Error: {} ", e.getMessage());
             throwError(httpResponse);
         }
+    }
+
+    /**
+     * Extract the Token from the HTTP Headers
+     * @param request
+     * @param tokenType
+     * @return
+     */
+    private String extractToken(HttpServletRequest request, String tokenType) {
+        log.debug("JWT Filter in Action... Extracting the Tokens... {} ", tokenType);
+        String header = request.getHeader(tokenType);
+        return (header != null && header.startsWith("Bearer ")) ? header.substring(7) : null;
     }
 
     /**
@@ -139,18 +154,6 @@ public class JwtAuthFilter implements Filter {
         } catch (Exception e) {
             throw new AuthorizationException("Issue Extracting the "+name+" Token : "+e.getMessage());
         }
-    }
-
-    /**
-     * Extract the Token from the HTTP Headers
-     * @param request
-     * @param tokenType
-     * @return
-     */
-    private String extractToken(HttpServletRequest request, String tokenType) {
-        log.debug("JWT Filter in Action... Extracting the Tokens... {} ", tokenType);
-        String header = request.getHeader(tokenType);
-        return (header != null && header.startsWith("Bearer ")) ? header.substring(7) : null;
     }
 
     /**

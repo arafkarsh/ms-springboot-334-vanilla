@@ -98,7 +98,7 @@ public class UserTokenAuthorization {
         final TokenData tokenData = tokenFactory.getTokenData( request.getHeader(AUTH_TOKEN), AUTH_TOKEN, joinPoint.toString());
         // Get the User (Subject) from the Token
         final String user = getUser(startTime, tokenData, joinPoint);
-        log.info("Step 1: Validate Request: User Extracted... {} ", user);
+        log.debug("Validate Request: User Extracted... {} ", user);
         // If the User == NULL then ERROR is thrown from getUser() method itself
         // Validate the Token when User is NOT Null
         UserDetails userDetails = validateToken(startTime, user, tokenMode, tokenData, joinPoint, tokenCtg);
@@ -112,7 +112,7 @@ public class UserTokenAuthorization {
         logTime(startTime, SUCCESS, "User Authorized for the request",  joinPoint);
         // Check the Tx Token if It's NOT a SINGLE_TOKEN Request
         if(!singleToken ) {
-            validateAndSetClaimsFromTxToken(startTime, user, request.getHeader(TX_TOKEN), joinPoint);
+            validateTxToken(startTime, user, request.getHeader(TX_TOKEN), joinPoint);
         }
         return joinPoint.proceed();
     }
@@ -126,20 +126,14 @@ public class UserTokenAuthorization {
      * @return
      */
     private String getUser(long startTime, TokenData token, ProceedingJoinPoint joinPoint) {
-        String user = null;
-        String msg = null;
         try {
-            user = JsonWebTokenValidator.getSubjectFromToken(token);
+            String user = JsonWebTokenValidator.getSubjectFromToken(token);
             // Store the user info for logging
             MDC.put("user", user);
             return user;
         } catch (Exception e) {
-            msg = e.getMessage();
+            logTime(startTime, ERROR, e.getMessage(), joinPoint);
             throw e;
-        } finally {
-            if(msg != null) {
-                logTime(startTime, ERROR, msg, joinPoint);
-            }
         }
     }
 
@@ -165,7 +159,7 @@ public class UserTokenAuthorization {
             if (JsonWebTokenValidator.validateToken(userDetails.getUsername(), tokenData)) {
                 // Validate the Token Type
                 String tokenType = JsonWebTokenValidator.getTokenType(tokenData);
-                validateTokenType( startTime,  user,  tokenType, tokenMode,  tokenCtg,  joinPoint);
+                validateAuthTokenType( startTime,  user,  tokenType, tokenMode,  tokenCtg,  joinPoint);
                 // Verify that the user role name matches the role name defined by the protected resource
                 String role = JsonWebTokenValidator.getUserRoleFromToken(tokenData);
                 verifyTheUserRole( role,  tokenMode,  joinPoint);
@@ -175,15 +169,14 @@ public class UserTokenAuthorization {
                 throw new AuthorizationException(msg);
             }
         } catch(AuthorizationException e) {
+            msg = e.getMessage();
             throw e;
         } catch(Exception e) {
             msg = "Auth-Token: Unauthorized Access: Error: "+e.getMessage();
             throw new AuthorizationException(msg, e);
         } finally {
             // Error is Logged ONLY if msg != NULL
-            if(msg != null) {
-                logTime(startTime, ERROR, msg, joinPoint);
-            }
+            logTime(startTime, ERROR, msg, joinPoint);
         }
     }
 
@@ -195,7 +188,7 @@ public class UserTokenAuthorization {
      * @param tokenCtg
      * @param joinPoint
      */
-    private void validateTokenType(long startTime, String user, String tokenType, String tokenMode,
+    private void validateAuthTokenType(long startTime, String user, String tokenType, String tokenMode,
                                         int tokenCtg, ProceedingJoinPoint joinPoint) {
         String msg = null;
         try {
@@ -227,9 +220,7 @@ public class UserTokenAuthorization {
             }
         } finally {
             // Error is Logged ONLY if msg != NULL
-            if(msg != null) {
-                logTime(startTime, ERROR, msg, joinPoint);
-            }
+            logTime(startTime, ERROR, msg, joinPoint);
         }
     }
 
@@ -241,9 +232,7 @@ public class UserTokenAuthorization {
      */
     private void verifyTheUserRole(String role, String tokenMode, ProceedingJoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-
         String annotationRole = null;
-        log.info("Step 3: Role Check..... FOR Token Mode = {} ", tokenMode);
         try {
             if (tokenMode.equalsIgnoreCase(MULTI_TOKEN_MODE)) {
                 AuthorizationRequired annotation =  signature.getMethod().getAnnotation(AuthorizationRequired.class);
@@ -255,15 +244,15 @@ public class UserTokenAuthorization {
                 // Default Role in Secure Package Mode
                 annotationRole = ROLE_USER;
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
             log.error("Authorization Failed: Role Not Found!");
-            throw new AuthorizationException("Role Not Found!", ignored);
+            throw new AuthorizationException("Unauthorized Access: Role Not Found!", e);
         }
-        log.info("Step 3: User Role = {},  Claims Role = {} ", annotationRole, role);
+        log.debug("Required Role = {},  User (Claims) Role = {} ", annotationRole, role);
         // If the Role in the Token is User and Required is Admin then Reject the request
         if(role.trim().equalsIgnoreCase(UserRole.USER.toString()) && annotationRole != null
                 && annotationRole.equals(UserRole.ADMIN.toString())) {
-            throw new AuthorizationException("Invalid User Role!");
+            throw new AuthorizationException("Unauthorized Access: Invalid User Role!");
         }
     }
 
@@ -274,27 +263,19 @@ public class UserTokenAuthorization {
      * @param user
      * @param joinPoint
      */
-    private void validateAndSetClaimsFromTxToken(long startTime, String user,
-                                                 String token, ProceedingJoinPoint joinPoint) {
-
+    private void validateTxToken(long startTime, String user, String token, ProceedingJoinPoint joinPoint) {
         final TokenData tokenData = tokenFactory.getTokenData(token, TX_TOKEN, joinPoint.toString());
-        String msg = null;
         try {
-            if (JsonWebTokenValidator.validateToken(user, tokenData)) {
-                validateClaimsTokenType( user);
-                logTime(startTime, SUCCESS, "TX-Token: User TX Authorized for the request",  joinPoint);
-            }  else {
-                msg = "TX-Token: Unauthorized Access: Token Validation Failed!";
-                throw new AuthorizationException(msg);
+            if (JsonWebTokenValidator.isTokenExpired(tokenData)) {
+                String errorMsg = "TX-Token: Unauthorized Access: Token Expired!";
+                logTime(startTime, ERROR, errorMsg, joinPoint);
+                throw new AuthorizationException(errorMsg);
             }
-        } catch(AuthorizationException e) {
-            msg = e.getMessage();
+            validateTxTokenType( user);
+            logTime(startTime, SUCCESS, "TX-Token: User TX Authorized for the request",  joinPoint);
+        } catch(Exception e) {
+            logTime(startTime, ERROR, e.getMessage(), joinPoint);
             throw e;
-        } finally {
-            // Error is Logged ONLY if msg != NULL
-            if(msg != null) {
-                logTime(startTime, ERROR, msg, joinPoint);
-            }
         }
     }
 
@@ -303,16 +284,13 @@ public class UserTokenAuthorization {
      * @param user
      * @return
      */
-    private String validateClaimsTokenType(String user) {
+    private String validateTxTokenType(String user) {
         String tokenType = claimsManager.getTokenType();
-        String msg;
         if (tokenType == null) {
-            msg = "Invalid Tx Token Type  (NULL) from Claims! for user: " + user;
-            throw new AuthorizationException(msg);
+            throw new AuthorizationException("Invalid Tx Token Type  (NULL) from Claims! for user: " + user);
         }
         if (!tokenType.equals(TX_USERS)) {
-            msg = "Invalid TX Token Type ("+tokenType+") ! " + user;
-            throw new AuthorizationException(msg);
+            throw new AuthorizationException("Invalid TX Token Type ("+tokenType+") ! " + user);
         }
         return tokenType;
     }
@@ -324,7 +302,18 @@ public class UserTokenAuthorization {
      * @param joinPoint
      */
     private void logTime(long startTime, String status, String msg, ProceedingJoinPoint joinPoint) {
-        long timeTaken=System.currentTimeMillis() - startTime;
-        log.info("2|JA|TIME={} ms|STATUS={}|CLASS={}|Msg={}", timeTaken, status,joinPoint, msg);
+        if(msg != null) {
+            long timeTaken = System.currentTimeMillis() - startTime;
+            switch(status) {
+                case ERROR:
+                    log.error("2|JA|TIME={} ms|STATUS={}|CLASS={}|Msg={}", timeTaken, status, joinPoint, msg);
+                    break;
+                case SUCCESS:
+                    // fall thru
+                default:
+                    log.info("2|JA|TIME={} ms|STATUS={}|CLASS={}|Msg={}", timeTaken, status, joinPoint, msg);
+                    break;
+            }
+        }
     }
  }
