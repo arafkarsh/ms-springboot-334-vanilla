@@ -1,6 +1,6 @@
 #!/bin/sh
 # ============================================================================
 # Import Database 
-# @author: Araf Karsh Hamid
+# @author: Araf Karsh Hamid, (c) Copyright 2022-24
 # ============================================================================
 psql -h localhost -p 5433 ms_vanilla_334 < ms-sb334.sql

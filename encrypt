@@ -1,6 +1,6 @@
 #!/bin/sh
 # -------------------------------------------------------------------------------------------
-# @author: Araf Karsh Hamid
+# @author: Araf Karsh Hamid, (c) Copyright 2024
 # -------------------------------------------------------------------------------------------
 jasypt=libs/jasypt-1.9.3.jar
 # Name of the environment variable

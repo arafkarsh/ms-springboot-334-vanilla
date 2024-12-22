@@ -43,7 +43,53 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
- * User Token Authorization
+ * User Token Authorization for a Stateless Microservices Architecture
+ *
+ * 1. Why Set the Spring Security Context in a Stateless Architecture?
+ * 	•	Per-Request Authentication
+ *     Even though you’re not storing a session between requests, within the lifecycle of a single
+ *     request you still need to tell Spring Security, “this user is authenticated.” Setting the
+ *     SecurityContextHolder.getContext().setAuthentication(...) ensures that any downstream checks
+ *     (e.g., @PreAuthorize, SecurityContextHolder) in the same request know who the user is and
+ *     what roles they have.
+ * 	•	Framework Integration
+ *      Spring Security uses the SecurityContext to enforce method-level security (@PreAuthorize,
+ *      @RolesAllowed) and to provide the principal object to controllers (@AuthenticationPrincipal)
+ *      or any code that calls SecurityContextHolder.getContext().getAuthentication(). If you never
+ *      set the authentication, Spring will treat the request as anonymous
+ *
+ * 2. How Do Subsequent Calls Work Without Server-Side State?
+ * In a stateless system, each incoming request:
+ * 	1.	Arrives With a Token
+ *     The client (often a browser or another service) includes the JWT in an HTTP header (e.g.,
+ *     Authorization: Bearer <token>).
+ * 	2.	Token Is Parsed and Validated
+ *      A filter or an aspect (like in this example) reads the token, validates it (signature, expiration,
+ *      claims), and if valid, creates a UsernamePasswordAuthenticationToken (or a similar Authentication
+ *      object).
+ * 	3.	Security Context Is Set
+ *     SecurityContextHolder.getContext().setAuthentication(...) is invoked for that request only.
+ * 	    •	This means from now until the response is completed, Spring Security sees the user as
+ * 	        authenticated.
+ * 	    •	Once the request finishes, that context is discarded.
+ * 	4.	Next Request
+ *      The next request must repeat this process: it again includes the JWT, the filter re-validates
+ *      the token, sets the new SecurityContext, and so on. There is no “session” to remember anything
+ *      across requests—only the token that the client re-sends each time.
+ *
+ *  3. Key Point: Stateless Means No Server-Side Session
+ * 	    •	No HTTP Session: In a truly stateless microservice, you typically disable or ignore the HTTP
+ * 	        session. Spring Security’s SessionCreationPolicy.STATELESS ensures Spring does not create
+ * 	        or use an HTTP session. (Check out WebSecurityConfiguration in io.f.a.m.security.core)
+ * 	    •	Every Request Is Fresh: Authentication details have to be established each time. You do
+ * 	        this by parsing the token and setting the security context again.
+ *
+ * 	Summary:
+ * 	•	Set the security context in a stateless architecture, but it applies only to the current request.
+ * 	•	No server-side session is used; instead, each request carries its own credentials (JWT), which
+ * 	    are validated anew.
+ * 	•	This keeps the service stateless, yet still leverages Spring Security’s request-based authorization
+ * 	    checks.
  *
  * @author: Araf Karsh Hamid
  * @version:
@@ -103,11 +149,28 @@ public class UserTokenAuthorization {
         // Validate the Token when User is NOT Null
         UserDetails userDetails = validateToken(startTime, user, tokenMode, tokenData, joinPoint, tokenCtg);
         // Create Authorize Token
+        // UsernamePasswordAuthenticationToken: A core Spring Security class representing an
+        // authentication request or a fully authenticated user
+        // Parameters:
+        // 1.	principal: Set to userDetails (the authenticated user).
+        // 2.	credentials: Passed as null because we already have a validated token (no password needed).
+        // 3.	authorities: The roles/permissions extracted from UserDetails.
+        // setDetails(...): Adds additional info from the HTTP request, such as remote IP or
+        // session ID, for audit or security checks.
         UsernamePasswordAuthenticationToken authorizeToken = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());
         authorizeToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        // Set the Security Context with current user as Authorized for the request,
-        // So it passes the Spring Security Configurations successfully.
+        // Set the Security Context with current user as Authorized for the request, So it passes
+        // the Spring Security Configurations successfully.
+        // - SecurityContextHolder: The container where Spring Security stores the currently
+        //   authenticated user’s details.
+	    //  - By placing authorizeToken here, downstream parts of the application (controllers,
+        //    services, etc.) can call SecurityContextHolder.getContext().getAuthentication() to obtain:
+        //    - The current user (userDetails).
+	    //    - Roles/authorities.
+	    //    - Whether the user is authenticated.
+        //  - This effectively tells Spring Security, “We have a valid user for this request,” and the
+        //     framework will treat subsequent calls as authenticated.
         SecurityContextHolder.getContext().setAuthentication(authorizeToken);
         logTime(startTime, SUCCESS, "User Authorized for the request",  joinPoint);
         // Check the Tx Token if It's NOT a SINGLE_TOKEN Request

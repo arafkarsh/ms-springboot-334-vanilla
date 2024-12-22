@@ -28,23 +28,9 @@ HashiCorp Vault, for enhanced security.
 
 ## What the Template Provides out of the box
 
-### Microservice Package Structure
-
-![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Pkg-Structure.jpg)
-
-io.fusion.air.microservice
-- adapters
-- domain
-- security
-- server
-- utils
-
-### Security Framework with Spring Security, JWT, KeyCloak, & Cryptography
-![Security Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Fusion-Security-Pkg.png)
-
 ### Template Features
 
-1. Security Auth/Authorization using AOP and Filters 
+1. Security Auth/Authorization using AOP and Filters
 2. Exception Handling with Exception Framework using AOP ( ..microservice.adapters.aop)
 3. Log Management using AOP (json and text formats) using Logback  (...adapters.filters)
 4. Standardized REST Responses (...domain.models.StandardResponse)
@@ -53,10 +39,53 @@ io.fusion.air.microservice
 7. JPA configurations for H2 and PostgreSQL (...server.config)
 8. Observability Using Micrometer, Prometheus and Open Telemetry.
 9. Database Password Encryption using Jasypt. Checkout the shell programs encrypt and decrypt.
-10. Digital Signatures using Standard Java Cryptography. 
+10. Digital Signatures using Standard Java Cryptography.
 11. Open API based Swagger Docs (...microservice.adapters.controllers)
 
-## Template Tutorials - Java 23, SpringBoot 3.3.4 & Jakarta 10 Series
+### Microservice Package Structure
+
+![Package Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/MS-Pkg-Structure.jpg)
+
+io.fusion.air.microservice
+1. adapters (All the Implementations from App/Service perspective)
+2. domain (All Entities, Models, Interfaces for the implementations)
+3. security (All Security related modules)
+4. server (Managing the Service - from a server perspective, Setups (Cache, DB, Kafka etc, Configs)
+5. utils (Standard Utilities)
+
+### Security Framework with Spring Security, JWT, KeyCloak, & Cryptography
+![Security Structure](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/Fusion-Security-Pkg.png)
+
+1.	Adapters Package (left side) – Integrations with Spring MVC, AOP, Filters, and Web Security.
+2. Security Package (right side) – Core libraries and utilities for JWT creation, validation, cryptography, etc.
+
+#### 1. Adapters Package (io.fusion.air.microservice.adapters)
+
+A. Filters Package
+1.	JWT Auth Filter
+- A javax.servlet.Filter (or jakarta.servlet.Filter) that intercepts requests early in the servlet chain.
+- It extracts JWTs from headers, validates or parses them, and stores user claims in a ClaimsManager for downstream use.
+2.	Log Filter
+- Another servlet filter for logging requests. Possibly logs details like request URIs, IP addresses, timings, etc.
+3.	Security Filter
+- A filter that enforces security rules at the servlet layer (e.g., blocking requests with invalid data or applying firewall rules).
+- Complements or replaces Spring Security’s default filter chain in some scenarios.
+These filters run before the DispatcherServlet. They can reject or manipulate requests if authentication or security checks fail.
+
+B. Spring Framework (DispatcherServlet)
+- DispatcherServlet is the central Spring MVC component that routes incoming HTTP requests to the
+  appropriate controller endpoints. Checkout the [API flow in Part 4 of my Java 23 series.](https://arafkarsh.medium.com/java-23-springboot-3-3-4-api-flow-logging-part-4-1000546bcd62) 
+
+C. AOP Package
+- Authorization Request Aspect
+- A Spring AOP aspect that intercepts controller or service methods to enforce authorization rules.
+- Typically checks whether the user has the necessary roles/permissions based on JWT claims or
+  custom annotations (@AuthorizationRequired).
+
+Checkout the [Java 23, SpringBoot 3.3.4, & Jakarta EE 10](https://arafkarsh.medium.com/java-23-springboot-3-3-4-jakarta-10-125bc815d6c1) 
+for more details on this topic.
+
+### Template Tutorials - Java 23, SpringBoot 3.3.4 & Jakarta 10 Series
 1. [Java 23, SpringBoot 3.3.4 & Jakarta 10 — Part 1](https://arafkarsh.medium.com/java-23-springboot-3-3-4-jakarta-10-125bc815d6c1)
 2. [Java 23, SpringBoot 3.3.4: AOP Exception Handling — Part 2](https://arafkarsh.medium.com/java-23-springboot-3-3-4-aop-exception-handling-part-2-e6adc86c8a26)
 3. [Java 23, SpringBoot 3.3.4: Logback Setup — Part 3 ](https://arafkarsh.medium.com/java-23-springboot-3-3-4-logback-setup-part-3-c2ffe2d0a358)
@@ -309,7 +338,7 @@ lifecycle and streamlines collaboration so you can create better APIs—faster.
 #### 2.1.10 State of the Records after Inserts and Updates
 ![Crud Get-10](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/crud/crud-9-db-records.jpg)
 
-### 2.2 Error Handling
+### 2.2 Error Handling for SpringBoot App / Service
 
 #### 2.2.1 Error Handling - Invalid Input
 ![Error-1](https://raw.githubusercontent.com/arafkarsh/ms-springboot-334-vanilla/master/diagrams/crud/crud-error-1-post-invalid-input-A.jpg)
